@@ -106,9 +106,9 @@ export default class AddressValidation extends React.Component {
 				</div>
 
 
-				{typeof this.state.displayTutorial &&
+				{typeof this.state.displayTutorial &&	//I pass in the updateZIndexAddressSection prop to expose this style being
 
-					<Tutorial ref={(element) => { this.TutorialElement = element} } />
+					<Tutorial updateZIndexAddressSection={this.updateZIndex.bind(this)} ref={(element) => { this.TutorialElement = element} } />
 
 				}
 
@@ -149,6 +149,13 @@ export default class AddressValidation extends React.Component {
 
 
 		return { ..._styles }
+	}
+
+	//updateZIndex will be passed in as a prop to expose the styles.AddressSectionContainer to be overridden for the zIndex attribute
+	updateZIndex(newZIndexValue) {
+		this.setState({
+			zIndex: newZIndexValue
+		})
 	}
 }
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Button from 'simple-react-button';
+
 
 /**
  *	PropTypes:
@@ -25,15 +27,19 @@ export default class TutorialScreen extends React.Component {
 		})
 	}
 	render() {
+		if(this.state.page === 'two') {
+			
+		}
+
 		return (
 			<div style={styles.root}>
 				{this.state.page === 'one' &&
-					<TutorialScreenOne />
+					<TutorialScreenOne setStateHelper={this.setStateHelper.bind(this)} />
 				}
-				{/*this.state.page === 'two' &&
-					<TutorialScreenTwo />
+				{this.state.page === 'two' &&
+					<TutorialScreenTwo setStateHelper={this.setStateHelper.bind(this)} />
 				}
-				{this.state.page === 'three' &&
+				{/*this.state.page === 'three' &&
 					<TutorialScreenThree />
 				}
 				{this.state.page === 'four' &&
@@ -45,11 +51,30 @@ export default class TutorialScreen extends React.Component {
 			</div>
 		)
 	}
+	setStateHelper(newState) {
+		this.setState(newState)
+	}
 }
 
-const TutorialScreenOne = () =>
-	<h1>Test!</h1>
+const TutorialScreenOne = (props) =>
+	<div>
+		<p style={styles.TutorialScreenOne}>
+			1. Lets try to figure out the correct address from this picture (be patient, this is hard to do!)
+		</p>
+		{/*<Button value={'Next'} clickHandler={() => { this.props.setStateHelper({ page: 'two' }) } } />*/}
+		<Button value={'Next'} clickHandler={() => { props.setStateHelper({ page: 'two' }) } } />
+	</div>
 
+const TutorialScreenTwo = (props) => {
+	return (
+		<div>
+			<p style={styles.TutorialScreenOne}>
+				2. Lets try to figure out the correct address from this picture (be patient, this is hard to do!)
+			</p>
+			<Button value={'Next'} clickHandler={() => { props.setStateHelper({ page: 'three' }) } } />
+		</div>	
+	)
+}
 
 var styles = {
 	root: {
@@ -59,5 +84,8 @@ var styles = {
 		float: 'right',
 		position: 'relative',
 		zIndex: 2
+	},
+	TutorialScreenOne: {
+		fontSize: 20
 	}
 }
