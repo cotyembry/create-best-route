@@ -28,7 +28,7 @@ export default class TutorialScreen extends React.Component {
 	}
 	render() {
 		if(this.state.page === 'two') {
-			
+
 		}
 
 		return (
@@ -65,15 +65,17 @@ const TutorialScreenOne = (props) =>
 		<Button value={'Next'} clickHandler={() => { props.setStateHelper({ page: 'two' }) } } />
 	</div>
 
-const TutorialScreenTwo = (props) => {
-	return (
-		<div>
-			<p style={styles.TutorialScreenOne}>
-				2. Lets try to figure out the correct address from this picture (be patient, this is hard to do!)
-			</p>
-			<Button value={'Next'} clickHandler={() => { props.setStateHelper({ page: 'three' }) } } />
-		</div>	
-	)
+class TutorialScreenTwo extends React.Component {
+	render() {
+		return (
+			<div>
+				<p style={styles.TutorialScreenOne}>
+					2. Here is the picture I'm going off of
+				</p>
+				<Button value={'Next'} clickHandler={() => { props.setStateHelper({ page: 'three' }) } } />
+			</div>	
+		)
+	}
 }
 
 var styles = {
