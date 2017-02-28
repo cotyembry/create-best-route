@@ -45,7 +45,7 @@ export default class Tutorial extends React.Component {
 
 
 		return (
-			<div id="test" style={_styles.root}>
+			<div style={_styles.root}>
 				
 				<TutorialScreen screen={1} />
 

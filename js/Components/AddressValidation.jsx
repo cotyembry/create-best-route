@@ -65,9 +65,9 @@ export default class AddressValidation extends React.Component {
 		// var tutorialTopOffset = $(this.TutorialElement).offset().top;
 
 
-		var _tutorialTopOffset = 
+		// var _tutorialTopOffset = 
 
-		console.log(_tutorialTopOffset)
+		// console.log(_tutorialTopOffset)
 
 
 
@@ -84,11 +84,6 @@ export default class AddressValidation extends React.Component {
 		_styles = this.setStyleOverrides(_styles);
 
 
-		console.log('in render', this.state._tutorialTopOffset)
-
-
-
-		
 		// _styles.AddressSectionContainer = this.state.shiftLeftHelper !== '' ? { ...styles.AddressSectionContainer, left: this.state.shiftLeftHelper } : { ...styles.AddressSectionContainer }
 
 

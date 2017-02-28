@@ -3,6 +3,11 @@ import ReactDOM from 'react-dom';
 
 import Button from 'simple-react-button';
 
+import PictureSection from './PictureSection.jsx';
+
+import TutorialScreenOne from './TutorialScreens/TutorialScreenOne.jsx';
+import TutorialScreenTwo from './TutorialScreens/TutorialScreenTwo.jsx';
+import TutorialScreenThree from './TutorialScreens/TutorialScreenThree.jsx';
 
 /**
  *	PropTypes:
@@ -17,7 +22,8 @@ export default class TutorialScreen extends React.Component {
 		super(props);
 
 		this.state = {
-			page: 'one'
+			page: 'one',				//page will be used to display the different components
+			marginTopOfPictureSection: ''
 		}
 	}
 	componentDidMount() {
@@ -39,10 +45,10 @@ export default class TutorialScreen extends React.Component {
 				{this.state.page === 'two' &&
 					<TutorialScreenTwo setStateHelper={this.setStateHelper.bind(this)} />
 				}
-				{/*this.state.page === 'three' &&
-					<TutorialScreenThree />
+				{this.state.page === 'three' &&
+					<TutorialScreenThree marginTopOfPictureSection={this.state.marginTopOfPictureSection} setStateHelper={this.setStateHelper.bind(this)} />
 				}
-				{this.state.page === 'four' &&
+				{/*this.state.page === 'four' &&
 					<TutorialScreenFour />
 				}
 				{this.state.page === 'five' &&
@@ -52,31 +58,12 @@ export default class TutorialScreen extends React.Component {
 		)
 	}
 	setStateHelper(newState) {
+		//setStateHelper is called by the child components to allow them a handle in updating their parent containers state
 		this.setState(newState)
 	}
 }
 
-const TutorialScreenOne = (props) =>
-	<div>
-		<p style={styles.TutorialScreenOne}>
-			1. Lets try to figure out the correct address from this picture (be patient, this is hard to do!)
-		</p>
-		{/*<Button value={'Next'} clickHandler={() => { this.props.setStateHelper({ page: 'two' }) } } />*/}
-		<Button value={'Next'} clickHandler={() => { props.setStateHelper({ page: 'two' }) } } />
-	</div>
 
-class TutorialScreenTwo extends React.Component {
-	render() {
-		return (
-			<div>
-				<p style={styles.TutorialScreenOne}>
-					2. Here is the picture I'm going off of
-				</p>
-				<Button value={'Next'} clickHandler={() => { props.setStateHelper({ page: 'three' }) } } />
-			</div>	
-		)
-	}
-}
 
 var styles = {
 	root: {
@@ -86,8 +73,5 @@ var styles = {
 		float: 'right',
 		position: 'relative',
 		zIndex: 2
-	},
-	TutorialScreenOne: {
-		fontSize: 20
 	}
 }
