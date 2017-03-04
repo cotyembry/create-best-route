@@ -33,9 +33,12 @@ export default class TutorialScreenThree extends React.Component {
 		return (
 			<div>
 
+				<span style={styles.correctionHeader}>Which line is the street address?</span> <br />
+
 				{this.state.showPictureSection === true &&
 					<PictureSection focus={this.state.fieldFocus} top={this.props.marginTopOfPictureSection} left={this.state.PictureSection.left} setRef={this.setChildRef.bind(this)} />
 				}
+
 
 				<br />
 
@@ -44,7 +47,7 @@ export default class TutorialScreenThree extends React.Component {
 				</div>
 
 				<p style={styles.TutorialScreenThree}>
-					<span style={styles.correctionHeader}>Choose an option for the street address</span> <br />
+					
 					<span style={styles.continue}>Its Perfect! Tap continue</span> <br />
 					<span>Are there typoes? Tap Typoes -- TODO: add this button and the correction UI interaction for it as well</span>
 					Tap the street address (or if it looks perfect, tap continue)
@@ -98,9 +101,9 @@ var styles = {
 	},
 	RawAddressContainer: {
 		width: '100%',
-		position: 'absolute',
+		position: 'relative',
 		// left: '25%',
-		top: 40
+		// top: 40
 	},
 	TutorialScreenThree: {
 		fontSize: 20

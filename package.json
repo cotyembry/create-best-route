@@ -4,7 +4,7 @@
   "description": "this will have the user take a picture, or select one they have saved, and eventually the end result will be the best possible route for the addresses that were analyzed from the picture",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --inline --content-base .",
+    "start": "webpack-dev-server --inline --hot --content-base .",
     "webpack": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

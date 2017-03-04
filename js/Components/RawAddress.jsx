@@ -19,7 +19,9 @@ export default class RawAddress extends React.Component {
 
 		//once I have the information parsed, I pass in the keys and they values to <AddressSection />
 		Object.keys(parsed).map((key, index) => {
-			this.Children.push( <AddressSection key={key} keyValue={key} value={parsed[key]} /> )
+			if(parsed[key] !== '') {
+				this.Children.push( <AddressSection setParentState={this._setStateHelper.bind(this)} key={key} keyValue={key} value={parsed[key]} /> )
+			}
 		})
 	}
 
@@ -30,6 +32,10 @@ export default class RawAddress extends React.Component {
 				{ this.Children.map((AddressElement) => AddressElement) }
 			</div>
 		)
+	}
+
+	_setStateHelper(stateFromChild) {
+		this.setState(stateFromChild)
 	}
 
 }

@@ -31,12 +31,12 @@ export default class Tutorial extends React.Component {
 	render() {
 		var _styles = {}
 
-		if(typeof this.props.positionFromTop !== 'undefined') {
-			_styles.root = { ...styles.root, top: '-' + this.props.positionFromTop + 'px' }	//'-' + ... because I want to shift the Tutorial component up to fill the whole screen
-		}
-		else {
-			_styles.root = { ...styles.root }
-		}
+		_styles.root = { ...styles.root }
+		// if(typeof this.props.positionFromTop !== 'undefined') {
+		// 	_styles.root = { ...styles.root, top: '-' + this.props.positionFromTop + 'px' }	//'-' + ... because I want to shift the Tutorial component up to fill the whole screen
+		// }
+		// else {
+		// }
 
 
 		if(this.state.topOffset !== '') {
@@ -70,6 +70,7 @@ var styles = {
 		// backgroundColor: '#404040',
 		// display: 'absolute',
 		position: 'fixed',
-		zIndex: 2
+		zIndex: 2,
+		top: 0
 	}
 }

@@ -22,7 +22,7 @@ export default class TutorialScreen extends React.Component {
 		super(props);
 
 		this.state = {
-			page: 'one',				//page will be used to display the different components
+			page: 'three',				//page will be used to display the different components
 			marginTopOfPictureSection: ''
 		}
 	}

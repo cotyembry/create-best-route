@@ -96,12 +96,12 @@ export default class AddressValidation extends React.Component {
 			
 
 				{/* this.Children is an array of components that are the actual raw address data */}
-				<div ref={(element) => {this.AddressSectionContainer = element} } style={_styles.AddressSectionContainer}>
+				<div id='AddressSectionContainer' ref={(element) => {this.AddressSectionContainer = element} } style={_styles.AddressSectionContainer}>
 					{ this.Children.map((AddressElement) => AddressElement) }
 				</div>
 
 
-				{typeof this.state.displayTutorial &&	//I pass in the updateZIndexAddressSection prop to expose this style being
+				{typeof this.state.displayTutorial &&	//I pass in the updateZIndexAddressSection prop to expose this style being changed
 
 					<Tutorial updateZIndexAddressSection={this.updateZIndex.bind(this)} ref={(element) => { this.TutorialElement = element} } />
 
