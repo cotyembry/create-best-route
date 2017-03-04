@@ -14,6 +14,11 @@ if (module.hot) {
     module.hot.accept();
 }
 
+
+// import store from './Components/store.js';
+
+// console.log(store);
+
 $(document).ready(function() {
 	ReactDOM.render(<App />, document.getElementById('App'))
 })

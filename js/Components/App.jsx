@@ -3,6 +3,8 @@ import React from 'react';
 
 import AddressValidation from './AddressValidation.jsx';
 
+// import store from './store.js'
+
 
 export default class App extends React.Component {
 	render() {

@@ -43,7 +43,7 @@ export default class TutorialScreenThree extends React.Component {
 				<br />
 
 				<div style={styles.RawAddressContainer}>
-					<RawAddress />
+					<RawAddress setParentState={this._setStateHelper} />
 				</div>
 
 				<p style={styles.TutorialScreenThree}>
@@ -65,6 +65,14 @@ export default class TutorialScreenThree extends React.Component {
 		this.PictureSectionThisValue = domElement;
 
 		// this.translateLeft();
+	}
+
+	_setStateHelper(action, stateFromChild) {
+		if(action.type === 'acceptButton1Pressed') {
+			this.setState({
+
+			})
+		}
 	}
 	// //translateLeft will probably not be used on a device that doesnt have very much screen space
 	// translateLeft(domElement) {

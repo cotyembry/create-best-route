@@ -11,6 +11,8 @@ export default class RawAddress extends React.Component {
 	constructor(props) {
 		super(props);
 		
+		this.setParentState = this._setStateHelper;
+
 		this.Children = [];
 
 		//this is where probably a lot of work needs to be done to get this location information parsed in a desirable, user friendly, simple, quick way
@@ -20,7 +22,14 @@ export default class RawAddress extends React.Component {
 		//once I have the information parsed, I pass in the keys and they values to <AddressSection />
 		Object.keys(parsed).map((key, index) => {
 			if(parsed[key] !== '') {
-				this.Children.push( <AddressSection setParentState={this._setStateHelper.bind(this)} key={key} keyValue={key} value={parsed[key]} /> )
+				this.Children.push(
+					<AddressSection
+						setParentState={this._setStateHelper.bind(this)}
+						i={index}
+						key={key}
+						keyValue={key}
+						value={parsed[key]} />
+				)
 			}
 		})
 	}
@@ -34,8 +43,19 @@ export default class RawAddress extends React.Component {
 		)
 	}
 
-	_setStateHelper(stateFromChild) {
-		this.setState(stateFromChild)
+	_setStateHelper(action, stateFromChild) {
+		if(typeof action.type === 'undefined') {
+			console.error('In RawAddress.jsx and action.type is undefined. action = ', action);
+			this.setState(stateFromChild);	//this was 'legacy' code
+		}
+		else {
+			if(action.type === 'accept1ButtonPressed') {
+				console.log('finally here', action)
+				this.setState({
+
+				})
+			}
+		}
 	}
 
 }
