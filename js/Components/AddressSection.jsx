@@ -64,15 +64,16 @@ export default class AddressSection extends React.Component {
 		//no state is being passed currently, It just needs to know the button was pressed
 		if(action.type === 'acceptButton1Pressed') {
 			// this.setState()
+			console.log('in AddressSection.jsx component')
 			this.setParentState({ type: action.type })
 		}
 	}
 }
 
-const acceptOnClick = (props) => {
+const acceptOnClick = (props) => (props) => {
 	//this should transition to the next screen
-	console.log(props.setStateHelper)
-	console.log('here', props.i)
+
+	console.log('in acceptOnClick, props.i = ', props.i)
 	props.setStateHelper({ type: 'acceptButton' + (props.i + 1) + 'Pressed' })
 }
 

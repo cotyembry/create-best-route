@@ -11,7 +11,7 @@ export default class RawAddress extends React.Component {
 	constructor(props) {
 		super(props);
 		
-		this.setParentState = this._setStateHelper;
+		this.setParentState = this.props.setParentState;
 
 		this.Children = [];
 
@@ -46,14 +46,12 @@ export default class RawAddress extends React.Component {
 	_setStateHelper(action, stateFromChild) {
 		if(typeof action.type === 'undefined') {
 			console.error('In RawAddress.jsx and action.type is undefined. action = ', action);
-			this.setState(stateFromChild);	//this was 'legacy' code
+			this.setParentState(stateFromChild);	//this was 'legacy' code
 		}
 		else {
 			if(action.type === 'accept1ButtonPressed') {
 				console.log('finally here', action)
-				this.setState({
-
-				})
+				this.setParentState(action);
 			}
 		}
 	}
