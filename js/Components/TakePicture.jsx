@@ -24,13 +24,6 @@ export default class TakePicture extends React.Component {
 					{' '}
 					<input type='file' />
 				</div>
-
-			{/*
-				<button className='button' value='Choose Existing'>
-					Choose Existing
-				</button>
-			*/}
-
 			</div>
 		)
 	}
