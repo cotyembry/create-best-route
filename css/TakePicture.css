@@ -1,0 +1,10 @@
+.take-picture {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+.take-picture .button {
+	margin: 7px 0px 7px 0px;
+	cursor: pointer;
+}
