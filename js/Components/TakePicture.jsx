@@ -14,12 +14,12 @@ export default class TakePicture extends React.Component {
 	render() {
 		return (
 			<div className='take-picture'>
-				<div>
+				<div className='tpic-child'>
 					<Text value='Take Picture' />
 					{' '}
 					<input type='file' accept='image/*' capture='camera' />
 				</div>
-				<div>
+				<div className='tpic-child'>
 					<Text value='Choose Existing' />
 					{' '}
 					<input type='file' />
