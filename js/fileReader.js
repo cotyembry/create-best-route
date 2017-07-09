@@ -30,11 +30,7 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
       reader.onload = (function(theFile) {
         return function(e) {
           // Render thumbnail.
-          var span = document.createElement('span');
-          span.innerHTML = ['<img class="thumb" src="', e.target.result,
-                            '" title="', escape(theFile.name), '"/>'].join('');
-          // document.getElementById('list').insertBefore(span, null);
-          callback({ thumbnailSpan: span })
+          callback({ thumbnailSrc: e.target.result, thumbnailTitle: theFile.name })
         };
       })(f);
 

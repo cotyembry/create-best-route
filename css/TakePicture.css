@@ -11,3 +11,11 @@
 .tpic-child {
 	padding: 14px 0px 14px 0px;
 }
+.dynamicThumnail {
+	width: 100%;
+}
+#dynamicThumnailButton {
+	float: right;
+	margin-right: 14px;
+	box-sizing: border-box;
+}
