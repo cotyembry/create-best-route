@@ -42,7 +42,7 @@ export default class TakePicture extends React.Component {
 					</div>
 				}
 				{this.state.cropOverlay === true &&
-					<CropOverlay img={<img src={this.state.thumbnailSrc} title={this.state.thumbnailTitle} />} />
+					<CropOverlay img={<img src={this.state.thumbnailSrc} title={this.state.thumbnailTitle} />} src={this.state.thumbnailSrc} />
 				}
 			</div>
 		)
