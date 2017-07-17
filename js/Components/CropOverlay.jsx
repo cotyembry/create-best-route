@@ -32,7 +32,7 @@ export default class CropOverlay extends React.Component {
 	componentDidMount() {
 		this.addForm();
 
-		console.log(this.props.src)
+		// console.log(this.props.src)
 	}
 	submitForm() {
 		console.log('in this.submitForm')

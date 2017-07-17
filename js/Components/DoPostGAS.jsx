@@ -112,6 +112,10 @@ export default class EmailForm extends React.Component {
         form.submit();
   }
   sendEmail(messageObject) {
+    //Google Apps Script execution api
+    //script id:
+    //Mc0jDObeKwDpQ2xgyvZUYrmDtFGJL1AU8
+
     let iframe = $('#emailiFrameContainer')[0],
       gForm = $(iframe.contentWindow.document).find('#gform')[0],
       scriptUrl = gForm.getAttribute('action');
@@ -121,14 +125,58 @@ export default class EmailForm extends React.Component {
 
     // console.log(this.props.imgSrc[0] + this.props.imgSrc[1] + this.props.imgSrc[2] + this.props.imgSrc[3] + 'pretty format =:',this.props.imgSrc.slice(4, stringBlobLength));
     
-    console.log(base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png'));
+    // console.log(base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png'));
 
     alert('...')
-    gForm.setAttribute('action', scriptUrl + '?' + 'test=7&imgBlob=' + base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png'))
+    //this works
+    // gForm.setAttribute('action', scriptUrl + '?' + 'test=7&imgBlob=' + base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png'))
+    gForm.setAttribute('action', scriptUrl + '?' + 'test=7&imgSrc=' + encodeURIComponent(this.props.imgSrc.slice(22, stringBlobLength)));
     
 
-    $(gForm).submit();  //do a POST submission using the <form> element that is being rendered in the hidden <iframe></iframe> on the page
+    // $(gForm).submit();  //do a POST submission using the <form> element that is being rendered in the hidden <iframe></iframe> on the page
+    var data = new FormData();
     
+
+    var blob = base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png');
+
+    console.log('blob = ', blob, 'base64 = ', this.props.imgSrc.slice(22, stringBlobLength));
+
+    // data.append('file', blob);
+    
+    //console.log(blob)
+      // var url = (window.URL || window.webkitURL).createObjectURL(blob);
+      // console.log(url);
+
+      // var data = new FormData();
+      // data.append('file', url); 
+
+      // $.ajax({
+      //   url :  scriptUrl,
+      //   type: 'POST',
+      //   data: data,
+      //   contentType: false,
+      //   processData: false,
+      //   success: function(data) {
+      //     alert("boa!");
+      //   },    
+      //   error: function() {
+      //     alert("not so boa!");
+      //   }
+      // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // alert('here?' + this.props.imgSrc);
 
     // $.get(
