@@ -5,6 +5,8 @@ import $ from 'jquery';
 
 import { uploadImage } from '../sendImageToServer.js';
 
+import EmailForm from './DoPostGAS.jsx';
+
 export default class CropOverlay extends React.Component {
 	addForm() {
 		// this renders an image to the screen
@@ -54,13 +56,13 @@ export default class CropOverlay extends React.Component {
 		this.send();
 	}
 	send() {
-		console.log('in send')
-		let action = 'https://script.google.com/macros/s/AKfycbzITk9OTp4yOL3-TzRUnCEvXFccKreakinuR7LiVXArT4NE7IU/exec'
+		// console.log('in send')
+		// let action = 'https://script.google.com/macros/s/AKfycbzITk9OTp4yOL3-TzRUnCEvXFccKreakinuR7LiVXArT4NE7IU/exec'
 
 
-		$.getJSON(action, function(response) {
-			console.log('response = ', response);
-		})
+		// $.getJSON(action, function(response) {
+		// 	console.log('response = ', response);
+		// })
 		// $.ajax({
 		// 	type: 'POST',
 		// 	url: action,
@@ -83,6 +85,8 @@ export default class CropOverlay extends React.Component {
 				<div ref={(eref) => { this.refs['formParent'] = findDOMNode(eref) }}></div>
 			
 				<input type='button' onClick={(e) => { this.submitForm() }} value='Make Call To Google Apps Script' />
+
+				<EmailForm imgSrc={this.props.src} />
 
 			</div>
 		)
