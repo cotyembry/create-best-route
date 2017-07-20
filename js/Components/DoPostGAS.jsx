@@ -31,6 +31,16 @@ function base64ToBlob(base64, mime) {
 }
 
 export default class EmailForm extends React.Component {
+	cookieObject() {
+			var cookieObject = {};
+			document.cookie.split(' ').map((kvp) => { var kv = kvp.split('='); var x = {}; x[kv[0]] = kv[1]; return x })
+			.map((object) => {
+				let key = Object.keys(object)[0];
+				cookieObject[key] = object[key];
+			});
+
+			return cookieObject;
+	}
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -45,7 +55,6 @@ export default class EmailForm extends React.Component {
 		this.handleSubjectChange = this.handleSubjectChange.bind(this);
 		this.handleMessageChange = this.handleMessageChange.bind(this);
 	}
-
 	componentDidMount() {
 		//now I will format the labels and input elements
 		var widthAvailable = $('#inputContainer').outerWidth();
@@ -138,12 +147,7 @@ export default class EmailForm extends React.Component {
 
 		(function buildURL(url, self, imgSrc) {
 			//this will iterate through the kind of weird cookie string format and convert it to a typical json object so it is easier to work with later
-			var cookieObject = {};
-			document.cookie.split(' ').map((kvp) => { var kv = kvp.split('='); var x = {}; x[kv[0]] = kv[1]; return x })
-			.map((object) => {
-				let key = Object.keys(object)[0];
-				cookieObject[key] = object[key];
-			});
+			var cookieObject = self.cookieObject();
 
 
 			// if(typeof cookieObject['url'] === 'undefined' || cookieObject['url'] === '') {
@@ -188,7 +192,10 @@ export default class EmailForm extends React.Component {
 
 		})(scriptUrl, this, this.props.imgSrc);
 
-		console.log(stringBlobLength)
+		var cookieObject = this.cookieObject();
+		
+
+		console.log(cookieObject, stringBlobLength)
 
 		var sliceLength = 500;
 

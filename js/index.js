@@ -8,11 +8,10 @@ import App from './Components/App.jsx';
 
 // its not working perfectly right now, I will have to work on this later
 //
-//for hot reloading
 // for hot reloading
-if (module.hot) {
-    module.hot.accept();
-}
+// if (module.hot) {
+//     module.hot.accept();
+// }
 
 
 // import store from './Components/store.js';
