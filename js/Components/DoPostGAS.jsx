@@ -5,6 +5,8 @@ import base64url from 'base64-url';
 
 import $ from 'jquery';
 
+import eventEmitter from '../eventEmitter.js';
+
 //DoPostGAS - GAS means Google App Script
 //  Use <EmailForm /> for this Component
 
@@ -72,6 +74,11 @@ export default class EmailForm extends React.Component {
 	}
 
 	handleSubmit(event) {
+		eventEmitter.on('googleRunScript', function() {
+			alert('tada, custom event emitting');
+		})
+
+		eventEmitter.emit('googleRunScript');
 
 
 		var messageBody = document.getElementById('messageBody').value;
@@ -105,28 +112,32 @@ export default class EmailForm extends React.Component {
 
 		event.preventDefault();
 	}
+	googleRunScript() {
+		//now try to hack away at sending an event or invoking an iframe's function
+		this.refs['googleRunScriptiFrame'].contentWindow.run();
+	}
 	post(path, params, method) {
-				method = method || "post"; // Set method to post by default if not specified.
+		method = method || "post"; // Set method to post by default if not specified.
 
-				// The rest of this code assumes you are not using a library.
-				// It can be made less wordy if you use one.
-				var form = document.createElement("form");
-				form.setAttribute("method", method);
-				form.setAttribute("action", path);
+		// The rest of this code assumes you are not using a library.
+		// It can be made less wordy if you use one.
+		var form = document.createElement("form");
+		form.setAttribute("method", method);
+		form.setAttribute("action", path);
 
-				for(var key in params) {
-						if(params.hasOwnProperty(key)) {
-								var hiddenField = document.createElement("input");
-								hiddenField.setAttribute("type", "hidden");
-								hiddenField.setAttribute("name", key);
-								hiddenField.setAttribute("value", params[key]);
+		for(var key in params) {
+				if(params.hasOwnProperty(key)) {
+						var hiddenField = document.createElement("input");
+						hiddenField.setAttribute("type", "hidden");
+						hiddenField.setAttribute("name", key);
+						hiddenField.setAttribute("value", params[key]);
 
-								form.appendChild(hiddenField);
-						 }
-				}
+						form.appendChild(hiddenField);
+				 }
+		}
 
-				document.body.appendChild(form);
-				form.submit();
+		document.body.appendChild(form);
+		form.submit();
 	}
 	sendEmail(messageObject) {
 		//Google Apps Script execution api
@@ -202,12 +213,32 @@ export default class EmailForm extends React.Component {
 
 		//this works
 		// gForm.setAttribute('action', scriptUrl + '?' + 'test=7&imgBlob=' + base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png'))
-		gForm.setAttribute('action', scriptUrl + '?' + 'imgSrc=' + base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)).slice(0, sliceLength) );
+		gForm.setAttribute('action', scriptUrl + '?' + 'imgSrc=' + base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)));
 		
 
-		$(gForm).submit();  //do a POST submission using the <form> element that is being rendered in the hidden <iframe></iframe> on the page
+		// $(gForm).submit();  //do a POST submission using the <form> element that is being rendered in the hidden <iframe></iframe> on the page
 		
-		console.log(base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)).slice(0, sliceLength))
+
+		this.googleRunScript();
+
+
+
+
+		// console.log(base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)).slice(0, sliceLength))
+
+		// alert('here we go');
+		// // Create an empty Headers instance
+		// fetch(scriptUrl, {
+		// 	method: 'post',
+		// 	headers: new Headers(
+		// 		{
+		// 			'Content-Type': 'application/json',
+		// 			'mode': 'no-cors',
+		// 			'Access-Control-Allow-Origin':'*'
+		// 		}
+		// 	),
+		// 	body: JSON.stringify({'payload': 'base64str'})
+		// })
 
 		// var data = new FormData();
 		
@@ -219,27 +250,27 @@ export default class EmailForm extends React.Component {
 		// data.append('file', blob);
 		
 		//console.log(blob)
-			// var url = (window.URL || window.webkitURL).createObjectURL(blob);
-			// console.log(url);
+		// var url = (window.URL || window.webkitURL).createObjectURL(blob);
+		// console.log(url);
 
-			// var data = new FormData();
-			// data.append('file', url); 
+		// var data = new FormData();
+		// data.append('file', url); 
 
-			// $.ajax({
-			//   url :  scriptUrl,
-			//   // type: 'POST',
-			//   json: {
-			//   	data: base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)),
-			//   },
-			//   contentType: false,
-			//   processData: false,
-			//   success: function(data) {
-			//     alert("boa!");
-			//   },    
-			//   error: function() {
-			//     alert("not so boa!");
-			//   }
-			// });
+		// $.ajax({
+		//   url :  scriptUrl,
+		//   // type: 'POST',
+		//   json: {
+		//   	data: base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)),
+		//   },
+		//   contentType: false,
+		//   processData: false,
+		//   success: function(data) {
+		//     alert("boa!");
+		//   },    
+		//   error: function() {
+		//     alert("not so boa!");
+		//   }
+		// });
 
 
 
@@ -274,7 +305,7 @@ export default class EmailForm extends React.Component {
 		// location.reload();  //I do this because after having submitted the form once, chrome gives me an error saying something about a cross origin issue (but it works on the first submit...)
 
 
-		$('#emailiFrameContainer')[0].contentWindow.document.location.reload();//just reload the iframe container
+		// $('#emailiFrameContainer')[0].contentWindow.document.location.reload();//just reload the iframe container
 
 		// this.setState({
 		// 	renderiFrame: false
@@ -317,9 +348,10 @@ export default class EmailForm extends React.Component {
 				<br />
 
 				{/* coty added 05-25-2017 - this helps me send the email from the client side */}
-				{this.state.renderiFrame === true &&
+				{/*this.state.renderiFrame === true &&
 					<CIFrame setStateHelper={this._setStateHelper.bind(this)}/>
-				}
+				*/}
+				<CIFrame />
 			</div>
 		);
 	}
@@ -355,30 +387,25 @@ var styles = {
 
 
 export class CIFrame extends React.Component {
+	constructor(props) {
+		super(props);
+		this.scriptUrl = 'https://script.google.com/macros/s/AKfycbzITk9OTp4yOL3-TzRUnCEvXFccKreakinuR7LiVXArT4NE7IU/exec';
+	}
 	componentWillMount() {
 		this.refs = [];
 	}
 	componentDidMount() {
-		console.log('in componentDidMount for CIFrame')
-		//
-		//once this iframe mounts (even though its hidden to the user) this method is invoked
-		//I use the reference to the root div DOM element walk the DOM down to find the child
-		//iframe - I had to do it this way because refs weren't working on the iframe element
-		//once I get the iframe I get a reerence to the document element to then append the
-		//this div#formContainer element to the body element within the iframe (it looks so
-		//different because jquery can take in a string and it will create those elements on
-		//the fly for you)
-		$(this.refs['iframeParent'].querySelectorAll('iframe')[0].contentWindow.document.body).append(`
-			<div id="formContainer" style="display: none;"><!-- coty 05-25-2017 - since React Components are so weird when it comes to forms, I like using standard html for these types of elements...anyways, App.jsx uses this form to do a POST to my google script by creating an event and sending it to the below <button id="sendEmail">Send</button> element -->
-				<form id="gform" method="POST"
-				action="https://script.google.com/macros/s/AKfycbzITk9OTp4yOL3-TzRUnCEvXFccKreakinuR7LiVXArT4NE7IU/exec">
-					<fieldset>
-						<textarea id="message" name="message" placeholder="Message Body"></textarea>
-					</fieldset>
-					<button id="sendEmail">Send</button>
-				</form>
-			</div>
-		`)
+		// $(this.refs['iframeParent'].querySelectorAll('iframe')[0].contentWindow.document.body).append(`
+		// 	<div id="formContainer" style="display: none;"><!-- coty 05-25-2017 - since React Components are so weird when it comes to forms, I like using standard html for these types of elements...anyways, App.jsx uses this form to do a POST to my google script by creating an event and sending it to the below <button id="sendEmail">Send</button> element -->
+		// 		<form id="gform" method="POST"
+		// 		action="https://script.google.com/macros/s/AKfycbzITk9OTp4yOL3-TzRUnCEvXFccKreakinuR7LiVXArT4NE7IU/exec">
+		// 			<fieldset>
+		// 				<textarea id="message" name="message" placeholder="Message Body"></textarea>
+		// 			</fieldset>
+		// 			<button id="sendEmail">Send</button>
+		// 		</form>
+		// 	</div>
+		// `)
 	}
 	componentWillUnmount() {
 		console.log('in componentWillUnmount');
@@ -386,9 +413,55 @@ export class CIFrame extends React.Component {
 			renderiFrame: true
 		})
 	}
+	googleScriptLoaded(e) {
+		//if here then the google apps script has returned a response
+	}
 	render() {
 		return (
-			<div ref={(elementRef) => { this.refs['iframeParent'] = findDOMNode(elementRef) }} id='divId'><iframe id='emailiFrameContainer' onLoad={this.props.onload} style={{display: 'none'}}></iframe></div>
+			<div id='test' ref={(elementRef) => { this.refs['iframeParent'] = findDOMNode(elementRef) }}>
+				<iframe src={this.scriptUrl} id='googleRunScript' onLoad={(e) => { this.googleScriptLoaded(e) }}></iframe>
+			</div>
 		)
 	}
 }
+
+// This is the CIFrame before I started implementing the google run script iframe logic
+//
+// export class CIFrame extends React.Component {
+// 	componentWillMount() {
+// 		this.refs = [];
+// 	}
+// 	componentDidMount() {
+// 		console.log('in componentDidMount for CIFrame')
+// 		//
+// 		//once this iframe mounts (even though its hidden to the user) this method is invoked
+// 		//I use the reference to the root div DOM element walk the DOM down to find the child
+// 		//iframe - I had to do it this way because refs weren't working on the iframe element
+// 		//once I get the iframe I get a reerence to the document element to then append the
+// 		//this div#formContainer element to the body element within the iframe (it looks so
+// 		//different because jquery can take in a string and it will create those elements on
+// 		//the fly for you)
+// 		$(this.refs['iframeParent'].querySelectorAll('iframe')[0].contentWindow.document.body).append(`
+// 			<div id="formContainer" style="display: none;"><!-- coty 05-25-2017 - since React Components are so weird when it comes to forms, I like using standard html for these types of elements...anyways, App.jsx uses this form to do a POST to my google script by creating an event and sending it to the below <button id="sendEmail">Send</button> element -->
+// 				<form id="gform" method="POST"
+// 				action="https://script.google.com/macros/s/AKfycbzITk9OTp4yOL3-TzRUnCEvXFccKreakinuR7LiVXArT4NE7IU/exec">
+// 					<fieldset>
+// 						<textarea id="message" name="message" placeholder="Message Body"></textarea>
+// 					</fieldset>
+// 					<button id="sendEmail">Send</button>
+// 				</form>
+// 			</div>
+// 		`)
+// 	}
+// 	componentWillUnmount() {
+// 		console.log('in componentWillUnmount');
+// 		this.props.setStateHelper({
+// 			renderiFrame: true
+// 		})
+// 	}
+// 	render() {
+// 		return (
+// 			<div ref={(elementRef) => { this.refs['iframeParent'] = findDOMNode(elementRef) }} id='divId'><iframe id='emailiFrameContainer' onLoad={this.props.onload} style={{display: 'none'}}></iframe></div>
+// 		)
+// 	}
+// }
