@@ -4,7 +4,7 @@
   "description": "this will have the user take a picture, or select one they have saved, and eventually the end result will be the best possible route for the addresses that were analyzed from the picture",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --host=192.168.0.19 --port=8080",
+    "start": "webpack-dev-server --port=8080",
     "webpack": "webpack",
     "webpack-watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"

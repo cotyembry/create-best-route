@@ -30,6 +30,7 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
       reader.onload = (function(theFile) {
         return function(e) {
           // Render thumbnail.
+          console.log(e);
           callback({ thumbnailSrc: e.target.result, thumbnailTitle: theFile.name })
         };
       })(f);

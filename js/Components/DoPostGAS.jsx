@@ -11,6 +11,9 @@ import eventEmitter from '../eventEmitter.js';
 //  Use <EmailForm /> for this Component
 
 function base64ToBlob(base64, mime) {
+	console.log('here with:', base64);
+
+
 		mime = mime || '';
 		var sliceSize = 1024;
 		var byteChars = window.atob(base64);
@@ -74,11 +77,12 @@ export default class EmailForm extends React.Component {
 	}
 
 	handleSubmit(event) {
-		eventEmitter.on('googleRunScript', function() {
-			alert('tada, custom event emitting');
-		})
+		alert('in handleSubmit');
+		// eventEmitter.on('googleRunScript', function() {
+		// 	alert('tada, custom event emitting');
+		// })
 
-		eventEmitter.emit('googleRunScript');
+		// eventEmitter.emit('googleRunScript');
 
 
 		var messageBody = document.getElementById('messageBody').value;
@@ -112,9 +116,12 @@ export default class EmailForm extends React.Component {
 
 		event.preventDefault();
 	}
-	googleRunScript() {
+	googleRunScript(blob, base64String) {
 		//now try to hack away at sending an event or invoking an iframe's function
-		this.refs['googleRunScriptiFrame'].contentWindow.run();
+		// this.refs['googleRunScriptiFrame'].contentWindow.run();
+		alert(base64String);
+		google.script.run.doSomething(base64String);
+
 	}
 	post(path, params, method) {
 		method = method || "post"; // Set method to post by default if not specified.
@@ -144,18 +151,19 @@ export default class EmailForm extends React.Component {
 		//script id:
 		//Mc0jDObeKwDpQ2xgyvZUYrmDtFGJL1AU8
 
-		let iframe = $('#emailiFrameContainer')[0],
-			gForm = $(iframe.contentWindow.document).find('#gform')[0],
-			scriptUrl = gForm.getAttribute('action');
+		// let iframe = $('#emailiFrameContainer')[0],
+		// 	gForm = $(iframe.contentWindow.document).find('#gform')[0],
+		// 	scriptUrl = gForm.getAttribute('action');
 
 
-		var stringBlobLength = this.props.imgSrc.length; //this just helps me format the returned base64 string to send to the next funciton
+		// var stringBlobLength = this.props.imgSrc.length; //this just helps me format the returned base64 string to send to the next funciton
 
 		// console.log(this.props.imgSrc[0] + this.props.imgSrc[1] + this.props.imgSrc[2] + this.props.imgSrc[3] + 'pretty format =:',this.props.imgSrc.slice(4, stringBlobLength));
 		
 		// console.log(base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png'));
 
 
+		/*
 		(function buildURL(url, self, imgSrc) {
 			//this will iterate through the kind of weird cookie string format and convert it to a typical json object so it is easier to work with later
 			var cookieObject = self.cookieObject();
@@ -176,7 +184,8 @@ export default class EmailForm extends React.Component {
 
 			//first remove any that could of been set before
 			Object.keys(cookieObject).map((key) => {
-				if(key.search(/.*gspBase64.*/gi) !== -1) {
+				if(key.search( / . * g s p B a s e 6 4 . * / g i ) ! = = -1) { //fix regex spacing for this to work again... this regex was messing with my comment
+					
 					//i.e. its in the namespace of the base64 img src
 					//remove it
 					console.log('removing: ', key);
@@ -202,24 +211,28 @@ export default class EmailForm extends React.Component {
 
 
 		})(scriptUrl, this, this.props.imgSrc);
-
 		var cookieObject = this.cookieObject();
+		console.log(cookieObject, stringBlobLength)
+		*/
+
 		
 
-		console.log(cookieObject, stringBlobLength)
 
-		var sliceLength = 500;
+		// var sliceLength = 500;
 
 
 		//this works
 		// gForm.setAttribute('action', scriptUrl + '?' + 'test=7&imgBlob=' + base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png'))
-		gForm.setAttribute('action', scriptUrl + '?' + 'imgSrc=' + base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)));
+		// gForm.setAttribute('action', scriptUrl + '?' + 'imgSrc=' + base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)));
 		
 
 		// $(gForm).submit();  //do a POST submission using the <form> element that is being rendered in the hidden <iframe></iframe> on the page
-		
+		console.log(this.props.imgSrc)
+		alert('in sendEmail');
 
-		this.googleRunScript();
+		var blob = base64ToBlob(this.props.imgSrc.slice(22, this.props.imgSrc.length), 'image/png');
+		// this.googleRunScript(blob, base64url.escape(this.props.imgSrc.slice(22, this.props.imgSrc.length)));
+		this.googleRunScript(blob, this.props.imgSr)c;
 
 
 
