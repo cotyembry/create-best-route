@@ -1,3 +1,7 @@
+.crop-container {
+	/*display: flex;
+	flex-direction: row;*/
+}
 .take-picture {
 	display: flex;
 	justify-content: center;
