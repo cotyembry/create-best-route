@@ -11,8 +11,9 @@ import { handleFileSelect, fileReader } from '../fileReader.js';
 
 // import $ from 'jquery';
 
-import $ from '../jquery.Jcrop.js';
+import $ from '../jquery.Jcrop.js';									//because in this file I import jquery and extend it then re-export jquery
 
+import eventEmitter from '../eventEmitter.js';
 
 
 import '../../css/TakePicture.css';
@@ -44,23 +45,6 @@ export default class TakePicture extends React.Component {
 	componentWillMount() {
 		this.refs = [];				//refs will be used as a hash to store DOM references to the elements I'm creating & using
 	}
-	// picture(input) {
-	// 	if (input.files && input.files[0]) {
-	// 		var reader = new FileReader();
-	// 		reader.onload = function (e) {
-	// 			$("#jcrop, #preview").html("").append("<img src=\""+e.target.result+"\" alt=\"\" />");
-	// 			picture_width = $("#preview img").width();
-	// 			picture_height = $("#preview img").height();
-	// 			$("#jcrop  img").Jcrop({
-	// 				onChange: canvas,
-	// 				onSelect: canvas,
-	// 				boxWidth: crop_max_width,
-	// 				boxHeight: crop_max_height
-	// 			});
-	// 		}
-	// 		reader.readAsDataURL(input.files[0]);
-	// 	}
-	// }
 	canvas(coords) {
 		//this.canvas gets called every time the user changes the cropping area
 		var imageObj = this.refs['userThumbnail'];
@@ -105,8 +89,8 @@ export default class TakePicture extends React.Component {
 	}
 	render() {
 		//this is to get the total width available, then take away ...
-		let _totalWidth = this.refs['cropContainer'].getBoundingClientRect().width;
-		styles.userThumbnail = {...styles.userThumbnail, width: (_totalWidth - this.state.croppedImageWidth) + 'px'};
+		// let _totalWidth = this.refs['cropContainer'].getBoundingClientRect().width;
+		// styles.userThumbnail = {...styles.userThumbnail, width: (_totalWidth - this.state.croppedImageWidth) + 'px'};
 		return (
 			<div className='take-picture'>
 				<div className='tpic-child'>
@@ -121,7 +105,7 @@ export default class TakePicture extends React.Component {
 				</div>
 				{this.state.thumbnailSrc !== '' &&
 					<div style={{width: '100%'}}>
-						{/* Display the picture to the user after they have either taken the picture, or chosen an existing one.
+						{/* Display the picture to the user after they have either taken the picture, or chose an existing one.
 							This is where the user needs to be able to crop the image
 						*/}
 						<Text display='block' text='drag to outline 1st address portion' />
@@ -142,14 +126,16 @@ export default class TakePicture extends React.Component {
 						</div>
 
 
-
-						<button onClick={(e) => { this.setState({ cropOverlay: true }) }} id='dynamicThumnailButton'>
+						{/* once the user selects this crop button, they should of already properly cropped the address from the photo taken/uploaded so it will toggle sections to show from this section to the <CropOverlay /> component */}
+						<button onClick={(e) => { eventEmitter.emit('DoPostGAS'); this.setState({ cropOverlay: true, thumbnailSrc: '', showAcceptCheckbox: false }) }} id='dynamicThumnailButton'>
 							Crop
 						</button>
 					</div>
 				}
+
+				{/* <CropOverlay /> shows the cropped image and has the logic to send messages to get an image decoded with OCR using google's apis they have available for a google app script web app */}
 				{this.state.cropOverlay === true &&
-					<CropOverlay img={<img src={this.state.thumbnailSrc} title={this.state.thumbnailTitle} />} src={this.state.thumbnailSrc} />
+					<CropOverlay croppedBase64={this.state.croppedBase64String} img={<img src={this.state.thumbnailSrc} title={this.state.thumbnailTitle} />} croppedImg={<img src={this.state.croppedBase64String} title={this.state.thumbnailTitle} />} src={this.state.thumbnailSrc} />
 				}
 
 
