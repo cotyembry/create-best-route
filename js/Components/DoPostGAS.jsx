@@ -126,7 +126,7 @@ export default class EmailForm extends React.Component {
 
 	}
 	googleScriptRunSuccess(data) {
-		alert('in success handler:', data)
+		alert('in success handler:' + data)
 	}
 	post(path, params, method) {
 		method = method || "post"; // Set method to post by default if not specified.

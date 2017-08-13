@@ -44483,30 +44483,26 @@
 		}, {
 			key: 'googleScriptRunSuccess',
 			value: function googleScriptRunSuccess(data) {
-				alert('in success handler:', data);
+				alert('in success handler:' + data);
 			}
 		}, {
 			key: 'post',
 			value: function post(path, params, method) {
 				method = method || "post"; // Set method to post by default if not specified.
-
 				// The rest of this code assumes you are not using a library.
 				// It can be made less wordy if you use one.
 				var form = document.createElement("form");
 				form.setAttribute("method", method);
 				form.setAttribute("action", path);
-
 				for (var key in params) {
 					if (params.hasOwnProperty(key)) {
 						var hiddenField = document.createElement("input");
 						hiddenField.setAttribute("type", "hidden");
 						hiddenField.setAttribute("name", key);
 						hiddenField.setAttribute("value", params[key]);
-
 						form.appendChild(hiddenField);
 					}
 				}
-
 				document.body.appendChild(form);
 				form.submit();
 			}
@@ -44516,46 +44512,36 @@
 				//Google Apps Script execution api
 				//script id:
 				//Mc0jDObeKwDpQ2xgyvZUYrmDtFGJL1AU8
-
 				// let iframe = $('#emailiFrameContainer')[0],
 				// 	gForm = $(iframe.contentWindow.document).find('#gform')[0],
 				// 	scriptUrl = gForm.getAttribute('action');
-
-
 				// var stringBlobLength = this.props.imgSrc.length; //this just helps me format the returned base64 string to send to the next funciton
-
 				// console.log(this.props.imgSrc[0] + this.props.imgSrc[1] + this.props.imgSrc[2] + this.props.imgSrc[3] + 'pretty format =:',this.props.imgSrc.slice(4, stringBlobLength));
-
 				// console.log(base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png'));
-
-
 				/*
 	   (function buildURL(url, self, imgSrc) {
 	   	//this will iterate through the kind of weird cookie string format and convert it to a typical json object so it is easier to work with later
 	   	var cookieObject = self.cookieObject();
-	   
 	   	// if(typeof cookieObject['url'] === 'undefined' || cookieObject['url'] === '') {
 	   	// 	console.log('true');
 	   	// 	document.cookie = 'url=' + base64url.escape(self.props.imgSrc.slice(22, stringBlobLength));
 	   	// }
-	   			if(typeof cookieObject['state'] === 'undefined' || cookieObject['state'] === '') {
+	   	if(typeof cookieObject['state'] === 'undefined' || cookieObject['state'] === '') {
 	   		console.log('true2');
 	   		document.cookie = 'state=0';
 	   	}
 	   	else {
 	   		document.cookie = 'state = ' + parseFloat(cookieObject.state) + 1;
 	   	}
-	   			//first remove any that could of been set before
+	   	//first remove any that could of been set before
 	   	Object.keys(cookieObject).map((key) => {
-	   		if(key.search( / . * g s p B a s e 6 4 . * / g i ) ! = = -1) { //fix regex spacing for this to work again... this regex was messing with my comment
-	   			
+	   		if(key.search( / . * g s p B a s e 6 4 . * / g i ) ! = = -1) { //fix regex spacing for this to work again... this regex was messing with my comment		
 	   			//i.e. its in the namespace of the base64 img src
 	   			//remove it
 	   			console.log('removing: ', key);
 	   			document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 	   		}
 	   	})
-	   
 	   	//finish building the cookie parameters
 	   	for(var i = 0; i < imgSrc.length; i++) {
 	   		//since some of these base64 strings are so long, I have to limit my url size to 2000 characters...for that reason I will store the base64 string in the cookies in 2,000 character chunks and send it iteratively between reloads
@@ -44567,31 +44553,22 @@
 	   			document.cookie = 'gspBase64_' + i + '=' + imgSrc.slice((i - 1000), i) + ';expires=' + expire.toGMTString();	//this expires the cooked 14 days from now if my code fails to do so otherwise
 	   			console.log('setting: ', imgSrc.slice((i - 1000), i));
 	   		}
-	   			}
-	   
-	   		})(scriptUrl, this, this.props.imgSrc);
+	   	}
+	   })(scriptUrl, this, this.props.imgSrc);
 	   var cookieObject = this.cookieObject();
 	   console.log(cookieObject, stringBlobLength)
 	   */
-
 				// var sliceLength = 500;
-
-
 				//this works
 				// gForm.setAttribute('action', scriptUrl + '?' + 'test=7&imgBlob=' + base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png'))
 				// gForm.setAttribute('action', scriptUrl + '?' + 'imgSrc=' + base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)));
-
-
 				// $(gForm).submit();  //do a POST submission using the <form> element that is being rendered in the hidden <iframe></iframe> on the page
 				console.log(this.props.imgSrc.slice(0, 50));
 				alert('in sendEmail');
-
 				var blob = base64ToBlob(this.props.imgSrc, 'image/png');
 				// this.googleRunScript(blob, base64url.escape(this.props.imgSrc.slice(22, this.props.imgSrc.length)));
 				this.googleRunScript(blob, this.props.imgSrc.split('base64,')[1]);
-
 				// console.log(base64url.escape(this.props.imgSrc.slice(22, stringBlobLength)).slice(0, sliceLength))
-
 				// alert('here we go');
 				// // Create an empty Headers instance
 				// fetch(scriptUrl, {
@@ -44605,23 +44582,15 @@
 				// 	),
 				// 	body: JSON.stringify({'payload': 'base64str'})
 				// })
-
 				// var data = new FormData();
-
-
 				// var blob = base64ToBlob(this.props.imgSrc.slice(22, stringBlobLength), 'image/png');
-
 				// console.log('blob = ', blob, 'base64 = ', this.props.imgSrc.slice(22, stringBlobLength));
-
 				// data.append('file', blob);
-
 				//console.log(blob)
 				// var url = (window.URL || window.webkitURL).createObjectURL(blob);
 				// console.log(url);
-
 				// var data = new FormData();
 				// data.append('file', url); 
-
 				// $.ajax({
 				//   url :  scriptUrl,
 				//   // type: 'POST',
@@ -44637,10 +44606,7 @@
 				//     alert("not so boa!");
 				//   }
 				// });
-
-
 				// alert('here?' + this.props.imgSrc);
-
 				// $.get(
 				//   'https://script.google.com/macros/s/AKfycbzITk9OTp4yOL3-TzRUnCEvXFccKreakinuR7LiVXArT4NE7IU/exec',
 				//   {
@@ -44652,13 +44618,8 @@
 				// .done(function( data ) {
 				//   alert( 'Data Loaded: ' + data );
 				// })
-
-
 				// location.reload();  //I do this because after having submitted the form once, chrome gives me an error saying something about a cross origin issue (but it works on the first submit...)
-
-
 				// $('#emailiFrameContainer')[0].contentWindow.document.location.reload();//just reload the iframe container
-
 				// this.setState({
 				// 	renderiFrame: false
 				// })
