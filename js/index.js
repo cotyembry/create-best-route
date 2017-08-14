@@ -6,6 +6,9 @@ import $ from 'jquery';
 
 import App from './Components/App.jsx';
 
+
+import '../css/index.css';
+
 // its not working perfectly right now, I will have to work on this later
 //
 // for hot reloading

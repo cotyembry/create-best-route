@@ -10,7 +10,10 @@ export default class AcceptCheckbox extends React.Component {
 		};
 		return (
 			<div className='AcceptCheckbox' style={styles.root}>
-
+				{/* TODO: make a redo circular button */}
+				{/* TODO: make an accept button */}
+				{/* TODO: make a cancel button maybe? */}
+				{/* TODO: make a plus sign with arrows on the end button to signify move crop area but don't resize it */}
 			</div>
 		)
 	}

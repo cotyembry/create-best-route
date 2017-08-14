@@ -32,48 +32,41 @@ import '../../css/TakePicture.css';
 export default class TakePicture extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.window = window;				//this will help optimize to prepare for the onResize event
+
 		this.state = {
 			cropOverlay: false,
 			croppedBase64String: '',		//this will be used to hold the cropped base 64 string of the original image the user selected from their device to drop for later if needed
 			croppedImageWidth: 0,
 			JcropEvent: '',					//acessible via c.x, c.y, c.x2, c.y2, c.w, c.h
 			showAcceptCheckbox: false,
+			takePictureWidth: 0,
 			thumbnailTitle: '',
 			thumbnailSrc: ''
 		}
 	}
 	componentWillMount() {
-		this.refs = [];				//refs will be used as a hash to store DOM references to the elements I'm creating & using
+		this.refs = [];								//refs will be used as a hash to store DOM references to the elements I'm creating & using
+	}
+	componentDidMount() {
+		var self = this;							//to avoid conflicting with jquery's own `this` binding
+		$(window).resize(self.onResize.bind(self));	//bind to the resize event
+		this.onResize();
 	}
 	canvas(coords) {
 		//this.canvas gets called every time the user changes the cropping area
 		var imageObj = this.refs['userThumbnail'];
 		var canvas = this.refs['JcropCanvas'];
 		if(typeof imageObj !== 'undefined') {
-			// canvas.width  = coords.w;
-			// canvas.height = coords.h;
+			canvas.width  = coords.w;
+			canvas.height = coords.h;
 			var context = canvas.getContext('2d');
 			context.drawImage(imageObj, coords.x, coords.y, coords.w, coords.h, 0, 0, canvas.width, canvas.height);
 			this.png();
 
 
-//TODO: add logic to #dynamicThumbnail to where it's 100% width is always respectful to the width of this.state.croppedImageWidth and that it makes space for it
-
-
-
-
-
-
-
-			this.setState({
-				croppedImageWidth: coords.w
-			})
 		}
-
-
-
-
-
 
 	}
 	png() {
@@ -87,12 +80,34 @@ export default class TakePicture extends React.Component {
 	setStateHelper(stateToSet) {	//this is exposed to be able to set the state from another component
 		this.setState(stateToSet);
 	}
+	onResize() {
+		this.setState({
+			//keep the picture width be as big as the window's width is
+			takePictureWidth: this.window.innerWidth + 'px'
+		})
+	}
 	render() {
 		//this is to get the total width available, then take away ...
 		// let _totalWidth = this.refs['cropContainer'].getBoundingClientRect().width;
 		// styles.userThumbnail = {...styles.userThumbnail, width: (_totalWidth - this.state.croppedImageWidth) + 'px'};
+		if(this.refs['userThumbnail']) {
+			//i.e. if I have a reference to the native element
+			let tmpDisplay = this.refs['userThumbnail'].style.display,
+				tmpVisibility = this.refs['userThumbnail'].style.visibility;
+			this.refs['userThumbnail'].style.visibility = 'hidden';					//toggle to block to allow the element to be measured...also set visibility to hidden so this measurment isn't shown to the user accidentally
+			this.refs['userThumbnail'].style.display = 'block';
+			
+			let x = this.refs['userThumbnail'].getBoundingClientRect();
+			
+			styles.JcropCanvas = {...styles.JcropCanvas, top: x.top + (x.bottom - x.top), left: x.left};
+			
+			this.refs['userThumbnail'].style.visibility = tmpVisibility;			//set the styles back to what they were before doing the trickery above to get a measurement
+			this.refs['userThumbnail'].style.display = tmpDisplay;
+			
+			// console.log(x, this.refs['userThumbnail']);
+		}
 		return (
-			<div className='take-picture'>
+			<div className='take-picture' style={{width: this.state.takePictureWidth}}>
 				<div className='tpic-child'>
 					<Text value='Take Picture' />
 					{' '}
@@ -101,7 +116,8 @@ export default class TakePicture extends React.Component {
 				<div className='tpic-child'>
 					<Text value='Choose Existing' />
 					{' '}
-					<input type='file' />
+					{/*<input type='file' />*/}
+					<input onChange={(e) => { handleFileSelect(e, this.setStateHelper.bind(this)) }} id='file' type='file' accept='image/*' /> {/* this is what sets the raw base64 string when the user selects it from the input element */}
 				</div>
 				{this.state.thumbnailSrc !== '' &&
 					<div style={{width: '100%'}}>
@@ -115,19 +131,19 @@ export default class TakePicture extends React.Component {
 
 						<div ref={(eref) => {this.refs['cropContainer'] = findDOMNode(eref)}} style={{width: '100%'}} className='crop-container'>
 							{/* this will be where to original image is shown and also the real time portion of the image being cropped beside the original image, horizontally */}
-							<img style={styles.userThumbnail} ref={(eref) => {this.refs['userThumbnail'] = findDOMNode(eref)}} className='dynamicThumnail' id='userThumbnail' src={this.state.thumbnailSrc} title={this.state.thumbnailTitle} onLoad={() => { $('#userThumbnail').Jcrop({
+							<img ref={(eref) => {this.refs['userThumbnail'] = findDOMNode(eref)}} className='dynamicThumbnail' id='userThumbnail' src={this.state.thumbnailSrc} title={this.state.thumbnailTitle} onLoad={() => { $('#userThumbnail').Jcrop({
 								onSelect: (e) => {this.canvas(e); this.setState({showAcceptCheckbox: true, JcropEvent: e})},
 								//TODO: get mouse position and show a component overlay that's a checkbox to accept the current cropped portion
 								onChange: (e) => {this.canvas(e); this.setState({showAcceptCheckbox: true, JcropEvent: e})},
-								onRelease: (e) => {this.setState({showAcceptCheckbox: true, JcropEvent: e})}
+								onRelease: (e) => {this.canvas(e); this.setState({showAcceptCheckbox: true, JcropEvent: e})}
 							});}} />
 
-							<canvas width={this.state.croppedImageWidth} ref={(eref) => {this.refs['JcropCanvas'] = findDOMNode(eref)}}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
+							<canvas style={styles.JcropCanvas} className='JcropCanvas' ref={(eref) => {this.refs['JcropCanvas'] = findDOMNode(eref)}}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
 						</div>
 
 
 						{/* once the user selects this crop button, they should of already properly cropped the address from the photo taken/uploaded so it will toggle sections to show from this section to the <CropOverlay /> component */}
-						<button onClick={(e) => { eventEmitter.emit('DoPostGAS'); this.setState({ cropOverlay: true, thumbnailSrc: '', showAcceptCheckbox: false }) }} id='dynamicThumnailButton'>
+						<button onClick={(e) => { this.setState({ cropOverlay: true, thumbnailSrc: '', showAcceptCheckbox: false }) }} id='dynamicThumnailButton'>
 							Crop
 						</button>
 					</div>
@@ -137,10 +153,6 @@ export default class TakePicture extends React.Component {
 				{this.state.cropOverlay === true &&
 					<CropOverlay croppedBase64={this.state.croppedBase64String} img={<img src={this.state.thumbnailSrc} title={this.state.thumbnailTitle} />} croppedImg={<img src={this.state.croppedBase64String} title={this.state.thumbnailTitle} />} src={this.state.thumbnailSrc} />
 				}
-
-
-
-				{/*<input ref={(eref) => {this.refs['pngInput'] = findDOMNode(eref)}} />*/}
 			</div>
 		)
 	}
@@ -151,5 +163,6 @@ var styles = {
 		width: '100%',
 		height: '100%'
 	},
+	JcropCanvas: {},
 	userThumbnail: {}
 }

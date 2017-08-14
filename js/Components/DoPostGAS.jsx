@@ -40,11 +40,6 @@ export default class EmailForm extends React.Component {
 			message: '',
 			renderiFrame: true
 		}
-		eventEmitter.on('DoPostGAS', () => {
-			let base64String = this.props.imgSrc.split('base64,')[1];	//clean the string up first before sending it to the cloud
-			alert(base64String);
-			google.script.run.withSuccessHandler(this.googleScriptRunSuccess).doSomething(base64String);
-		});
 	}
 	googleRunScript(blob, base64String) {
 		//now try to hack away at sending an event or invoking an iframe's function
@@ -52,12 +47,17 @@ export default class EmailForm extends React.Component {
 		alert(base64String);
 		google.script.run.withSuccessHandler(this.googleScriptRunSuccess).doSomething(base64String);
 	}
-	googleScriptRunSuccess(data) {
-		alert('in success handler:' + data)
-	}
 	handleSubmit(messageObject) {
 		var blob = base64ToBlob(this.props.imgSrc, 'image/png');
 		this.googleRunScript(blob, this.props.imgSrc.split('base64,')[1]);
+	}
+	sendWithGoogle() {
+		let base64String = this.props.imgSrc.split('base64,')[1];	//clean the string up first before sending it to the cloud
+		alert(base64String);
+		google.script.run.withSuccessHandler(this.googleScriptRunSuccess).doSomething(base64String);
+	}
+	googleScriptRunSuccess(data) {
+		alert('in success handler:' + data)
 	}
 	_setStateHelper(stateToSet) {	//this is exposed in the render function to other components to allow the children to set their state
 		this.setState(stateToSet);
