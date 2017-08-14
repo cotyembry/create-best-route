@@ -32,7 +32,7 @@ export default class CropOverlay extends React.Component {
 
 				{this.props.croppedImg}
 
-				{this.state.addressWords.map((word) => <span>{word}</span>)}
+				{this.state.addressWords.map((word) => <div>{word}</div>)}
 			</div>
 		)
 	}

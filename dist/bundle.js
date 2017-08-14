@@ -44232,7 +44232,7 @@
 					this.props.croppedImg,
 					this.state.addressWords.map(function (word) {
 						return _react2.default.createElement(
-							'span',
+							'div',
 							null,
 							word
 						);
