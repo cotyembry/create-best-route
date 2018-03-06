@@ -15,22 +15,22 @@ export default class CreateBestRoute extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            takeAnother: false
+            showTakeAnotherPicture: false
         }
     }
     render() {
         return (
             <View style={styles.CreateBestRoute}>
-                {this.state.takeAnother === false &&
+                {this.state.showTakeAnotherPicture === false &&
                     <View style={{flexDirection: 'column'}}>
-                        <Button value='Address From Picture' onClick={() => this.setState({takeAnother: !this.state.takeAnother})} />
+                        <Button value='Address From Picture' onClick={() => this.setState({showTakeAnotherPicture: !this.state.showTakeAnotherPicture})} />
                         <Button value='Enter Address Manually' />
                     </View>
                 }
 
 
 
-                {this.state.takeAnother === true &&
+                {this.state.showTakeAnotherPicture === true &&
                     <TakeAnotherPicture />
                 }
             </View>

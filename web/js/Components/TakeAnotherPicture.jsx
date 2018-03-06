@@ -15,7 +15,11 @@ export default class TakeAnotherPicture extends React.Component {
     }
     componentDidMount() {
         let self = this;
-        $('html, body').css(styles.TakeAnotherPicture);
+        $('html, body').css({
+            ...styles.TakeAnotherPicture,
+            width: parseFloat(window.innerWidth) + 'px',
+            height: parseFloat(window.innerHeight) + 'px'
+        });
 
         File.prototype.convertToBase64 = function (callback) {
             var reader = new FileReader();
@@ -78,15 +82,15 @@ export default class TakeAnotherPicture extends React.Component {
                     </ScrollView>
 
                     <View style={{...styles.row, backgroundColor: 'black'}}>
-                        <View style={{...styles.flexFill, backgroundColor: 'white'}}>
-                            <Text>Add Pictures&nbsp;&nbsp;</Text>
+                        <View style={{...styles.flexFill, alignItems: 'self-start', flexDirection: 'column', backgroundColor: 'white'}}>
+                            <Text>Add Pictures:&nbsp;&nbsp;</Text>
                             
                             <input ref={eref => {this.refs['cameraInput'] = findDOMNode(eref)}} type='file' accept='image/*' style={{backgroundImage: 'test.png'}}/>
 
                             
                             {/* <Image src='../../assets/pictures/cameraIcon.svg' onClick={this.openCamera.bind(this)} /> */}
                         </View>
-                        <Button value='Next' styleRoot={{display: 'flex', flex: 1}} onClick={this.nextButtonClicked.bind(this)} />
+                        <Button value='Next' style={{width: '100%'}} styleRoot={{display: 'flex', flex: 1}} onClick={this.nextButtonClicked.bind(this)} />
                     </View>
                 </View>
 

@@ -14,9 +14,10 @@ import React from 'react';
 // }
 export class View extends React.Component {
     render() {
-        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {};
+        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
+            _className = typeof this.props.className !== 'undefined' ? this.props.className : '';
         return (
-            <div style={{ ...styles.View, ..._stylesProp }}>
+            <div className={_className.toString()} style={{ ...styles.View, ..._stylesProp }}>
                 {this.props.children}
             </div>
         )
