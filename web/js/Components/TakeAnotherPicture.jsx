@@ -11,13 +11,11 @@ import cotysEventHelper from '../cotysEventHelper.js';
 export default class TakeAnotherPicture extends React.Component {
     constructor(props) {
         super(props);
-        console.log('in TakeAnotherPicture with this.props = ', this.props);
         this.state = {
             imagesTakenBase64: typeof this.props.imagesTakenBase64 !== 'undefined' ? this.props.imagesTakenBase64.map(e => e) : []
         }
     }
     componentWillReceiveProps(newProps) {
-        console.log('newProps = ', newProps);
         this.setState({
             imagesTakenBase64: typeof newProps.imagesTakenBase64 !== 'undefined' ? newProps.imagesTakenBase64.map(e => e) : []
         })
