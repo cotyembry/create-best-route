@@ -3,7 +3,12 @@ import {render, findDOMNode} from 'react-dom';
 import { Router, Route, hashHistory } from 'react-router';
 import {Button, Image, View} from './Defaults.jsx';
 
+import cotysEventHelper from '../cotysEventHelper.js';
 
+/**
+ * 
+ * TODO: add an overlay of foggyish see through layer that will wipe away when the user drags over the area
+ */
 
 export default class SmartTouchyImage extends React.Component {
     constructor(props) {
@@ -13,15 +18,20 @@ export default class SmartTouchyImage extends React.Component {
         }
     }
     componentDidMount() {
-        
+        this.setOverlayWithAbsolutePositioning(this.refs['image']);
     }
     componentWillMount() {
         this.refs = [];
     }
+    setOverlayWithAbsolutePositioning(imageRef) {
+        cotysEventHelper.setState({
+            displayFoggyOverlay: true
+        })
+    }
     render() {
         return (
             <View style={styles.SmartTouchyImage}>
-                <Image src={this.props.src} />
+                <Image _ref={eref => {this.refs['image'] = findDOMNode(eref)}} src={this.props.src} />
             </View>
         )
     }

@@ -35,6 +35,7 @@ export default class CreateBestRoute extends React.Component {
         this.refs = [];
     }
     render() {
+        console.log('in render of CreateBestRoute with state = ', this.state);
         return (
             <View _ref={eref => {this.refs['TopLevelComponent'] = findDOMNode(eref)}} style={styles.CreateBestRoute}>
                 {this.state.route === 1 &&
@@ -47,12 +48,12 @@ export default class CreateBestRoute extends React.Component {
 
 
                 {this.state.route === 2 &&
-                    <TakeAnotherPicture imagesTakenBase64={this.state.imagesTakenBase64} />
+                    <TakeAnotherPicture {...this.state} />
                 }
 
 
                 {this.state.route === 3 &&
-                    <ProcessPictures imagesTakenBase64={this.state.imagesTakenBase64} />
+                    <ProcessPictures {...this.state} />
                 }
 
 

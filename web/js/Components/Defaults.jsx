@@ -44,11 +44,16 @@ export class ScrollView extends React.Component {
     }
 }
 export class Image extends React.Component {
+    referenceCallback(eref) {
+        if (typeof this.props._ref !== 'undefined') {
+            this.props._ref(eref);
+        }
+    }
     render() {
         let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
             _src = typeof this.props.src !== 'undefined' ? this.props.src : '';
         return (
-            <img src={_src} style={_stylesProp} onClick={this.props.onClick} />
+            <img ref={this.referenceCallback.bind(this)} src={_src} style={_stylesProp} onClick={this.props.onClick} />
         )
     }
 }

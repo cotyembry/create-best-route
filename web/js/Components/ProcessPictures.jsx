@@ -19,24 +19,10 @@ export default class ProcessPictures extends React.Component {
     }
     componentDidMount() {
         let self = this;
-        $('html, body').css({
-            ...styles.TakeAnotherPicture,
-            width: parseFloat(window.innerWidth) + 'px',
-            height: parseFloat(window.innerHeight) + 'px'
-        });
+
     }
     componentWillMount() {
         this.refs = [];
-    }
-    componentWillUnmount() {
-        $('html, body').css({   //take all of the styles added when the component mounted away
-            display: '',
-            flexDirection: '',
-            width: '',
-            height: '',
-            margin: '0px',
-            padding: '0px'
-        });
     }
     render() {
         return (
@@ -45,7 +31,7 @@ export default class ProcessPictures extends React.Component {
                     {this.state.imagesTakenBase64.map((base64, i) => {
                         if(i === this.state.activeImage - 1) {              //-1 to normalize the number from human readable to an array index
                             return (
-                                <SmartTouchyImage key={i} src={base64} />
+                                <SmartTouchyImage {...this.props} key={i} src={base64} />
                             )
                         }
                     })}
