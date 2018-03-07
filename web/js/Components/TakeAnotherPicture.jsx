@@ -22,11 +22,18 @@ export default class TakeAnotherPicture extends React.Component {
     }
     componentDidMount() {
         let self = this;
-        $('html, body').css({
-            ...styles.TakeAnotherPicture,
-            width: parseFloat(window.innerWidth) + 'px',
-            height: parseFloat(window.innerHeight) + 'px'
-        });
+        
+        function setDefault() {
+            $('html, body').css({
+                width: parseFloat(window.innerWidth) + 'px',
+                height: parseFloat(window.innerHeight) + 'px',
+                margin: '0px',
+                padding: '0px'
+            })
+        }
+        setDefault();
+        setDefault();
+        setTimeout(setDefault, 5000);
 
         File.prototype.convertToBase64 = function (callback) {
             var reader = new FileReader();
@@ -50,16 +57,6 @@ export default class TakeAnotherPicture extends React.Component {
     }
     componentWillMount() {
         this.refs = [];
-    }
-    componentWillUnmount() {
-        $('html, body').css({   //take all of the styles added when the component mounted away
-            display: '',
-            flexDirection: '',
-            width: '',
-            height: '',
-            margin: '0px',
-            padding: '0px'
-        });
     }
     nextButtonClicked() {
         cotysEventHelper.setState({
