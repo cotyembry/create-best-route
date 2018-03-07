@@ -14,7 +14,6 @@ var cotysEventHelper = {
     },
     setState: function(newState) {
         if(platform === 'web') {
-            console.log('newState in cotysEventHelper = ', newState);
             this.forWeb(this.TopLevelComponent, 'setState', newState);
         }
         else {

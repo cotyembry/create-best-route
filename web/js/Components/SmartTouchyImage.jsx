@@ -56,11 +56,76 @@ export default class SmartTouchyImage extends React.Component {
     }
 }
 
+window.$ = $;
+
 class FoggyOverlay extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            mousePosition: {
+                x: '',
+                y: ''
+            },
+            mousePositionArray: []
+        };
+        this.mousePositionArray = [];
+        this.mouseIsUp = true;
+        this.mouseIsDown = false;
+    }
+    componentDidMount() {
+        // $(this.refs['FoggyOverlay']).on('mouseup', this.onMouseUp.bind(this));
+        // $(this.refs['FoggyOverlay']).on('mousedown', this.onMouseDown.bind(this));
+        // $(this.refs['FoggyOverlay']).mousemove(this.onMouseMove.bind(this));
+        this.refs['FoggyOverlay'].onmouseup = this.onMouseUp.bind(this);
+        this.refs['FoggyOverlay'].onmousedown = this.onMouseDown.bind(this);
+        this.refs['FoggyOverlay'].onmousemove = this.onMouseMove.bind(this);
+    }
+    componentWillUnmount() {
+        
+    }
+    componentWillMount() {
+        this.refs = [];
+    }
+    onMouseUp(e) {
+        this.mouseIsUp = true;
+        this.mouseIsDown = false;
+        
+
+        //now based on the top left most, top right most, bottom left most, and bottom right most elements, I will make a rectangle for that area and take away the circles
+        this.mousePositionArray.map((mousePosition, i) => {
+
+        })
+
+
+    }
+    onMouseDown(e) {
+        console.log('in onMouseDown');
+        this.mouseIsUp = false;
+        this.mouseIsDown = true;
+    }
+    onMouseMove(e) {
+        if(this.mouseIsDown === true) {
+            let newMousePosition = {
+                    x: e.clientX - 5,
+                    y: e.clientY - 10
+                },
+                _mousePositionArray = this.mousePositionArray.map(e => e);
+            _mousePositionArray.push(newMousePosition);
+            this.mousePositionArray = _mousePositionArray;
+            this.setState({
+                mousePositionArray: _mousePositionArray.map(e => e)
+            });
+        }
+    }
     render() {
         return (
-            <View style={styles.FoggyOverlay}>
+            <View className='SmartTouchyImage' _ref={eref => {this.refs['FoggyOverlay'] = findDOMNode(eref)}} style={styles.FoggyOverlay}>
+                <svg style={styles.svg}>
+                    {this.state.mousePositionArray.map((mP, i) =>
+                        <circle r={4} key={i + 'c'} cx={mP.x} cy={mP.y} />
 
+                    )}
+                </svg>
             </View>
         )
     }
@@ -74,6 +139,12 @@ const styles = {
     },
     FoggyOverlay: {
         position: 'fixed',
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'gray',
+        opacity: 0.8
+    },
+    svg: {
         width: '100%',
         height: '100%'
     }
