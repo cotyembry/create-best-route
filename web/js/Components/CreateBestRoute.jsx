@@ -19,7 +19,10 @@ export default class CreateBestRoute extends React.Component {
             //TakeAnotherPicture
             pictureToProcess: '',
             //ProcessPictures
-            imagesTakenBase64: []
+            imagesTakenBase64: [],
+            //SmartTouchyImage
+            displayFoggyOverlay: false,
+            showOutlinedAddressBox: false
         }
     }
     componentDidMount() {

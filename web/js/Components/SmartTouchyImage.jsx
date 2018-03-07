@@ -56,7 +56,6 @@ export default class SmartTouchyImage extends React.Component {
     }
 }
 
-window.$ = $;
 
 class FoggyOverlay extends React.Component {
     constructor(props) {
@@ -66,7 +65,12 @@ class FoggyOverlay extends React.Component {
                 x: '',
                 y: ''
             },
-            mousePositionArray: []
+            mousePositionArray: [],
+            showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false,
+            leftMost: '',
+            rightMost: '',
+            bottomMost: '',
+            topMost: ''
         };
         this.mousePositionArray = [];
         this.mouseIsUp = true;
@@ -86,16 +90,67 @@ class FoggyOverlay extends React.Component {
     componentWillMount() {
         this.refs = [];
     }
+    componentWillReceiveProps(newProps) {
+        if(typeof newProps.showOutlinedAddressBox !== 'undefined') {
+            this.setState({
+                showOutlinedAddressBox: newProps.showOutlinedAddressBox
+            })
+        }
+        else if(typeof newProps.topMost !== 'undefined') {
+            this.setState({
+                topMost: newProps.topMost
+            })
+        }
+        else if(typeof newProps.bottomMost !== 'undefined') {
+            this.setState({
+                bottomMost: newProps.bottomMost
+            })
+        }
+        else if(typeof newProps.leftMost !== 'undefined') {
+            this.setState({
+                leftMost: newProps.leftMost
+            })
+        }
+        else if(typeof newProps.rightMost !== 'undefined') {
+            this.setState({
+                rightMost: newProps.rightMost
+            })
+        }
+    }
     onMouseUp(e) {
         this.mouseIsUp = true;
         this.mouseIsDown = false;
         
 
         //now based on the top left most, top right most, bottom left most, and bottom right most elements, I will make a rectangle for that area and take away the circles
+        let rightMost = '',
+            topMost = '',
+            leftMost = '',
+            bottomMost = '';
         this.mousePositionArray.map((mousePosition, i) => {
-
+            let x = mousePosition.x,
+                y = mousePosition.y;
+            if(leftMost === '' || leftMost > x) {
+                leftMost = x;
+            }
+            if(rightMost === '' || rightMost < x) {
+                rightMost = x;
+            }
+            if(bottomMost === '' || bottomMost < y) {
+                bottomMost = y;
+            }
+            if(topMost === '' || topMost > y) {
+                topMost = y;
+            }
         })
 
+        cotysEventHelper.setState({
+            showOutlinedAddressBox: true,
+            leftMost: leftMost,
+            rightMost: rightMost,
+            bottomMost: bottomMost,
+            topMost: topMost
+        })
 
     }
     onMouseDown(e) {
@@ -120,12 +175,26 @@ class FoggyOverlay extends React.Component {
     render() {
         return (
             <View className='SmartTouchyImage' _ref={eref => {this.refs['FoggyOverlay'] = findDOMNode(eref)}} style={styles.FoggyOverlay}>
-                <svg style={styles.svg}>
-                    {this.state.mousePositionArray.map((mP, i) =>
-                        <circle r={4} key={i + 'c'} cx={mP.x} cy={mP.y} />
-
-                    )}
-                </svg>
+                    {(() => {
+                        
+                        if(this.state.showOutlinedAddressBox === false)
+                            return (
+                                <svg style={styles.svg}>
+                                    {this.state.mousePositionArray.map((mP, i) =>
+                                        <circle r={4} key={i + 'c'} cx={mP.x} cy={mP.y} />
+                                    )}
+                                </svg>
+                            )
+                        else if(this.state.showOutlinedAddressBox === true) {
+                            //TODO: get this working
+                            console.log('TODO: get this working')
+                            return (
+                                <svg style={styles.svg}>
+                                    <rect x={this.state.leftMost} y={this.state.topMost} width={(this.state.rightMost - this.state.leftMost) + 'px'} height={(this.state.bottomMost - this.state.topMost) + 'px'} />
+                                </svg>
+                            )
+                        }
+                    })()}
             </View>
         )
     }
