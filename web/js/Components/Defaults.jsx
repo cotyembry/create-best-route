@@ -13,11 +13,21 @@ import React from 'react';
 //     }
 // }
 export class View extends React.Component {
+    referenceCallback(eref) {
+        if(typeof this.props._ref !== 'undefined') {
+            this.props._ref(eref);
+        }
+    }
     render() {
         let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
             _className = typeof this.props.className !== 'undefined' ? this.props.className : '';
+        
+        
+        // <View ref={eref => { this.refs['TopLevelComponent'] = findDOMNode(eref) }} style={styles.CreateBestRoute}>
+
+        //this.props.ref is a callback function with the react reference in it so I should return the react reference and not deal with having to use `findDOMNode`
         return (
-            <div className={_className.toString()} style={{ ...styles.View, ..._stylesProp }}>
+            <div ref={this.referenceCallback.bind(this)} className={_className.toString()} style={{ ...styles.View, ..._stylesProp }}>
                 {this.props.children}
             </div>
         )

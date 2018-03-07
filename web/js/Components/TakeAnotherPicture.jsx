@@ -5,12 +5,14 @@ import {Button, Image, Text, ScrollView, View} from './Defaults.jsx';
 
 import $ from 'jquery';
 
+import cotysEventHelper from '../cotysEventHelper.js';
+
 
 export default class TakeAnotherPicture extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            imagesTakenBase64: []
+            imagesTakenBase64: typeof this.props.imagesTakenBase64 !== 'undefined' ? this.props.imagesTakenBase64.map(e => e) : []
         }
     }
     componentDidMount() {
@@ -35,7 +37,7 @@ export default class TakeAnotherPicture extends React.Component {
             selectedFile.convertToBase64(function (base64) {
                 let bAClone = self.state.imagesTakenBase64.map(e => e);
                 bAClone.push(base64);
-                self.setState({
+                cotysEventHelper.setState({
                     imagesTakenBase64: bAClone
                 })
             })
@@ -55,19 +57,9 @@ export default class TakeAnotherPicture extends React.Component {
         });
     }
     nextButtonClicked() {
-        alert('Write logic to route to the next page');
-        //TODO: for each photo, ask the user how many addresses are on the photo then continue with working on that picture until done, then when starting the next picture ask the user how many addresses are on the picture and then repeat the same flow etc.
-        //          -show one picture at a time
-    
-    }
-    openCameraUsingWebAPI() {
-        // this.setState({
-        //     showWebInput: true
-        // })
-    }
-    openCamera() {
-        //call native methods to open the camera
-        this.openCameraUsingWebAPI();
+        cotysEventHelper.setState({
+            route: 3
+        })
     }
     render() {
         return (

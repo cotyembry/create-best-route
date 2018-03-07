@@ -1,0 +1,91 @@
+import React from 'react';
+import {render, findDOMNode} from 'react-dom';
+import { Router, Route, hashHistory } from 'react-router';
+import {Button, Image, Text, ScrollView, View} from './Defaults.jsx';
+
+import $ from 'jquery';
+
+import cotysEventHelper from '../cotysEventHelper.js';
+
+import SmartTouchyImage from './SmartTouchyImage.jsx';
+
+export default class ProcessPictures extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeImage: 1,
+            imagesTakenBase64: typeof this.props.imagesTakenBase64 !== 'undefined' ? this.props.imagesTakenBase64.map(e => e) : []
+        }
+    }
+    componentDidMount() {
+        let self = this;
+        $('html, body').css({
+            ...styles.TakeAnotherPicture,
+            width: parseFloat(window.innerWidth) + 'px',
+            height: parseFloat(window.innerHeight) + 'px'
+        });
+    }
+    componentWillMount() {
+        this.refs = [];
+    }
+    componentWillUnmount() {
+        $('html, body').css({   //take all of the styles added when the component mounted away
+            display: '',
+            flexDirection: '',
+            width: '',
+            height: '',
+            margin: '0px',
+            padding: '0px'
+        });
+    }
+    render() {
+        return (
+            <View style={styles.TakeAnotherPicture}>
+                <ScrollView>
+                    {this.state.imagesTakenBase64.map((base64, i) => {
+                        if(i === this.state.activeImage - 1) {              //-1 to normalize the number from human readable to an array index
+                            return (
+                                <SmartTouchyImage key={i} src={base64} />
+                            )
+                        }
+                    })}
+                </ScrollView>
+            </View>
+        )
+    }
+}
+
+const styles = {
+    TakeAnotherPicture: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+        margin: '0px',
+        padding: '0px',
+    },
+    capturedImages: {
+        // width: '100%'
+
+    },
+    column: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        height: '100%'
+    },
+    flexFill: {
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'center',
+        boxSizing: 'border-box',
+        border: '1px solid',
+        borderRadius: '4px'
+    },
+    row: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'stretch'
+    }
+}
