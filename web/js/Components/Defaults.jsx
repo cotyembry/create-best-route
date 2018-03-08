@@ -67,6 +67,26 @@ export class Text extends React.Component {
         )
     }
 }
+export class Input extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: ''
+        }
+    }
+    onInputChange(e) {
+        this.setState({
+            value: e.target.value
+        });
+        this.props.onChange(e.target.value);
+    }
+    render() {
+        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {};;
+        return (
+            <input value={this.state.value} onChange={this.onInputChange.bind(this)} style={{..._stylesProp}} />
+        )
+    }
+}
 
 export class Button extends React.Component {
     render() {

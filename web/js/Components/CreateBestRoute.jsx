@@ -42,7 +42,6 @@ export default class CreateBestRoute extends React.Component {
         this.refs = [];
     }
     render() {
-        console.log(this.state.leftMost, '<- CreateBestRoute render');
         return (
             <View _ref={eref => {this.refs['TopLevelComponent'] = findDOMNode(eref)}} style={styles.CreateBestRoute}>
                 {this.state.route === 1 &&

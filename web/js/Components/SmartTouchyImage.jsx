@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, findDOMNode} from 'react-dom';
 import { Router, Route, hashHistory } from 'react-router';
-import {Button, Image, Text, View} from './Defaults.jsx';
+import {Button, Image, Input, Text, View} from './Defaults.jsx';
 
 import $ from 'jquery';
 
@@ -16,9 +16,11 @@ export default class SmartTouchyImage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            askedUserForNumber: false,
             base64: typeof this.props.src !== 'undefined' ? this.props.src : '',
             displayFoggyOverlay: typeof this.props.displayFoggyOverlay !== 'undefined' ? this.props.displayFoggyOverlay : false,
-            showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false
+            showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false,
+            numberOfAddresses: ''
         }
     }
     componentDidMount() {
@@ -49,7 +51,7 @@ export default class SmartTouchyImage extends React.Component {
                 <Image _ref={eref => {this.refs['image'] = findDOMNode(eref)}} src={this.props.src} />
 
                 {this.state.displayFoggyOverlay === true &&
-                    <FoggyOverlay showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
+                    <FoggyOverlay numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
                 }
             </View>
         )
@@ -61,12 +63,14 @@ class FoggyOverlay extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            askedUserForNumber: false,
             mousePosition: {
                 x: '',
                 y: ''
             },
             mousePositionArray: [],
             showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false,
+            opacityOverride: styles.FoggyOverlay.opacity,
             // leftMost: typeof this.props.leftMost !== 'undefined' ? this.props.leftMost : '',
             // rightMost: typeof this.props.rightMost !== 'undefined' ? this.props.rightMost : '',
             // bottomMost: typeof this.props.bottomMost !== 'undefined' ? this.props.bottomMost : '',
@@ -124,7 +128,6 @@ class FoggyOverlay extends React.Component {
         
     }
     onMouseUp(e) {
-        console.log('in onMouseUp');
         this.mouseIsUp = true;
         this.mouseIsDown = false;
 
@@ -169,7 +172,6 @@ class FoggyOverlay extends React.Component {
         this.setState(this.state);
     }
     onMouseDown(e) {
-        console.log('in onMouseDown');
         this.mouseIsUp = false;
         this.mouseIsDown = true;
     }
@@ -211,12 +213,19 @@ class FoggyOverlay extends React.Component {
         });
         
     }
+    _setState(newState) {
+        this.setState(newState);
+    }
     render() {
         return (
-            <View className='SmartTouchyImage' _ref={eref => {this.refs['FoggyOverlay'] = findDOMNode(eref)}} style={styles.FoggyOverlay}>
+            <View className='SmartTouchyImage' _ref={eref => {this.refs['FoggyOverlay'] = findDOMNode(eref)}} style={{...styles.FoggyOverlay, opacity: this.state.opacityOverride}}>
                     {(() => {
-                        
-                        if(this.state.showOutlinedAddressBox === false) {
+                        if(this.state.askedUserForNumber === false) {
+                            return (
+                                <QuestionNumberOverlay setState={this._setState.bind(this)} />
+                            )
+                        }
+                        else if(this.state.showOutlinedAddressBox === false && this.state.askedUserForNumber === true) {
                             return (
                                 <svg style={styles.svg}>
                                     {this.state.mousePositionArray.map((mP, i) =>
@@ -225,10 +234,10 @@ class FoggyOverlay extends React.Component {
                                 </svg>
                             )
                         }
-                        else if(this.state.showOutlinedAddressBox === true) {
+                        else if(this.state.showOutlinedAddressBox === true && this.state.askedUserForNumber === true) {
                             if(this.leftMost === '') return null;
                             return (
-                                <View className='test' style={{width: '100%', height: '100%', display: ''}}>
+                                <View className='svgOuterContainer'z style={{width: '100%', height: '100%', display: ''}}>
                                     {this.mouseIsDown === true &&
                                         <svg style={{...styles.svg, position: 'absolute', top: '0px', left: '0px'}}>
                                             {this.state.mousePositionArray.map((mP, i) =>
@@ -258,6 +267,51 @@ class FoggyOverlay extends React.Component {
     }
 }
 
+class QuestionNumberOverlay extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            numberOfAddresses: ''
+        }
+    }
+    componentDidMount() {
+        this.props.setState({
+            opacityOverride: 1
+        })
+    }
+    componentWillUnmount() {
+        this.props.setState({
+            opacityOverride: styles.FoggyOverlay.opacity
+        })
+    }
+    onNumberOfAddressesChange(newNumber) {
+        this.setState({
+            numberOfAddresses: newNumber
+        })
+    }
+    nextButtonClicked() {
+        if(this.validateAddressInputValue() === true) {
+            this.props.setState({
+                askedUserForNumber: true,
+                numberOfAddresses: this.state.numberOfAddresses
+            })
+        }
+    }
+    validateAddressInputValue() {
+        //TODO: implement logic
+        return true;
+    }
+    render() {
+        return (
+            <View style={styles.QuestionNumberOverlay}>
+                <Text>How many addresses are on this image?</Text>
+                <Input onChange={this.onNumberOfAddressesChange.bind(this)} />
+                <Button value='Next' onClick={this.nextButtonClicked.bind(this)} />
+            </View>
+        )
+    }
+}
+
 const styles = {
     SmartTouchyImage: {
         display: 'flex',
@@ -270,6 +324,19 @@ const styles = {
         height: '100%',
         backgroundColor: 'gray',
         opacity: 0.8
+    },
+    QuestionNumberOverlay: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'black',
+        color: 'white',
+        fontSize: '21px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: '',
+        justifyContent: 'center',
+        textAlign: 'center'
+
     },
     svg: {
         width: '100%',

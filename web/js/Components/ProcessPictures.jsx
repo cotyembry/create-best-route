@@ -13,8 +13,6 @@ export default class ProcessPictures extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log('in ProcessPictures constructor this.props.leftMost =', this.props.leftMost);
-
         this.state = {
             activeImage: 1,
             imagesTakenBase64: typeof this.props.imagesTakenBase64 !== 'undefined' ? this.props.imagesTakenBase64.map(e => e) : [],
@@ -32,7 +30,6 @@ export default class ProcessPictures extends React.Component {
         this.refs = [];
     }
     componentWillReceiveProps(newProps) {
-        console.log('in componentWillRecieveProps with: ', newProps, '<- ProcessPictures');
         if (typeof newProps.topMost !== 'undefined') {
             this.setState({
                 topMost: newProps.topMost
@@ -56,8 +53,6 @@ export default class ProcessPictures extends React.Component {
 
     }
     render() {
-        console.log(this.state.leftMost, '<- ProcessPictures.jsx render');
-
         return (
             <View style={styles.ProcessPictures}>
                 <ScrollView style={{width: '100%', height: '100%'}}>
