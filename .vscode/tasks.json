@@ -6,7 +6,8 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "cd web; npm run start;"
+            "command": "cd web; npm run start;",
+            "problemMatcher": []
         }
     ]
 }

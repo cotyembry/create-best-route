@@ -22,7 +22,11 @@ export default class CreateBestRoute extends React.Component {
             imagesTakenBase64: [],
             //SmartTouchyImage
             displayFoggyOverlay: false,
-            showOutlinedAddressBox: false
+            showOutlinedAddressBox: false,
+            leftMost: '',
+            rightMost: '',
+            bottomMost: '',
+            topMost: ''
         }
     }
     componentDidMount() {
@@ -38,6 +42,7 @@ export default class CreateBestRoute extends React.Component {
         this.refs = [];
     }
     render() {
+        console.log(this.state.leftMost, '<- CreateBestRoute render');
         return (
             <View _ref={eref => {this.refs['TopLevelComponent'] = findDOMNode(eref)}} style={styles.CreateBestRoute}>
                 {this.state.route === 1 &&

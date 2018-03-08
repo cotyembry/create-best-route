@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, findDOMNode} from 'react-dom';
 import { Router, Route, hashHistory } from 'react-router';
-import {Button, Image, View} from './Defaults.jsx';
+import {Button, Image, Text, View} from './Defaults.jsx';
 
 import $ from 'jquery';
 
@@ -16,8 +16,9 @@ export default class SmartTouchyImage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-           base64: typeof this.props.src !== 'undefined' ? this.props.src : '',
-           displayFoggyOverlay: typeof this.props.displayFoggyOverlay !== 'undefined' ? this.props.displayFoggyOverlay : false
+            base64: typeof this.props.src !== 'undefined' ? this.props.src : '',
+            displayFoggyOverlay: typeof this.props.displayFoggyOverlay !== 'undefined' ? this.props.displayFoggyOverlay : false,
+            showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false
         }
     }
     componentDidMount() {
@@ -33,7 +34,8 @@ export default class SmartTouchyImage extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         this.setState({
-            displayFoggyOverlay: typeof newProps.displayFoggyOverlay !== 'undefined' ? newProps.displayFoggyOverlay : false
+            displayFoggyOverlay: typeof newProps.displayFoggyOverlay !== 'undefined' ? newProps.displayFoggyOverlay : false,
+            showOutlinedAddressBox: typeof newProps.showOutlinedAddressBox !== 'undefined' ? newProps.showOutlinedAddressBox : false
         })
     }
     setOverlayWithAbsolutePositioning(imageRef) {
@@ -43,13 +45,11 @@ export default class SmartTouchyImage extends React.Component {
     }
     render() {
         return (
-            <View className="test" style={styles.SmartTouchyImage}>
+            <View style={styles.SmartTouchyImage}>
                 <Image _ref={eref => {this.refs['image'] = findDOMNode(eref)}} src={this.props.src} />
 
                 {this.state.displayFoggyOverlay === true &&
-                    <FoggyOverlay />
-                
-                
+                    <FoggyOverlay showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
                 }
             </View>
         )
@@ -67,14 +67,19 @@ class FoggyOverlay extends React.Component {
             },
             mousePositionArray: [],
             showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false,
-            leftMost: '',
-            rightMost: '',
-            bottomMost: '',
-            topMost: ''
+            leftMost: typeof this.props.leftMost !== 'undefined' ? this.props.leftMost : '',
+            rightMost: typeof this.props.rightMost !== 'undefined' ? this.props.rightMost : '',
+            bottomMost: typeof this.props.bottomMost !== 'undefined' ? this.props.bottomMost : '',
+            topMost: typeof this.props.topMost !== 'undefined' ? this.props.topMost : ''
         };
         this.mousePositionArray = [];
         this.mouseIsUp = true;
         this.mouseIsDown = false;
+
+        this.leftMost = '';
+        this.rightMost = '';
+        this.topMost = '';
+        this.bottomMost = '';
     }
     componentDidMount() {
         // $(this.refs['FoggyOverlay']).on('mouseup', this.onMouseUp.bind(this));
@@ -116,11 +121,12 @@ class FoggyOverlay extends React.Component {
                 rightMost: newProps.rightMost
             })
         }
+        
     }
     onMouseUp(e) {
+        console.log('in onMouseUp');
         this.mouseIsUp = true;
         this.mouseIsDown = false;
-        
 
         //now based on the top left most, top right most, bottom left most, and bottom right most elements, I will make a rectangle for that area and take away the circles
         let rightMost = '',
@@ -142,16 +148,25 @@ class FoggyOverlay extends React.Component {
             if(topMost === '' || topMost > y) {
                 topMost = y;
             }
-        })
+        });
 
-        cotysEventHelper.setState({
+
+        cotysEventHelper.setState({         //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
             showOutlinedAddressBox: true,
             leftMost: leftMost,
             rightMost: rightMost,
             bottomMost: bottomMost,
             topMost: topMost
-        })
+        });
 
+
+        this.leftMost = leftMost;
+        this.rightMost = rightMost;
+        this.topMost = topMost;
+        this.bottomMost = bottomMost;
+
+        console.log('this.leftMost = ', this.leftMost);
+        this.setState(this.state);
     }
     onMouseDown(e) {
         console.log('in onMouseDown');
@@ -187,11 +202,20 @@ class FoggyOverlay extends React.Component {
                             )
                         else if(this.state.showOutlinedAddressBox === true) {
                             //TODO: get this working
-                            console.log('TODO: get this working')
+                            console.log('TODO: get this working', this.leftMost, '<-');
+                            if(this.leftMost === '') return null;
                             return (
-                                <svg style={styles.svg}>
-                                    <rect x={this.state.leftMost} y={this.state.topMost} width={(this.state.rightMost - this.state.leftMost) + 'px'} height={(this.state.bottomMost - this.state.topMost) + 'px'} />
-                                </svg>
+                                <View style={{ justifyContent: 'center', flexDirection: 'row', height: '100%', alignItems: 'flex-end'}}>
+                                    <svg style={styles.svg}>
+                                        <rect x={this.leftMost} y={this.topMost} width={(this.rightMost - this.leftMost) + 'px'} height={(this.bottomMost - this.topMost) + 'px'} />
+                                    
+                                    </svg>
+
+                                    <View>
+                                        <Button styleRoot={{position: 'absolute', height: ''}} value='Redo?' />
+                                        <Button styleRoot={{position: 'absolute', height: ''}} value='Redo?' />
+                                    </View>
+                                </View>
                             )
                         }
                     })()}
