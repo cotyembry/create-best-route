@@ -296,7 +296,6 @@ class QuestionNumberOverlay extends React.Component {
     }
     nextButtonClicked() {
         if(this.validateAddressInputValue() === true) {
-            console.log('setting askedUserForNumber = to: ', true)
             this.props.setState({
                 askedUserForNumber: true,
                 numberOfAddresses: this.state.numberOfAddresses
