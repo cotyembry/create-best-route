@@ -153,9 +153,14 @@ class FoggyOverlay extends React.Component {
             }
         });
 
+        let _showOutlinedAddressBox = false;
+        if (this.state.askedUserForNumber === true) {
+            _showOutlinedAddressBox = true;
+        }
+
 
         cotysEventHelper.setState({         //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
-            showOutlinedAddressBox: true,
+            showOutlinedAddressBox: _showOutlinedAddressBox,
 
             leftMost: leftMost,
             rightMost: rightMost,
@@ -291,6 +296,7 @@ class QuestionNumberOverlay extends React.Component {
     }
     nextButtonClicked() {
         if(this.validateAddressInputValue() === true) {
+            console.log('setting askedUserForNumber = to: ', true)
             this.props.setState({
                 askedUserForNumber: true,
                 numberOfAddresses: this.state.numberOfAddresses
