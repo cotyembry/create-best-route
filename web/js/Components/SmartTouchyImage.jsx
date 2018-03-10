@@ -29,7 +29,26 @@ export default class SmartTouchyImage extends React.Component {
         $('html, body').css({
             width: parseFloat(window.innerWidth) + 'px',
             height: parseFloat(window.innerHeight) + 'px'
-        })
+        });
+
+        
+        $(window).resize(() => {
+            $('html, body').css({
+                width: parseFloat(window.innerWidth) + 'px',
+                height: parseFloat(window.innerHeight) + 'px'
+            });
+        });
+
+        /*
+        document.addEventListener('touchmove', function (event) {
+            if (event.scale !== 1) { event.preventDefault(); }
+            console.log('event.scale = ', event.scale);
+        }, false);
+
+        document.documentElement.addEventListener('touchmove', function (event) {
+            event.preventDefault();
+        }, false);
+        */
     }
     componentWillMount() {
         this.refs = [];
@@ -48,7 +67,7 @@ export default class SmartTouchyImage extends React.Component {
     render() {
         return (
             <View style={styles.SmartTouchyImage}>
-                <Image _ref={eref => {this.refs['image'] = findDOMNode(eref)}} src={this.props.src} />
+                <Image style={{width: '100%'}} _ref={eref => {this.refs['image'] = findDOMNode(eref)}} src={this.props.src} />
 
                 {this.state.displayFoggyOverlay === true &&
                     <FoggyOverlay numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />

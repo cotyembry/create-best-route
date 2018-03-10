@@ -54,9 +54,18 @@ export default class TakeAnotherPicture extends React.Component {
                 })
             })
         });
+
+        $(window).resize((e) => {
+            this.setState(this.state);
+        });
+        this.setState(this.state);
     }
     componentWillMount() {
         this.refs = [];
+    }
+    imageRefCallback(eref, i) {
+        this.refs['imageRef_' + i] = findDOMNode(eref);
+        // this.setState(this.state);
     }
     nextButtonClicked() {
         cotysEventHelper.setState({
@@ -67,10 +76,19 @@ export default class TakeAnotherPicture extends React.Component {
         return (
             <View style={styles.TakeAnotherPicture}>
                 <View style={styles.column}>
-                    <ScrollView style={{...styles.row, alignItems: 'flex-end'}}>
+                    <ScrollView style={{...styles.row, alignItems: 'flex-end', flex: 1}}>
                         {this.state.imagesTakenBase64.map((base64, i) => {
+                            let _imageWidthToPreseverAspectRatio = 'auto';
+                            if(typeof this.refs['imageRef_' + i] !== 'undefined') {
+                                let heightInPixels = this.refs['imageRef_' + i].clientHeight,
+                                    naturalWidth = this.refs['imageRef_' + i].naturalWidth,
+                                    naturalHeight = this.refs['imageRef_' + i].naturalHeight;
+                                
+                                // _imageWidthToPreseverAspectRatio = ((naturalWidth * heightInPixels) / naturalHeight) + 'px';
+                            }
+
                             return (
-                                <Image key={i} i={i} src={base64} style={styles.capturedImages} />
+                                <Image ref={eref => {this.imageRefCallback(eref, i)} } key={i} i={i} src={base64} style={{...styles.capturedImages, height: '100%', width: _imageWidthToPreseverAspectRatio}} />
                             )
                         })}
                     </ScrollView>
