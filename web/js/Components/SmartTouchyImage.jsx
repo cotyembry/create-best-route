@@ -108,6 +108,7 @@ class FoggyOverlay extends React.Component {
         // $(this.refs['FoggyOverlay']).on('mouseup', this.onMouseUp.bind(this));
         // $(this.refs['FoggyOverlay']).on('mousedown', this.onMouseDown.bind(this));
         // $(this.refs['FoggyOverlay']).mousemove(this.onMouseMove.bind(this));
+
         this.refs['FoggyOverlay'].onmouseup = this.onMouseUp.bind(this);
         this.refs['FoggyOverlay'].onmousedown = this.onMouseDown.bind(this);
         this.refs['FoggyOverlay'].onmousemove = this.onMouseMove.bind(this);
@@ -196,6 +197,7 @@ class FoggyOverlay extends React.Component {
         this.setState(this.state);
     }
     onMouseDown(e) {
+        console.log(e)
         this.mouseIsUp = false;
         this.mouseIsDown = true;
     }
@@ -241,6 +243,7 @@ class FoggyOverlay extends React.Component {
         this.setState(newState);
     }
     render() {
+        // onMouseDown = { this.onMouseDown.bind(this) } onMouseUp = { this.onMouseUp.bind(this) } onMouseMove = { this.onMouseDown.bind(this) }
         return (
             <View className='SmartTouchyImage' _ref={eref => {this.refs['FoggyOverlay'] = findDOMNode(eref)}} style={{...styles.FoggyOverlay, opacity: this.state.opacityOverride}}>
                     {(() => {
