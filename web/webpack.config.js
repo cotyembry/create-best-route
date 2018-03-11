@@ -46,6 +46,8 @@ module.exports = {
     ]
   },
   plugins: [
+    // new webpack.NamedModulesPlugin(),
+    // new webpack.HotModuleReplacementPlugin()
     /*
     new WebpackOnBuildPlugin(function(stats) {
       child_process.exec('dir', function(error, stdout, stderr) {

@@ -277,7 +277,7 @@ class FoggyOverlay extends React.Component {
                                     </svg>
 
                                     <View style={{width: '100%', height: '100%', top: '0px', left: '0px', position: 'absolute'}}>
-                                        <View style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center'}}>
+                                        <View style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginBottom: '7px'}}>
                                             <Button onClick={this.redoButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Redo?' />
                                             <Button styleRoot={{...styles.noSelectStyle, height: ''}} value='Next' />
                                         </View>
@@ -295,7 +295,8 @@ class QuestionNumberOverlay extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            numberOfAddresses: ''
+            numberOfAddresses: '',
+            numberOfAddressesValue: ''
         }
     }
     componentDidMount() {
@@ -321,6 +322,11 @@ class QuestionNumberOverlay extends React.Component {
             })
         }
     }
+    textNumberClicked(e) {
+        this.setState({
+            numberOfAddresses: e
+        })
+    }
     validateAddressInputValue() {
         //TODO: implement logic
         return true;
@@ -329,7 +335,14 @@ class QuestionNumberOverlay extends React.Component {
         return (
             <View style={styles.QuestionNumberOverlay}>
                 <Text>How many addresses are on this image?</Text>
-                <Input onChange={this.onNumberOfAddressesChange.bind(this)} />
+                    <View style={{flexDirection: 'column'}}>
+                        <Input placeholder='enter manually' value={this.state.numberOfAddresses} style={{width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center'}} onChange={this.onNumberOfAddressesChange.bind(this)} />
+                        <View style={{justifyContent: 'space-evenly'}}>
+                            {[1,2,3,4,5,6,7,8,9,10].map((number, j) =>
+                                <Text className='hover' key={j} onClick={this.textNumberClicked.bind(this, number)}>{number}</Text>
+                            )}
+                        </View>
+                    </View>
                 <Button value='Next' onClick={this.nextButtonClicked.bind(this)} />
             </View>
         )
@@ -357,8 +370,8 @@ const styles = {
         fontSize: '21px',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: '',
-        justifyContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
         textAlign: 'center'
 
     },

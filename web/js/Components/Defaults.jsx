@@ -58,10 +58,16 @@ export class Image extends React.Component {
     }
 }
 export class Text extends React.Component {
+    onClick(e) {
+        if(typeof this.props.onClick !== 'undefined') {
+            this.props.onClick(e);
+        }
+    }
     render() {
-        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {};;
+        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
+            _className = typeof this.props.className !== 'undefined' ? this.props.className : '';
         return (
-            <span style={{..._stylesProp}}>
+            <span className={_className} style={{..._stylesProp}} onClick={this.onClick.bind(this)}>
                 {this.props.children}
             </span>
         )
@@ -71,7 +77,12 @@ export class Input extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: ''
+            value: typeof this.props.value === '' ? '' : this.props.value
+        }
+    }
+    componentWillReceiveProps(newProps) {
+        if(typeof newProps.value !== '') {
+            this.setState({value: newProps.value});
         }
     }
     onInputChange(e) {
@@ -81,9 +92,10 @@ export class Input extends React.Component {
         this.props.onChange(e.target.value);
     }
     render() {
-        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {};;
+        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
+            _placeholder = typeof this.props.placeholder !== 'undefined' ? this.props.placeholder : '';
         return (
-            <input value={this.state.value} onChange={this.onInputChange.bind(this)} style={{..._stylesProp}} />
+            <input placeholder={_placeholder} value={this.state.value} onChange={this.onInputChange.bind(this)} style={{..._stylesProp}} />
         )
     }
 }
@@ -94,7 +106,8 @@ export class Button extends React.Component {
             _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
             _value = typeof this.props.value !== 'undefined' ? this.props.value : '',
             _placeholder = typeof this.props.placeholder !== 'undefined' ? this.props.placeholder : '',
-            _text = _value === '' ? _placeholder : _value;
+            _text = _value === '' ? _placeholder : _value,
+            minHeight = _text === '' ? '33px' : '';
        
         return (
             <div style={{ ...styles.Button, ..._stylesPropRoot }}>
@@ -110,9 +123,13 @@ const styles = {
     Button: {
         display: 'flex',
         width: '100px',
-        minHeight: '33px',
+        // minHeight: '33px',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        boxSizing: 'border-box',
+        backgroundColor: '#f2f2f2',
+        color: 'black',
+        borderRadius: '4px'
     },
     ButtonChild: {
         width: '100%',

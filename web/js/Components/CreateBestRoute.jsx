@@ -37,6 +37,13 @@ export default class CreateBestRoute extends React.Component {
                 TopLevelComponent: this.refs['TopLevelComponent']
             }
         })
+
+        $('html, body').css({
+            width: parseFloat(window.innerWidth) + 'px',
+            height: parseFloat(window.innerHeight) + 'px',
+            margin: '0px',
+            padding: '0px'
+        })
     }
     componentWillMount() {
         this.refs = [];
@@ -45,8 +52,8 @@ export default class CreateBestRoute extends React.Component {
         return (
             <View _ref={eref => {this.refs['TopLevelComponent'] = findDOMNode(eref)}} style={styles.CreateBestRoute}>
                 {this.state.route === 1 &&
-                    <View style={{flexDirection: 'column'}}>
-                        <Button value='Address From Picture' onClick={() => this.setState({route: 2})} />
+                    <View style={{width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                        <Button value='Address From Picture' styleRoot={{marginBottom: '14px'}} onClick={() => this.setState({route: 2})} />
                         <Button value='Enter Address Manually' />
                     </View>
                 }
