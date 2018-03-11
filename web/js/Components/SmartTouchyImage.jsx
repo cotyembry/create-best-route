@@ -112,6 +112,18 @@ class FoggyOverlay extends React.Component {
         this.refs['FoggyOverlay'].onmouseup = this.onMouseUp.bind(this);
         this.refs['FoggyOverlay'].onmousedown = this.onMouseDown.bind(this);
         this.refs['FoggyOverlay'].onmousemove = this.onMouseMove.bind(this);
+        
+        
+        
+        
+        this.refs['FoggyOverlay'].ontouchstart = this.onMouseDown.bind(this);
+        this.refs['FoggyOverlay'].ontouchend = this.onMouseUp.bind(this);
+        this.refs['FoggyOverlay'].ontouchmove = this.onMouseMove.bind(this);
+
+
+
+
+
     }
     componentWillUnmount() {
         
@@ -148,6 +160,8 @@ class FoggyOverlay extends React.Component {
         
     }
     onMouseUp(e) {
+        // this.log(JSON.stringify(e) + ' ' + 'onMouseUp')
+        // alert('onMouseUp');
         this.mouseIsUp = true;
         this.mouseIsDown = false;
 
@@ -196,16 +210,43 @@ class FoggyOverlay extends React.Component {
 
         this.setState(this.state);
     }
+    // log(e) {
+
+    //     let textNode = document.createTextNode(e);
+    //     $('#test').empty().append(textNode);
+    // }
     onMouseDown(e) {
-        console.log(e)
+        // alert('onMouseDown');
+        // alert(JSON.stringify(e));
+        // this.log(JSON.stringify(e) + ' ' + 'onMouseDown')
+
+
         this.mouseIsUp = false;
         this.mouseIsDown = true;
     }
     onMouseMove(e) {
+        // console.log(e.changedTouches.length, e, ' ' + 'onMouseMove')
+        // alert('onMouseMove');
+        // alert(JSON.stringify(e));
+        let normalizedX = '',                                   //so I can reuse these methods between touch devices and mouse events
+            normalizedY = '';
+        if(typeof e.changedTouches !== 'undefined') {
+            //if here then this is on a touch device
+            normalizedX = e.changedTouches[0].clientX;
+            normalizedY = e.changedTouches[0].clientY;
+        }
+        else {
+            normalizedX = e.clientX;
+            normalizedY = e.clientY;
+        }
+
+
+
+
         if(this.mouseIsDown === true) {
             let newMousePosition = {
-                    x: e.clientX - 5,
-                    y: e.clientY - 10
+                    x: normalizedX - 5,
+                    y: normalizedY - 10
                 },
                 _mousePositionArray = this.mousePositionArray.map(e => e);
             _mousePositionArray.push(newMousePosition);
