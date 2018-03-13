@@ -12,6 +12,9 @@ import CreateBestRoute from './Components/CreateBestRoute.jsx';
 // 		console.log('Accepting the updated printMe module!');
 //   })
 // }
+if(typeof window.$ === 'undefined') {
+	window.$ = $;
+}
 
 $(document).ready(function() {
 	// $(document).bind(

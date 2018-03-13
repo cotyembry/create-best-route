@@ -44,6 +44,7 @@ export default class SmartTouchyImage extends React.Component {
                 height: parseFloat(window.innerHeight) + 'px'
             });
         });
+
         /*
         document.addEventListener('touchmove', function (event) {
             if (event.scale !== 1) { event.preventDefault(); }
@@ -79,11 +80,13 @@ export default class SmartTouchyImage extends React.Component {
             displayFoggyOverlay: true
         })
     }
+
+    
     render() {
         return (
             <View style={styles.SmartTouchyImage}>
                 <Image onLoad={e => { this.onImageLoadEventCallback(e) }} style={{ width: '100%' }} _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}} src={this.props.src} />
-                <canvas style={styles.JcropCanvas} className='JcropCanvas' ref={(eref) => { this.refs['JcropCanvas'] = findDOMNode(eref); this.childRefsArray['JcropCanvas'] = this.refs['JcropCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
+                <canvas width='100%' height='100%' style={styles.JcropCanvas} className='JcropCanvas' ref={(eref) => { this.refs['JcropCanvas'] = findDOMNode(eref); this.childRefsArray['JcropCanvas'] = this.refs['JcropCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
                 {this.state.displayFoggyOverlay === true &&
                     <FoggyOverlay imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
                 }
@@ -346,25 +349,10 @@ class FoggyOverlay extends React.Component {
         // this.canvas(e);
         // canvas(coords) {
         if (typeof this.props.imageReference !== 'undefined' && this.props.imageReference !== null) {            
-            var imageObj = this.props.imageReference;
-            var canvas = this.refs['JcropCanvas'];
-            if (typeof imageObj !== 'undefined') {
-                console.log('here with: ', this.props.imageReference);
-                // canvas.width = coords.w;
-                canvas.width = '100%';
-                // canvas.height = coords.h;
-                canvas.height = '100%';
-                var context = canvas.getContext('2d');
-                // context.drawImage(imageObj, coords.x, coords.y, coords.w, coords.h, 0, 0, canvas.width, canvas.height);
-                context.drawImage(imageObj, this.leftMost, this.topMost, '100%', '100%', 0, 0, canvas.width, canvas.height);
-                
-                var png = this.refs['JcropCanvas'].toDataURL('image/png');
-
-                console.log('png = ', png);
-
-
-
-            }
+            console.log('sending now')
+            // cotysEventHelper.forWeb(document.body, 'CreateBestRouteProcessCrop', e);
+            window.CreateBestRouteProcessCrop(e, this.props.imageReference);
+            // window.CreateBestRoute
         }
 
         // }
@@ -522,6 +510,10 @@ const styles = {
         height: '100%',
         backgroundColor: 'gray',
         opacity: 0.8
+    },
+    JcropCanvas: {
+        width: '100%',
+        height: '100%'
     },
     QuestionNumberOverlay: {
         width: '100%',

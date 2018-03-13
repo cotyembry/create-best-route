@@ -20,6 +20,41 @@
 
 	<!-- <div id="test"></div> -->
 	<div id="CreateBestRoute" style="width: 100%; height: 100%;"></div>
+	<canvas id="canvasReference" width="100%" height="100%" style="width: 100%; height: 100%;"></canvas>
+
+
+	<script type="text/javascript">
+		// $(document.body).bind('CreateBestRouteProcessCrop', function() {
+		// 	console.log('in truee')
+		// })
+		// document.body.addEventListener('CreateBestRoutProcessCrop', function() {
+		// 	console.log('in truee')
+		// })
+		window.CreateBestRouteProcessCrop = function(e, imageObj) {
+			// var imageObj = this.props.imageReference;
+			var canvas = document.getElementById('canvasReference');
+			console.log('here with: ', e, imageObj, canvas);
+			if (typeof imageObj !== 'undefined') {
+				// console.log('here with: ', this.props.imageReference);
+				// canvas.width = coords.w;
+				canvas.width = '100px';
+				// canvas.height = coords.h;
+				canvas.height = '100px';
+				var context = canvas.getContext('2d');
+				// context.drawImage(imageObj, coords.x, coords.y, coords.w, coords.h, 0, 0, canvas.width, canvas.height);
+				context.drawImage(imageObj, 0, 0, '100px', '100px', 0, 0, canvas.width, canvas.height);
+
+				var png = canvas.toDataURL('image/png');
+
+				console.log('png = ', png);
+
+
+
+			}
+		}
+		
+	
+	</script>
 
 	<script type="text/javascript" src="./dist/bundle.js"></script>
 
