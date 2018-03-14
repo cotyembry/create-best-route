@@ -36,7 +36,7 @@
 				// context.drawImage(img, 50, 0, width, height);
 
 				var context = canvas.getContext('2d');
-				context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight);
+				context.drawImage(img, e.clientX, e.clientY, img.naturalWidth, img.naturalHeight, 0, 0, img.naturalWidth, img.naturalHeight);
 
 				var png = canvas.toDataURL('image/png');
 
