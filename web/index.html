@@ -30,23 +30,45 @@
 		// document.body.addEventListener('CreateBestRoutProcessCrop', function() {
 		// 	console.log('in truee')
 		// })
-		window.CreateBestRouteProcessCrop = function(e, imageObj) {
+		window.CreateBestRouteProcessCrop = function(e, imageObj, onLoadEvent, width, height) {
 			// var imageObj = this.props.imageReference;
-			var canvas = document.getElementById('canvasReference');
-			console.log('here with: ', e, imageObj, canvas);
+			var canvas = document.getElementById('canvasReference'),
+				img = imageObj;
+
+				
+			console.log('here with: ', e, imageObj, canvas, 'onLoadEvent = ', onLoadEvent);
 			if (typeof imageObj !== 'undefined') {
 				// console.log('here with: ', this.props.imageReference);
 				// canvas.width = coords.w;
-				canvas.width = '100px';
+				// canvas.width = '100px';
 				// canvas.height = coords.h;
-				canvas.height = '100px';
+				// canvas.height = '100px';
+				console.log('ORIGINAL = ', img.src)
 				var context = canvas.getContext('2d');
 				// context.drawImage(imageObj, coords.x, coords.y, coords.w, coords.h, 0, 0, canvas.width, canvas.height);
-				context.drawImage(imageObj, 0, 0, '100px', '100px', 0, 0, canvas.width, canvas.height);
+				context.drawImage(img, 50, 0, width, height);
 
 				var png = canvas.toDataURL('image/png');
 
+				img.src = png;
+
 				console.log('png = ', png);
+
+				/*
+
+				var context = document.getElementById('canvas1').getContext("2d");
+
+				var img = new Image();
+				img.onload = function () {
+					context.drawImage(img, 0, 0);
+				}
+				img.src = "images/watermelon-duck.png";
+
+				*/
+
+
+
+
 
 
 

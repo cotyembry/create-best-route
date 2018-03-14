@@ -351,7 +351,7 @@ class FoggyOverlay extends React.Component {
         if (typeof this.props.imageReference !== 'undefined' && this.props.imageReference !== null) {            
             console.log('sending now')
             // cotysEventHelper.forWeb(document.body, 'CreateBestRouteProcessCrop', e);
-            window.CreateBestRouteProcessCrop(e, this.props.imageReference);
+            window.CreateBestRouteProcessCrop(e, this.props.imageReference, this.state.onLoadImageEvent, parseFloat(window.innerWidth) + 'px', parseFloat(window.innerHeight) + 'px');
             // window.CreateBestRoute
         }
 
