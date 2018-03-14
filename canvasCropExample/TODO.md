@@ -1,0 +1,1 @@
+-TakeAnotherPicture - fix UI to where the width of the bottom Next button and the file input is formatted correctly
