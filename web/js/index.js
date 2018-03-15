@@ -29,7 +29,12 @@ $(document).ready(function() {
 	document.addEventListener('touchmove', function(event) {		//to help with Safari to not all to pan around
 		event.preventDefault();
 	},{passive: false})
-
+	$(window).resize(() => {
+		$('html, body').css({
+			width: parseFloat(window.innerWidth) + 'px',
+			height: parseFloat(window.innerHeight) + 'px'
+		});
+	});
 
 	// ReactDOM.render(<CreateBestRoute />, document.getElementById('CreateBestRoute'))
 	ReactDOM.render(
