@@ -348,7 +348,7 @@ class FoggyOverlay extends React.Component {
     sendToJcropAndProcessImage(e) {
         // this.canvas(e);
         // canvas(coords) {
-        if (typeof this.props.imageReference !== 'undefined' && this.props.imageReference !== null) {            
+        if (typeof this.props.imageReference !== 'undefined' && this.props.imageReference !== null && this.state.askedUserForNumber === true) {            
             console.log('sending now')
             // cotysEventHelper.forWeb(document.body, 'CreateBestRouteProcessCrop', e);
             window.CreateBestRouteProcessCrop(e, this.props.imageReference, this.state.onLoadImageEvent, parseFloat(window.innerWidth) + 'px', parseFloat(window.innerHeight) + 'px');

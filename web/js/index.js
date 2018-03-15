@@ -26,7 +26,7 @@ $(document).ready(function() {
 	// document.ontouchmove = function (event) {
 	// 	event.preventDefault();
 	// }
-	document.addEventListener('touchmove', function(event) {
+	document.addEventListener('touchmove', function(event) {		//to help with Safari to not all to pan around
 		event.preventDefault();
 	},{passive: false})
 

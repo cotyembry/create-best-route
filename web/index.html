@@ -20,7 +20,7 @@
 
 	<!-- <div id="test"></div> -->
 	<div id="CreateBestRoute" style="width: 100%; height: 100%;"></div>
-	<canvas id="canvasReference" width="100%" height="100%" style="width: 100%; height: 100%;"></canvas>
+	<canvas id="canvasReference" width="100%" height="100%" style="visibility: hidden; width: 100%; height: 100%;"></canvas>
 
 
 	<script type="text/javascript">
@@ -30,50 +30,56 @@
 		// document.body.addEventListener('CreateBestRoutProcessCrop', function() {
 		// 	console.log('in truee')
 		// })
-		window.CreateBestRouteProcessCrop = function(e, imageObj, onLoadEvent, width, height) {
-			// var imageObj = this.props.imageReference;
-			var canvas = document.getElementById('canvasReference'),
-				img = imageObj;
 
-				
-			console.log('here with: ', e, imageObj, canvas, 'onLoadEvent = ', onLoadEvent);
-			if (typeof imageObj !== 'undefined') {
-				// console.log('here with: ', this.props.imageReference);
-				// canvas.width = coords.w;
-				// canvas.width = '100px';
-				// canvas.height = coords.h;
-				// canvas.height = '100px';
-				console.log('ORIGINAL = ', img.src)
-				var context = canvas.getContext('2d');
-				// context.drawImage(imageObj, coords.x, coords.y, coords.w, coords.h, 0, 0, canvas.width, canvas.height);
-				context.drawImage(img, 50, 0, width, height);
+		window.CreateBestRouteProcessCrop = function (e, imageObj, onLoadEvent, width, height) {
+				// var imageObj = this.props.imageReference;
+				var canvas = document.getElementById('canvasReference'),
+					img = imageObj;
 
-				var png = canvas.toDataURL('image/png');
+				console.log('here with: ', e, imageObj, canvas, 'onLoadEvent = ', onLoadEvent);
+				if (typeof imageObj !== 'undefined') {
+					// console.log('here with: ', this.props.imageReference);
+					// context.drawImage(img, 50, 0, width, height);
+					var context = canvas.getContext('2d');
+					context.drawImage(img, e.clientX - 7, e.clientY - 7, img.naturalWidth, img.naturalHeight, 0, 0, img.naturalWidth, img.naturalHeight);		//these numbers being subtracted from the clientX and clientY values are perfect IF AND ONLY IF the screen's zoom is 100%, if its different these are wrong
+					var png = canvas.toDataURL('image/png');
+					console.log('png = ', png);
+					// document.getElementById('image2').src = png;
+					window.png = png;
 
-				img.src = png;
-
-				console.log('png = ', png);
-
-				/*
-
-				var context = document.getElementById('canvas1').getContext("2d");
-
-				var img = new Image();
-				img.onload = function () {
-					context.drawImage(img, 0, 0);
+					img.src = png;
 				}
-				img.src = "images/watermelon-duck.png";
-
-				*/
-
-
-
-
-
-
-
 			}
-		}
+
+		// old logic
+		// window.CreateBestRouteProcessCrop = function(e, imageObj, onLoadEvent, width, height) {
+		// 	// var imageObj = this.props.imageReference;
+		// 	var canvas = document.getElementById('canvasReference'),
+		// 		img = imageObj;	
+		// 	console.log('here with: ', e, imageObj, canvas, 'onLoadEvent = ', onLoadEvent);
+		// 	if (typeof imageObj !== 'undefined') {
+		// 		// console.log('here with: ', this.props.imageReference);
+		// 		// canvas.width = coords.w;
+		// 		// canvas.width = '100px';
+		// 		// canvas.height = coords.h;
+		// 		// canvas.height = '100px';
+		// 		console.log('ORIGINAL = ', img.src)
+		// 		var context = canvas.getContext('2d');
+		// 		// context.drawImage(imageObj, coords.x, coords.y, coords.w, coords.h, 0, 0, canvas.width, canvas.height);
+		// 		context.drawImage(img, 50, 0, width, height);
+		// 		var png = canvas.toDataURL('image/png');
+		// 		img.src = png;
+		// 		console.log('png = ', png);
+		// 		/*
+		// 		var context = document.getElementById('canvas1').getContext("2d");
+		// 		var img = new Image();
+		// 		img.onload = function () {
+		// 			context.drawImage(img, 0, 0);
+		// 		}
+		// 		img.src = "images/watermelon-duck.png";
+		// 		*/
+		// 	}
+		// }
 		
 	
 	</script>
