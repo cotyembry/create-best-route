@@ -4,6 +4,7 @@ import { Router, Route, hashHistory } from 'react-router';
 // import Croppie from 'react-croppie';
 import {Button, Image, Input, Text, View} from './Defaults.jsx';
 
+
 // import $ from 'jquery';
 import $ from '../jquery.Jcrop.js';									//because in this file I import jquery and extend it then re-export jquery
 
@@ -67,6 +68,8 @@ export default class SmartTouchyImage extends React.Component {
     onImageLoadEventCallback(e) {
         // console.log('here: onImageLoadEventCallback', e);
         // console.log(e.nativeEvent, e.nativeEvent.target);
+
+
         this.setState({
             onLoadImageEvent: e.nativeEvent
         })
@@ -85,7 +88,7 @@ export default class SmartTouchyImage extends React.Component {
     render() {
         return (
             <View style={styles.SmartTouchyImage}>
-                <Image onLoad={e => { this.onImageLoadEventCallback(e) }} style={{ width: '100%' }} _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}} src={this.props.src} />
+                <Image onLoad={e => { this.onImageLoadEventCallback(e) }} style={{  position: 'absolute', top: '0px', left: '0px' }} _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}} src={this.props.src} />
                 <canvas width='100%' height='100%' style={styles.JcropCanvas} className='JcropCanvas' ref={(eref) => { this.refs['JcropCanvas'] = findDOMNode(eref); this.childRefsArray['JcropCanvas'] = this.refs['JcropCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
                 {this.state.displayFoggyOverlay === true &&
                     <FoggyOverlay imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
