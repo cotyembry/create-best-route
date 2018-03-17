@@ -303,7 +303,7 @@ class FoggyOverlay extends React.Component {
             //start crop logic
             let canvas = this.props.canvasRef,
                 context = canvas.getContext('2d'),
-                png = '',
+                png = '',                               //will be the base64 representation of the image as a string
                 w = this.rightMost - this.leftMost,
                 h = this.bottomMost - this.topMost;
 
@@ -314,7 +314,7 @@ class FoggyOverlay extends React.Component {
                 png = canvas.toDataURL('image/png');
 
                 this.setState({
-                    croppedSrc: png
+                    croppedBase64String: png
                 })
                 //end crop logic
                 
@@ -348,7 +348,7 @@ class FoggyOverlay extends React.Component {
                         else if(this.state.showOutlinedAddressBox === true && this.state.askedUserForNumber === true) {
                             if(this.leftMost === '') return null;
                             return (
-                                <View className='svgOuterContainer'z style={{width: '100%', height: '100%', display: ''}}>
+                                <View className='svgOuterContainer' style={{width: '100%', height: '100%', display: ''}}>
                                     {this.mouseIsDown === true &&
                                         <svg style={{...styles.svg, position: 'absolute', top: '0px', left: '0px'}}>
                                             {this.state.mousePositionArray.map((mP, i) =>
@@ -362,6 +362,13 @@ class FoggyOverlay extends React.Component {
                                         <rect x={this.leftMost} y={this.topMost} width={(this.rightMost - this.leftMost) + 'px'} height={(this.bottomMost - this.topMost) + 'px'} />
                                     
                                     </svg>
+
+
+                                    <PreviewRecentCrop src={this.state.croppedBase64String} />
+
+
+
+
 
                                     <View style={{width: '100%', height: '100%', top: '0px', left: '0px', position: 'absolute'}}>
                                         <View style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginBottom: '7px'}}>
@@ -383,6 +390,21 @@ class FoggyOverlay extends React.Component {
         )
     }
 }
+
+class PreviewRecentCrop extends React.Component {
+    render() {
+        console.log('in render with: ', this.props.src);
+        return (
+            <View style={styles.PreviewRecentCrop}>
+                <Image src={this.props.src} />
+
+            </View>
+        )
+    }
+}
+
+
+
 
 class QuestionNumberOverlay extends React.Component {
     constructor(props) {
@@ -458,6 +480,11 @@ const styles = {
     customCanvas: {
         width: '100%',
         height: '100%'
+    },
+    PreviewRecentCrop: {
+        position: 'absolute',
+        top: '0px',
+        left: '0px'
     },
     QuestionNumberOverlay: {
         width: '100%',
