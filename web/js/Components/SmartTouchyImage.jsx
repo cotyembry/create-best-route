@@ -86,12 +86,13 @@ export default class SmartTouchyImage extends React.Component {
 
     
     render() {
+        let _canvasRef = typeof this.refs['customCanvas'] !== 'undefined' ? this.refs['customCanvas'] : '';
         return (
             <View style={styles.SmartTouchyImage}>
                 <Image onLoad={e => { this.onImageLoadEventCallback(e) }} style={{  position: 'absolute', top: '0px', left: '0px' }} _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}} src={this.props.src} />
-                <canvas width='100%' height='100%' style={styles.JcropCanvas} className='JcropCanvas' ref={(eref) => { this.refs['JcropCanvas'] = findDOMNode(eref); this.childRefsArray['JcropCanvas'] = this.refs['JcropCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
+                <canvas style={styles.customCanvas} className='customCanvas' ref={(eref) => { this.refs['customCanvas'] = findDOMNode(eref); this.childRefsArray['customCanvas'] = this.refs['customCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
                 {this.state.displayFoggyOverlay === true &&
-                    <FoggyOverlay imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
+                    <FoggyOverlay canvasRef={_canvasRef} imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
                 }
             </View>
         )
@@ -106,7 +107,7 @@ class FoggyOverlay extends React.Component {
             askedUserForNumber: false,
             croppiePictureURL: '',
             croppedBase64String: '',
-            JcropEvent: '',
+            customCropEvent: '',
             mousePosition: {
                 x: '',
                 y: ''
@@ -161,52 +162,9 @@ class FoggyOverlay extends React.Component {
             this.setState({
                 showOutlinedAddressBox: newProps.showOutlinedAddressBox
             })
-        }
-
-
-        if(typeof newProps.imageLoadEvent !== 'undefined' && newProps.imageLoadEvent !== null) {
-            // console.log('result = ', newProps.imageLoadEvent === null, typeof newProps.imageLoadEvent, typeof newProps.imageLoadEvent === 'undefined')
-        
-            // console.log('-->', newProps.imageLoadEvent.target, 'test>' + newProps.imageLoadEvent + '<done');
-            // console.log('final: ', Object.keys(newProps.imageLoadEvent))
-            // this
-            this.addJcrop();
-            // this.setState({
-            //     imageLoadEvent: {...newProps.imageLoadEvent}
-            // })
-        }        
-    }
-    canvas(coords) {
-        //this.canvas gets called every time the user changes the cropping area
-        var imageObj = this.refs['userThumbnail'];
-        var canvas = this.refs['JcropCanvas'];
-        if (typeof imageObj !== 'undefined') {
-            canvas.width = coords.w;
-            canvas.height = coords.h;
-            var context = canvas.getContext('2d');
-            context.drawImage(imageObj, coords.x, coords.y, coords.w, coords.h, 0, 0, canvas.width, canvas.height);
-
-                //place the base64 string in the state for later if needed
-                var png = this.refs['JcropCanvas'].toDataURL('image/png');
-                // $(this.refs['pngInput']).val(png);
-                this.setState({
-                    croppedBase64String: png
-                })
-        }
-
-    }
-    addJcrop() {
-        //if here then the image has loaded and the event is in `this.props.imageLoadEvent` - also the image reference currently being worked on is `this.refs['currentImage']`
-        // $(this.refs['currentImage']).Jcrop({
-        //     onSelect: (e) => { this.canvas(e); this.setState({ JcropEvent: e, croppedBase64String: png }) },
-        //     //TODO: get mouse position and show a component overlay that's a checkbox to accept the current cropped portion
-        //     onChange: (e) => { this.canvas(e); this.setState({ JcropEvent: e, croppedBase64String: png }) },
-        //     onRelease: (e) => { this.canvas(e); this.setState({ JcropEvent: e, croppedBase64String: png }) }
-        // })
+        }       
     }
     onMouseUp(e) {
-        // this.log(JSON.stringify(e) + ' ' + 'onMouseUp')
-        // alert('onMouseUp');
         this.mouseIsUp = true;
         this.mouseIsDown = false;
 
@@ -214,10 +172,19 @@ class FoggyOverlay extends React.Component {
         let rightMost = '',
             topMost = '',
             leftMost = '',
-            bottomMost = '';
+            bottomMost = '',
+            scrollWidthAdjustment = '',
+            scrollTopAdjustment = '';
         this.mousePositionArray.map((mousePosition, i) => {
             let x = mousePosition.x,
                 y = mousePosition.y;
+
+            scrollTopAdjustment = window.document.documentElement.scrollTop;            //to deal with if the page is scrolled down or to the left at all
+            scrollWidthAdjustment = window.document.documentElement.scrollLeft;
+            x += scrollWidthAdjustment;
+            y += scrollTopAdjustment;
+
+            
             if(leftMost === '' || leftMost > x) {
                 leftMost = x;
             }
@@ -255,23 +222,13 @@ class FoggyOverlay extends React.Component {
 
 
         //now to send event to Jcrop to give me the cropped base64 representation to the cropped image
-        this.sendToJcropAndProcessImage(e);
+        this.processCropOnImage(e);
 
 
 
         this.setState(this.state);
     }
-    // log(e) {
-
-    //     let textNode = document.createTextNode(e);
-    //     $('#test').empty().append(textNode);
-    // }
     onMouseDown(e) {
-        // alert('onMouseDown');
-        // alert(JSON.stringify(e));
-        // this.log(JSON.stringify(e) + ' ' + 'onMouseDown')
-
-
         this.mouseIsUp = false;
         this.mouseIsDown = true;
     }
@@ -280,7 +237,9 @@ class FoggyOverlay extends React.Component {
         // alert('onMouseMove');
         // alert(JSON.stringify(e));
         let normalizedX = '',                                   //so I can reuse these methods between touch devices and mouse events
-            normalizedY = '';
+            normalizedY = '',
+            scrollWidthAdjustment = '',
+            scrollTopAdjustment = '';
         if(typeof e.changedTouches !== 'undefined') {
             //if here then this is on a touch device
             normalizedX = e.changedTouches[0].clientX;
@@ -290,6 +249,12 @@ class FoggyOverlay extends React.Component {
             normalizedX = e.clientX;
             normalizedY = e.clientY;
         }
+
+        scrollTopAdjustment = window.document.documentElement.scrollTop;            //to deal with if the page is scrolled down or to the left at all
+        scrollWidthAdjustment = window.document.documentElement.scrollLeft;
+        normalizedX += scrollWidthAdjustment;
+        normalizedY += scrollTopAdjustment;
+
         if(this.mouseIsDown === true) {
             let newMousePosition = {
                     x: normalizedX - 5,
@@ -304,24 +269,9 @@ class FoggyOverlay extends React.Component {
         }
     }
     nextButtonClicked() {
-        // if(typeof this.refs['reactCropped'] !== 'undefined') {
-        //     this.refs['reactCroppie'].result(options).then(res => {
-        //         console.log('result = ', res);
-        //     });
-        // }
-        // else {
-        //     console.warn('do not have crop reference');
-        // }
+      
     }
     onImageLoadCallback(e) {
-        if (typeof this.refs['currentImageRef'] !== 'undefined') {
-            $(this.refs['currentImageRef']).Jcrop({
-                onSelect: (e) => { this.canvas(e); this.setState({ showAcceptCheckbox: true, JcropEvent: e }) },
-                //TODO: get mouse position and show a component overlay that's a checkbox to accept the current cropped portion
-                onChange: (e) => { this.canvas(e); this.setState({ showAcceptCheckbox: true, JcropEvent: e }) },
-                onRelease: (e) => { this.canvas(e); this.setState({ showAcceptCheckbox: true, JcropEvent: e }) }
-            });
-        }
            
     }
     redoButtonClicked() {
@@ -348,47 +298,35 @@ class FoggyOverlay extends React.Component {
         });
         
     }
-    sendToJcropAndProcessImage(e) {
-        // this.canvas(e);
-        // canvas(coords) {
+    processCropOnImage(e) {
         if (typeof this.props.imageReference !== 'undefined' && this.props.imageReference !== null && this.state.askedUserForNumber === true) {            
-            console.log('sending now')
-            // cotysEventHelper.forWeb(document.body, 'CreateBestRouteProcessCrop', e);
-            // window.CreateBestRouteProcessCrop(e, this.props.imageReference, this.state.onLoadImageEvent, parseFloat(window.innerWidth) + 'px', parseFloat(window.innerHeight) + 'px');
-            window.CreateBestRouteProcessCrop(e, this.props.imageReference, this.topMost, this.rightMost, this.bottomMost, this.leftMost);
-            // window.CreateBestRoute
+            //start crop logic
+            let canvas = this.props.canvasRef,
+                context = canvas.getContext('2d'),
+                png = '',
+                w = this.rightMost - this.leftMost,
+                h = this.bottomMost - this.topMost;
 
+            if (typeof this.props.imageReference !== 'undefined') {
+
+                context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
+
+                png = canvas.toDataURL('image/png');
+
+                this.setState({
+                    croppedSrc: png
+                })
+                //end crop logic
+                
+            }
 
         }
 
-        // }
-        
-        
-        
-        
-        
-        
-        this.setState({ JcropEvent: e })
     }
     _setState(newState) {
         this.setState(newState);
     }
     render() {
-        /*
-        <img ref={(eref) => {this.refs['userThumbnail'] = findDOMNode(eref)}}
-            className='dynamicThumbnail'
-            id='userThumbnail'
-            src={this.state.thumbnailSrc}
-            title={this.state.thumbnailTitle}
-            
-            onLoad={() => { $('#userThumbnail').Jcrop({
-                onSelect: (e) => {this.canvas(e); this.setState({showAcceptCheckbox: true, JcropEvent: e})},
-                //TODO: get mouse position and show a component overlay that's a checkbox to accept the current cropped portion
-                onChange: (e) => {this.canvas(e); this.setState({showAcceptCheckbox: true, JcropEvent: e})},
-                onRelease: (e) => {this.canvas(e); this.setState({showAcceptCheckbox: true, JcropEvent: e})}
-            });}}
-        />
-        */
         // onMouseDown = { this.onMouseDown.bind(this) } onMouseUp = { this.onMouseUp.bind(this) } onMouseMove = { this.onMouseDown.bind(this) }
         return (
             <View className='SmartTouchyImage' _ref={eref => {this.refs['FoggyOverlay'] = findDOMNode(eref)}} style={{...styles.FoggyOverlay, opacity: this.state.opacityOverride}}>
@@ -517,7 +455,7 @@ const styles = {
         backgroundColor: 'gray',
         opacity: 0.8
     },
-    JcropCanvas: {
+    customCanvas: {
         width: '100%',
         height: '100%'
     },
