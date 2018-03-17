@@ -364,8 +364,13 @@ class FoggyOverlay extends React.Component {
                                     </svg>
 
 
-                                    <PreviewRecentCrop leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} />
-
+                                    {this.state.croppedBase64String !== '' && this.mouseIsDown === false &&
+                                        <View>
+                                            <PreviewImage leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} />
+                                            <PreviewRecentCrop leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} />
+                                        </View>
+                                    }
+                                    
 
 
 
@@ -380,12 +385,6 @@ class FoggyOverlay extends React.Component {
                             )
                         }
                     })()}
-
-                    {/* {this.leftMost !== '' &&
-                        <View style={{display: 'none'}}>
-                            <Croppie bind={{url: this.props.base64, points: [this.leftMost, this.topMost, this.rightMost, this.bottomMost]}} ref={eref => {this.refs['reactCropped'] = findDOMNode(eref)}}  />
-                        </View>
-                    } */}
             </View>
         )
     }
@@ -394,12 +393,46 @@ class FoggyOverlay extends React.Component {
 class PreviewRecentCrop extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            mouseIsDown: false
+        }
+    }
+    componentWillMount() {
+        this.refs = [];
+    }
+    componentDidMount() {
+        setTimeout((e) => {
+            $(this.refs['image']).fadeOut();
+        }, 1500);
+    }
+    render() {
+        console.log('this.state.mouseIsDown = ', this.state.mouseIsDown);
+        return (
+            <View style={{...styles.PreviewRecentCrop}}>
+                <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
+            <View style={{backgroundColor: 'white', position: 'absolute', top: '50%', left: '0px', width: '100px', height: '100px', borderRadius: '4px'}}></View>
+        )
+    }
+}
+
+class PreviewImage extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    componentWillMount() {
+        this.refs = [];
+    }
+    componentDidMount() {
+        
     }
     render() {
         return (
-            <View style={{...styles.PreviewRecentCrop}}>
-                <Image style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
-
+            <View onMouseOut={(e) => { this.setState({ mouseIsDown: false }) }} onMouseDown={(e) => { this.setState({ mouseIsDown: true }) }} onMouseUp={(e) => { this.setState({ mouseIsDown: false }) }} style={{...styles.PreviewRecentCrop}}>
+                {this.state.mouseIsDown === true &&
+                    <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
+                    
+                }
             </View>
         )
     }
@@ -481,7 +514,8 @@ const styles = {
     },
     customCanvas: {
         width: '100%',
-        height: '100%'
+        height: '100%',
+        visibility: 'hidden'
     },
     PreviewRecentCrop: {
         position: 'absolute',
