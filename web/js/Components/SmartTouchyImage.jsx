@@ -364,7 +364,7 @@ class FoggyOverlay extends React.Component {
                                     </svg>
 
 
-                                    <PreviewRecentCrop src={this.state.croppedBase64String} />
+                                    <PreviewRecentCrop leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} />
 
 
 
@@ -392,11 +392,13 @@ class FoggyOverlay extends React.Component {
 }
 
 class PreviewRecentCrop extends React.Component {
+    constructor(props) {
+        super(props);
+    }
     render() {
-        console.log('in render with: ', this.props.src);
         return (
-            <View style={styles.PreviewRecentCrop}>
-                <Image src={this.props.src} />
+            <View style={{...styles.PreviewRecentCrop}}>
+                <Image style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
 
             </View>
         )
@@ -484,7 +486,9 @@ const styles = {
     PreviewRecentCrop: {
         position: 'absolute',
         top: '0px',
-        left: '0px'
+        left: '0px',
+        width: '100%',
+        height: '100%'
     },
     QuestionNumberOverlay: {
         width: '100%',
