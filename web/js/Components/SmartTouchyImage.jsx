@@ -108,6 +108,7 @@ class FoggyOverlay extends React.Component {
             croppiePictureURL: '',
             croppedBase64String: '',
             customCropEvent: '',
+            editButtonClicked: false,
             mousePosition: {
                 x: '',
                 y: ''
@@ -268,8 +269,10 @@ class FoggyOverlay extends React.Component {
             });
         }
     }
-    nextButtonClicked() {
-      
+    editButtonClicked() {
+        this.setState({
+            editButtonClicked: true
+        })
     }
     onImageLoadCallback(e) {
            
@@ -289,12 +292,16 @@ class FoggyOverlay extends React.Component {
         this.bottomMost = '';
 
 
+        this.props.canvasRef.getContext('2d').clearRect(0, 0, this.props.canvasRef.width, this.props.canvasRef.height); //clear the canvas for redrawing next time
+
         this.mousePositionArray = [];
         cotysEventHelper.setState({
             showOutlinedAddressBox: false
         })
         this.setState({
-            mousePositionArray: []
+            mousePositionArray: [],
+            editButtonClicked: false,
+            croppedBase64String: ''
         });
         
     }
@@ -364,10 +371,10 @@ class FoggyOverlay extends React.Component {
                                     </svg>
 
 
-                                    {this.state.croppedBase64String !== '' && this.mouseIsDown === false &&
+                                    {this.state.croppedBase64String !== '' && this.state.editButtonClicked === true &&
                                         <View>
-                                            <PreviewImage leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} />
-                                            <PreviewRecentCrop leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} />
+                                            {/* <PreviewImage leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} /> */}
+                                            <EditRecentCrop setParentState={this._setState.bind(this)} leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} />
                                         </View>
                                     }
                                     
@@ -378,7 +385,14 @@ class FoggyOverlay extends React.Component {
                                     <View style={{width: '100%', height: '100%', top: '0px', left: '0px', position: 'absolute'}}>
                                         <View style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginBottom: '7px'}}>
                                             <Button onClick={this.redoButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Redo?' />
-                                            <Button onClick={this.nextButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Next' />
+                                            
+                                            {this.state.croppedBase64String !== '' && this.state.editButtonClicked === true &&
+                                                <Button onClick={this.editButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Next' />
+                                            }
+                                            {this.state.croppedBase64String !== '' && this.state.editButtonClicked === false &&
+                                                <Button onClick={this.editButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Edit' />
+                                            }
+                                            
                                         </View>
                                     </View>
                                 </View>
@@ -390,28 +404,41 @@ class FoggyOverlay extends React.Component {
     }
 }
 
-class PreviewRecentCrop extends React.Component {
+class EditRecentCrop extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            editableImageText: '',
             mouseIsDown: false
         }
     }
     componentWillMount() {
         this.refs = [];
     }
+    componentWillUnmount() {
+        this.props.setParentState({ opacityOverride: styles.FoggyOverlay.opacity });          //to make the container not be shown for now
+    }
     componentDidMount() {
-        setTimeout((e) => {
-            $(this.refs['image']).fadeOut();
-        }, 1500);
+        // setTimeout((e) => {
+        //     $(this.refs['image']).fadeOut();
+        // }, 1500);
+        this.props.setParentState({ opacityOverride: 1 });          //to make the container not be shown for now
+    }
+    onEditableImageTextChange(e) {
+        console.log('onEditableImageTextChange e = ', e);
+        this.setState({
+            editableImageText: e
+        })
     }
     render() {
-        console.log('this.state.mouseIsDown = ', this.state.mouseIsDown);
+        //onMouseOut={(e) => {this.setState({mouseIsDown: false})}} onMouseDown={(e) => {this.setState({mouseIsDown: true})}} onMouseUp={(e) => {this.setState({mouseIsDown: false})}}
         return (
-            <View style={{...styles.PreviewRecentCrop}}>
+            <View style={{...styles.EditRecentCrop}}>
                 <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
-            <View style={{backgroundColor: 'white', position: 'absolute', top: '50%', left: '0px', width: '100px', height: '100px', borderRadius: '4px'}}></View>
+                <Input placeholder='enter manually' value={this.state.editableImageText} style={{ width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center' }} onChange={this.onEditableImageTextChange.bind(this)} />
+           
+           </View>
         )
     }
 }
@@ -424,15 +451,13 @@ class PreviewImage extends React.Component {
         this.refs = [];
     }
     componentDidMount() {
-        
+
     }
     render() {
         return (
-            <View onMouseOut={(e) => { this.setState({ mouseIsDown: false }) }} onMouseDown={(e) => { this.setState({ mouseIsDown: true }) }} onMouseUp={(e) => { this.setState({ mouseIsDown: false }) }} style={{...styles.PreviewRecentCrop}}>
-                {this.state.mouseIsDown === true &&
-                    <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
-                    
-                }
+            <View style={{...styles.EditRecentCrop}}>
+                <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
+
             </View>
         )
     }
@@ -517,12 +542,14 @@ const styles = {
         height: '100%',
         visibility: 'hidden'
     },
-    PreviewRecentCrop: {
+    EditRecentCrop: {
         position: 'absolute',
         top: '0px',
         left: '0px',
         width: '100%',
-        height: '100%'
+        height: '100%',
+        backgroundColor: 'white',
+        opacity: '1'
     },
     QuestionNumberOverlay: {
         width: '100%',
