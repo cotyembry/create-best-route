@@ -51,7 +51,6 @@
 				y = e.clientY,
 				scrollTopAdjustment = window.document.documentElement.scrollTop,
 				scrollWidthAdjustment = window.document.documentElement.scrollLeft;
-
 				x += scrollWidthAdjustment;
 				y += scrollTopAdjustment;
 				
@@ -89,31 +88,17 @@
 			window.CreateBestRouteProcessCrop(e, document.getElementById('imageId'), '', '', '')
 		}
 		window.CreateBestRouteProcessCrop = function(e, imageObj, onLoadEvent, width, height) {
-			// var imageObj = this.props.imageReference;
-
-			// console.log(window.CreateBestRouteStore)
+			//start crop logic
 			console.log(window.CreateBestRouteStore.rightMost - CreateBestRouteStore.leftMost, 'width')
-
-			// console.log(window.CreateBestRouteStore.rightMost, 'right');
-			// console.log(window.CreateBestRouteStore.leftMost, 'left');
-
 			var canvas = document.getElementById('canvasReference'),
 				img = imageObj;
 
-				
-			// console.log('here with: ', e, imageObj, canvas, 'onLoadEvent = ', onLoadEvent);
 			if (typeof imageObj !== 'undefined') {
-				// console.log('here with: ', this.props.imageReference);
-				// context.drawImage(img, 50, 0, width, height);
-
 				var context = canvas.getContext('2d'),
 				w = img.naturalWidth - 200,
 					w = window.CreateBestRouteStore.rightMost - CreateBestRouteStore.leftMost,
 					h = img.naturalHeight,
 					h = window.CreateBestRouteStore.bottomMost - window.CreateBestRouteStore.topMost;
-				// context.drawImage(img, e.clientX - 7, e.clientY - 7, img.naturalWidth, img.naturalHeight, 0, 0, img.naturalWidth, img.naturalHeight);		//these numbers being subtracted from the clientX and clientY values are perfect IF AND ONLY IF the screen's zoom is 100%, if its different these are wrong
-				// context.drawImage(img, e.clientX, e.clientY, img.naturalWidth, img.naturalHeight, 0, 0, img.naturalWidth, img.naturalHeight);		//these numbers being subtracted from the clientX and clientY values are perfect IF AND ONLY IF the screen's zoom is 100%, if its different these are wrong
-				// context.drawImage(img, e.clientX, e.clientY, img.naturalWidth, img.naturalHeight);
 				
 				console.log(h, 'height');
 				
@@ -122,31 +107,10 @@
 
 				var png = canvas.toDataURL('image/png');
 
-
-				// console.log('png = ', png);
-
 				document.getElementById('image2').src = png;
 
 				window.png = png;
-
-				/*
-
-				var context = document.getElementById('canvas1').getContext("2d");
-
-				var img = new Image();
-				img.onload = function () {
-					context.drawImage(img, 0, 0);
-				}
-				img.src = "images/watermelon-duck.png";
-
-				*/
-
-
-
-
-
-
-
+				//end crop logic
 			}
 		}
 		
