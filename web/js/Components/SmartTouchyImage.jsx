@@ -5,8 +5,8 @@ import { Router, Route, hashHistory } from 'react-router';
 import {Button, Image, Input, Text, View} from './Defaults.jsx';
 
 
-// import $ from 'jquery';
-import $ from '../jquery.Jcrop.js';									//because in this file I import jquery and extend it then re-export jquery
+import $ from 'jquery';
+// import $ from '../jquery.Jcrop.js';									//because in this file I import jquery and extend it then re-export jquery
 
 
 import cotysEventHelper from '../cotysEventHelper.js';
@@ -149,8 +149,6 @@ class FoggyOverlay extends React.Component {
 
 
         this.props.setCurrentImageRef(this.refs);   //pass the local `this.refs` array so it can altered by the parent <SmartTouchyImage /> component
-
-
     }
     componentWillUnmount() {
         
@@ -256,7 +254,7 @@ class FoggyOverlay extends React.Component {
         normalizedX += scrollWidthAdjustment;
         normalizedY += scrollTopAdjustment;
 
-        if(this.mouseIsDown === true) {
+        if(this.mouseIsDown === true && this.state.editButtonClicked === false) {
             let newMousePosition = {
                     x: normalizedX - 5,
                     y: normalizedY - 10
@@ -408,9 +406,41 @@ class EditRecentCrop extends React.Component {
     constructor(props) {
         super(props);
 
+        //here I will try to initialize this.ocrResultText with the resulting text of the this.props.src image data
+        this.ocrResultText = '';
+        // $.ajax({
+        //     url: 'https://script.google.com/macros/s/AKfycbxi6q5NnhynvGe_-PSQ5tH5qe11tQbC6SlU443PmcqvJXYrm-k/exec?base64=' + this.props.src,
+        //     type: 'GET'
+        // }).done((e) => {
+        //     console.log('in .then of ajax request with e = ', e);
+        // })
+
+
+      
+
+
+
+        $.get({
+            url: 'https://script.google.com/macros/s/AKfycbxi6q5NnhynvGe_-PSQ5tH5qe11tQbC6SlU443PmcqvJXYrm-k/exec?base64=' + this.props.src,
+            data: {
+                type: 'doOCR',
+                // base64: this.props.src
+                dataType: 'json',
+            },
+            success: (e) => {
+                console.log('in success with e = ', e);
+
+            }
+        })
+
+
+
+
+
         this.state = {
             editableImageText: '',
-            mouseIsDown: false
+            mouseIsDown: false,
+            ocrResultText: ''
         }
     }
     componentWillMount() {
@@ -424,6 +454,14 @@ class EditRecentCrop extends React.Component {
         //     $(this.refs['image']).fadeOut();
         // }, 1500);
         this.props.setParentState({ opacityOverride: 1 });          //to make the container not be shown for now
+
+
+        //now I will try to set the state for the text off of the image (the result of the OCR logic)
+        if(this.ocrResultText !== '') {
+            this.setState({
+                ocrResultText: this.ocrResultText
+            })
+        }
     }
     onEditableImageTextChange(e) {
         console.log('onEditableImageTextChange e = ', e);
@@ -436,7 +474,7 @@ class EditRecentCrop extends React.Component {
         return (
             <View style={{...styles.EditRecentCrop}}>
                 <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
-                <Input placeholder='enter manually' value={this.state.editableImageText} style={{ width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center' }} onChange={this.onEditableImageTextChange.bind(this)} />
+                <Input placeholder='enter manually' value={this.state.editableImageText} style={{ zIndex: 1, width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center' }} onChange={this.onEditableImageTextChange.bind(this)} />
            
            </View>
         )

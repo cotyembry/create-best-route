@@ -4,10 +4,6 @@
 	<title>Create Best Route</title>
 	<!-- <meta name="viewport" content="width=device-width" , initial-scale="1" , maximum-scale="1"> commented out 03-10-2018 to use the below reccommended by hammer.js docs -->
 	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1"><!-- this makes the page render like its on a phone -->
-	<!-- <script type="text/javascript" src="./js/hammer.min.js"></script> -->
-	
-	<link rel="stylesheet" href="./node_modules/croppie/croppie.css" />
-	<script src="./node_modules/croppie/croppie.js"></script>
 	
 	
 	
@@ -26,6 +22,11 @@
 
 	<!-- <div id="test"></div> -->
 	<div id="CreateBestRoute" style="width: 100%; height: 100%;"></div>
+	<script type="text/javascript">
+		window.CreateBestRouteDoOCRCallback = function(e) {							//this will be called by what is returned from the google apps script logic in the CreateBestRoute project
+			console.log('in window.CreateBestRouteDoOCRCallback with e = ', e);
+		}
+	</script>
 
 	<script type="text/javascript" src="./dist/bundle.js"></script>
 
