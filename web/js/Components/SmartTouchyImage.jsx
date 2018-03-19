@@ -406,6 +406,7 @@ class EditRecentCrop extends React.Component {
     constructor(props) {
         super(props);
 
+        this.didMount = false;
         //here I will try to initialize this.ocrResultText with the resulting text of the this.props.src image data
         this.ocrResultText = '';
         // $.ajax({
@@ -420,19 +421,29 @@ class EditRecentCrop extends React.Component {
 
 
 
-        $.get({
-            url: 'https://script.google.com/macros/s/AKfycbxi6q5NnhynvGe_-PSQ5tH5qe11tQbC6SlU443PmcqvJXYrm-k/exec?base64=' + this.props.src,
+        $.ajax({
+            type: 'POST',
+            url: 'https://script.google.com/macros/s/AKfycbxi6q5NnhynvGe_-PSQ5tH5qe11tQbC6SlU443PmcqvJXYrm-k/exec',
             data: {
                 type: 'doOCR',
-                // base64: this.props.src
-                dataType: 'json',
+                base64: this.props.src
             },
+            // dataType: 'json',
             success: (e) => {
                 console.log('in success with e = ', e);
+                this.ocrResultText = e;
 
+                if(this.didMount === true) {
+                    this.setState({
+                        editableImageText: e,
+                        ocrResultText: e
+                    })
+                }
+            },
+            error: (e) => {
+                console.log('in error with e = ', e);
             }
-        })
-
+        });
 
 
 
@@ -450,6 +461,7 @@ class EditRecentCrop extends React.Component {
         this.props.setParentState({ opacityOverride: styles.FoggyOverlay.opacity });          //to make the container not be shown for now
     }
     componentDidMount() {
+        this.didMount = true;
         // setTimeout((e) => {
         //     $(this.refs['image']).fadeOut();
         // }, 1500);
@@ -459,7 +471,8 @@ class EditRecentCrop extends React.Component {
         //now I will try to set the state for the text off of the image (the result of the OCR logic)
         if(this.ocrResultText !== '') {
             this.setState({
-                ocrResultText: this.ocrResultText
+                ocrResultText: this.ocrResultText,
+                editableImageText: this.ocrResultText
             })
         }
     }

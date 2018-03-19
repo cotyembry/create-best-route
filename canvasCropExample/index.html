@@ -33,6 +33,8 @@
 			background-color: purple;
 		}
 	</style>
+
+	<script src="./js/jquery.js"></script>
 </head>
 <body>
 
@@ -110,7 +112,38 @@
 				document.getElementById('image2').src = png;
 
 				window.png = png;
+
+				console.log('png.length = ', png.length);
 				//end crop logic
+
+
+				$.ajax({
+					type: "POST",
+					url: 'https://script.google.com/macros/s/AKfycbxi6q5NnhynvGe_-PSQ5tH5qe11tQbC6SlU443PmcqvJXYrm-k/exec',
+					data: {
+						type: 'doOCR',
+						base64: png
+					},
+					// dataType: 'json',
+					success: (e) => {
+						console.log(e.length + 'in success with e = ', e);
+					},
+					error: (e) => {
+						console.log('in error with e = ', e);
+					}
+				});
+
+				// $.get({
+				// 	url: 'https://script.google.com/macros/s/AKfycbxi6q5NnhynvGe_-PSQ5tH5qe11tQbC6SlU443PmcqvJXYrm-k/exec?base64=' + this.props.src,
+				// 	data: {
+				// 		type: 'doOCR',
+				// 		// base64: this.props.src
+				// 		dataType: 'json',
+				// 	},
+				// 	success: (e) => {
+				// 		console.log('in success with e = ', e);
+				// 	}
+				// })
 			}
 		}
 		
