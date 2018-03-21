@@ -486,7 +486,8 @@ class EditRecentCrop extends React.Component {
     }
     render() {
         let _textAreaScrollHeight = '',
-            _defaultHeight = 50;
+            _defaultHeight = 50,
+            _maxHeight = parseFloat(window.innerHeight) + 'px';
         if (this.state.textAreaScrollHeight !== '') {
             _textAreaScrollHeight = this.state.textAreaScrollHeight;
         }
@@ -503,7 +504,7 @@ class EditRecentCrop extends React.Component {
                     flexDirection: 'row',
                     justifyContent: 'space-around'
                 }}>
-                    <textarea ref={eref => { this.refs['textArea'] = findDOMNode(eref)}} placeholder='detecting text...' value={this.state.editableImageText} style={{ zIndex: 1, width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center', height: _textAreaScrollHeight }} onChange={this.onEditableImageTextChange.bind(this)}  />
+                    <textarea ref={eref => { this.refs['textArea'] = findDOMNode(eref)}} placeholder='detecting text...' value={this.state.editableImageText} style={{ zIndex: 1, width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center', height: _textAreaScrollHeight, maxHeight: _maxHeight }} onChange={this.onEditableImageTextChange.bind(this)}  />
 
                 </View>
            </View>
