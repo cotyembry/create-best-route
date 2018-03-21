@@ -272,6 +272,10 @@ class FoggyOverlay extends React.Component {
             editButtonClicked: true
         })
     }
+    nextButtonClicked() {
+        console.log('nextButton clicked');
+        //TODO: add logic to go to the next particular address portion
+    }
     onImageLoadCallback(e) {
            
     }
@@ -385,7 +389,7 @@ class FoggyOverlay extends React.Component {
                                             <Button onClick={this.redoButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Redo?' />
                                             
                                             {this.state.croppedBase64String !== '' && this.state.editButtonClicked === true &&
-                                                <Button onClick={this.editButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Next' />
+                                                <Button onClick={this.nextButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Next' />
                                             }
                                             {this.state.croppedBase64String !== '' && this.state.editButtonClicked === false &&
                                                 <Button onClick={this.editButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Edit' />
