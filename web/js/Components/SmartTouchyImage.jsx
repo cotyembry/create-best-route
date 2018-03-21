@@ -24,12 +24,13 @@ export default class SmartTouchyImage extends React.Component {
         this.state = {
             askedUserForNumber: false,
             base64: typeof this.props.src !== 'undefined' ? this.props.src : '',
-            currentImage: '',                                                                                                                   //TODO: add logic to populate this
-            numberOfImages: '',                                                                                                                 //TODO: add logic to populate this
+            currentImageCrop: 1,                                                                                                                 //TODO: add logic to populate this
+            numberOfImages: '',  
             displayFoggyOverlay: typeof this.props.displayFoggyOverlay !== 'undefined' ? this.props.displayFoggyOverlay : false,
             onImageLoadEvent: '',
             showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false,
-            numberOfAddresses: ''
+            numberOfAddresses: '',
+            numberOfImagesProcessed: 0
         }
     }
     componentDidMount() {
@@ -85,8 +86,28 @@ export default class SmartTouchyImage extends React.Component {
             displayFoggyOverlay: true
         })
     }
+    _getCurrentImageNumber() {
+        return this.state.currentImage;
+    }
+    _getCurrentCropNumber() {                   //this will represent the current number for the little cropped rectangle(s) out of the big complete image src
+        return this.state.currentImageCrop;
+    }
+    _setCurrentCropNumber() {                   //this will represent the current number for the little cropped rectangle(s) out of the big complete image src
+        this.setState({
+            currentImageCrop: this.state.currentImageCrop + 1
+        });
+    }
+    _getNumberOfImagesProcessed() {
+        return this.state.numberOfImagesProcessed;
+    }
+    _setNumberOfImagesProcessed() {
+        this.setState({
+            numberOfImagesProcessed: this.state.numberOfImagesProcessed + 1
+        })
+    }
+    _nextButtonSelected() {
 
-    
+    }
     render() {
         let _canvasRef = typeof this.refs['customCanvas'] !== 'undefined' ? this.refs['customCanvas'] : '';
         return (
@@ -94,7 +115,7 @@ export default class SmartTouchyImage extends React.Component {
                 <Image onLoad={e => { this.onImageLoadEventCallback(e) }} style={{  position: 'absolute', top: '0px', left: '0px' }} _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}} src={this.props.src} />
                 <canvas style={styles.customCanvas} className='customCanvas' ref={(eref) => { this.refs['customCanvas'] = findDOMNode(eref); this.childRefsArray['customCanvas'] = this.refs['customCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
                 {this.state.displayFoggyOverlay === true &&
-                    <FoggyOverlay currentImage={this.state.currentImage} canvasRef={_canvasRef} imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
+                    <FoggyOverlay getNumberOfImagesProcessed={this._getNumberOfImagesProcessed.bind(this)} imagesTaken={this.props.imagesTakenBase64} setCurrentCropNumber={this._setCurrentCropNumber.bind(this)} getCurrentCropNumber={this._getCurrentCropNumber.bind(this)} getCurrentImageNumber={this._getCurrentImageNumber.bind(this)} nextButtonClicked={this._nextButtonSelected.bind(this)} canvasRef={_canvasRef} imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
                 }
             </View>
         )
@@ -148,8 +169,6 @@ class FoggyOverlay extends React.Component {
         this.refs['FoggyOverlay'].onmousemove = this.onMouseMove.bind(this);
         
         
-        
-        
         this.refs['FoggyOverlay'].ontouchstart = this.onMouseDown.bind(this);
         this.refs['FoggyOverlay'].ontouchend = this.onMouseUp.bind(this);
         this.refs['FoggyOverlay'].ontouchmove = this.onMouseMove.bind(this);
@@ -170,69 +189,70 @@ class FoggyOverlay extends React.Component {
             })
         }       
     }
+    checkIfMoreImagesToBeProcessed() {
+        let moreAddressesToProcess = false;
+        //TODO: write logic for the `nextButtonSelected` method
+        if (this.props.getNumberOfImagesProcessed() < this.props.imagesTaken) {
+            console.warn('TODO: test this logic before moving on')
+            moreAddressesToProcess = true;
+        }
+        return moreAddressesToProcess;
+    }
     onMouseUp(e) {
         this.mouseIsUp = true;
         this.mouseIsDown = false;
+        if (this.state.editButtonClicked === false) {
+            //now based on the top left most, top right most, bottom left most, and bottom right most elements, I will make a rectangle for that area and take away the circles
+            let rightMost = '',
+                topMost = '',
+                leftMost = '',
+                bottomMost = '',
+                scrollWidthAdjustment = '',
+                scrollTopAdjustment = '';
+                this.mousePositionArray.map((mousePosition, i) => {
+                    let x = mousePosition.x,
+                        y = mousePosition.y;
+                    scrollTopAdjustment = window.document.documentElement.scrollTop;            //to deal with if the page is scrolled down or to the left at all
+                    scrollWidthAdjustment = window.document.documentElement.scrollLeft;
+                    x += scrollWidthAdjustment;
+                    y += scrollTopAdjustment;
+                    if(leftMost === '' || leftMost > x) {
+                        leftMost = x + 2;
+                    }
+                    if(rightMost === '' || rightMost < x) {
+                        rightMost = x;
+                    }
+                    if(bottomMost === '' || bottomMost < y) {
+                        bottomMost = y;
+                    }
+                    if(topMost === '' || topMost > y) {
+                        topMost = y;
+                    }
+                });
 
-        //now based on the top left most, top right most, bottom left most, and bottom right most elements, I will make a rectangle for that area and take away the circles
-        let rightMost = '',
-            topMost = '',
-            leftMost = '',
-            bottomMost = '',
-            scrollWidthAdjustment = '',
-            scrollTopAdjustment = '';
-        this.mousePositionArray.map((mousePosition, i) => {
-            let x = mousePosition.x,
-                y = mousePosition.y;
+                let _showOutlinedAddressBox = false;
+                if (this.state.askedUserForNumber === true) {
+                    _showOutlinedAddressBox = true;
+                }
+                cotysEventHelper.setState({         //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
+                    showOutlinedAddressBox: _showOutlinedAddressBox,
 
-            scrollTopAdjustment = window.document.documentElement.scrollTop;            //to deal with if the page is scrolled down or to the left at all
-            scrollWidthAdjustment = window.document.documentElement.scrollLeft;
-            x += scrollWidthAdjustment;
-            y += scrollTopAdjustment;
-
-            
-            if(leftMost === '' || leftMost > x) {
-                leftMost = x;
+                    leftMost: leftMost,
+                    rightMost: rightMost,
+                    bottomMost: bottomMost,
+                    topMost: topMost
+                });
+                this.leftMost = leftMost;
+                this.rightMost = rightMost;
+                this.topMost = topMost;
+                this.bottomMost = bottomMost;
+                //now to send event to Jcrop to give me the cropped base64 representation to the cropped image
+                this.processCropOnImage(e);
+                this.setState(this.state);
             }
-            if(rightMost === '' || rightMost < x) {
-                rightMost = x;
+            else {
+                console.log('in else...')
             }
-            if(bottomMost === '' || bottomMost < y) {
-                bottomMost = y;
-            }
-            if(topMost === '' || topMost > y) {
-                topMost = y;
-            }
-        });
-
-        let _showOutlinedAddressBox = false;
-        if (this.state.askedUserForNumber === true) {
-            _showOutlinedAddressBox = true;
-        }
-
-
-        cotysEventHelper.setState({         //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
-            showOutlinedAddressBox: _showOutlinedAddressBox,
-
-            leftMost: leftMost,
-            rightMost: rightMost,
-            bottomMost: bottomMost,
-            topMost: topMost
-        });
-
-
-        this.leftMost = leftMost;
-        this.rightMost = rightMost;
-        this.topMost = topMost;
-        this.bottomMost = bottomMost;
-
-
-        //now to send event to Jcrop to give me the cropped base64 representation to the cropped image
-        this.processCropOnImage(e);
-
-
-
-        this.setState(this.state);
     }
     onMouseDown(e) {
         this.mouseIsUp = false;
@@ -252,7 +272,7 @@ class FoggyOverlay extends React.Component {
             normalizedY = e.changedTouches[0].clientY;
         }
         else {
-            normalizedX = e.clientX;
+            normalizedX = e.clientX + 2;
             normalizedY = e.clientY;
         }
 
@@ -263,8 +283,10 @@ class FoggyOverlay extends React.Component {
 
         if(this.mouseIsDown === true && this.state.editButtonClicked === false) {
             let newMousePosition = {
-                    x: normalizedX - 5,
-                    y: normalizedY - 10
+                    // x: normalizedX - 5,
+                    x: normalizedX,
+                    // y: normalizedY - 10
+                    y: normalizedY
                 },
                 _mousePositionArray = this.mousePositionArray.map(e => e);
             _mousePositionArray.push(newMousePosition);
@@ -280,48 +302,69 @@ class FoggyOverlay extends React.Component {
         })
     }
     nextButtonClicked() {
-        console.log('nextButton clicked');
-        //TODO: add logic to go to the next particular address portion
-        if(this.state.currentCrop === '' || this.state.currentCrop < this.state.numberOfAddresses) {
-            console.log('go to the next image', this.state.currentCrop, ",", this.state.numberOfAddresses);
-            let previousCoppedRects = this.state.previousCroppedRects.map(e => e);
-            previousCoppedRects.push({
-                leftMost: this.leftMost,
-                topMost: this.topMost,
-                rightMost: this.rightMost,
-                bottomMost: this.bottomMost,
-                base64: this.state.croppedBase64String
-            })
-            this.setState({
-                previousCroppedRects: previousCoppedRects,
-                croppedBase64String: '',            //to reset the state to start the next cropped section of the picture
-                editButtonClicked: false            //to reset the state to start the next cropped section of the picture
-            })
-        }
-        else if(this.state.currentCrop === this.state.numberOfAddresses) {
-            console.log('go to the next picture (if there is on, otherwise convert all of the edited addresses into a page that can be saved in notes or something)')
-            if(this.state.currentImage === this.state.numberOfImages) {
-                //TODO: this is the last image, if here ask the user if they would like to add more addresses (or even add more manually)
+        let previousCoppedRects = this.state.previousCroppedRects.map(e => e);
+        previousCoppedRects.push({
+            leftMost: this.leftMost,
+            topMost: this.topMost,
+            rightMost: this.rightMost,
+            bottomMost: this.bottomMost,
+            base64: this.state.croppedBase64String
+        })
+        
+        this.leftMost = '';
+        this.rightMost = '';
+        this.topMost = '';
+        this.bottomMost = '';
+        this.props.canvasRef.getContext('2d').clearRect(0, 0, this.props.canvasRef.width, this.props.canvasRef.height); //clear the canvas for redrawing next time
+        
+        this.mousePositionArray = [];
+        cotysEventHelper.setState({
+            showOutlinedAddressBox: false
+        });
+        this.setState({
+            croppedBase64String: '',            //to reset the state to start the next cropped section of the picture
+            editButtonClicked: false,
+            mousePositionArray: [],
+            previousCroppedRects: previousCoppedRects
+        });
+
+
+        //show next address section
+        if (this.props.getCurrentCropNumber() >= this.state.numberOfAddresses) {                                                 //this.state.numberOfAddresses is set when the user says how many addresses there are
+            //i.e. if they have outlined the same number that they said were on the picture so its time to move on
+            
+
+
+
+            //if there are more images to be processed
+            if(this.checkIfMoreImagesToBeProcessed() === true) {
+                //start next logic to begin 1st crop on the next image
+                console.log('take the user to the next image');
+            
             }
+            else {
+                //if here the user is done adding individual addresses
+                //go to the next component and render all of the addresses the user entered into a <ScrollView>...</ScrollView>
+                console.log('show all addresses edited and accepted now (maybe ask the user first if they want to take another picture or if they want to enter another address manually or if they want to replace an existing address from photo)');
+
+            }
+
 
 
 
         }
         else {
-            console.warn('come up with a default case in nextButtonClicked');
+            //the user needs to circle more portions of the current image
+            console.log('the user needs to circle more portions of the current image');
+
+            this.props.setCurrentCropNumber();
         }
     }
     onImageLoadCallback(e) {
            
     }
-    redoButtonClicked() {
+    resetToStart() {
         //reset the state in this.state.mousePositionArray and this.leftMost, this.rightMost, this.topMost, this.bottomMost
-        cotysEventHelper.setState({
-            leftMost: '',
-            rightMost: '',
-            topMost: '',
-            bottomMost: ''
-        });
 
         this.leftMost = '';
         this.rightMost = '';
@@ -416,7 +459,7 @@ class FoggyOverlay extends React.Component {
 
                                     <View style={{width: '100%', height: '100%', top: '0px', left: '0px', position: 'absolute'}}>
                                         <View style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginBottom: '7px'}}>
-                                            <Button onClick={this.redoButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Redo?' />
+                                            <Button onClick={this.resetToStart.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Redo?' />
                                             
                                             {this.state.croppedBase64String !== '' && this.state.editButtonClicked === true &&
                                                 <Button onClick={this.nextButtonClicked.bind(this)} styleRoot={{...styles.noSelectStyle, height: ''}} value='Next' />
