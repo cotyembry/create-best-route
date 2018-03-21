@@ -451,7 +451,8 @@ class EditRecentCrop extends React.Component {
         this.state = {
             editableImageText: '',
             mouseIsDown: false,
-            ocrResultText: ''
+            ocrResultText: '',
+            textAreaScrollHeight: ''
         }
     }
     componentWillMount() {
@@ -477,18 +478,34 @@ class EditRecentCrop extends React.Component {
         }
     }
     onEditableImageTextChange(e) {
-        console.log('onEditableImageTextChange e = ', e);
+        console.log('onEditableImageTextChange e = ', e.nativeEvent, e.nativeEvent.target.value);
         this.setState({
-            editableImageText: e
+            editableImageText: e.nativeEvent.target.value,
+            textAreaScrollHeight: typeof this.refs['textArea'] !== 'undefined' ? this.refs['textArea'].scrollHeight + 'px' : ''
         })
     }
     render() {
-        //onMouseOut={(e) => {this.setState({mouseIsDown: false})}} onMouseDown={(e) => {this.setState({mouseIsDown: true})}} onMouseUp={(e) => {this.setState({mouseIsDown: false})}}
+        let _textAreaScrollHeight = '',
+            _defaultHeight = 50;
+        if (this.state.textAreaScrollHeight !== '') {
+            _textAreaScrollHeight = this.state.textAreaScrollHeight;
+        }
+        if(_textAreaScrollHeight === '' || parseFloat(_textAreaScrollHeight) < _defaultHeight) {
+            _textAreaScrollHeight = _defaultHeight + 'px';
+        }
+        
         return (
             <View style={{...styles.EditRecentCrop}}>
                 <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
-                <Input placeholder='enter manually' value={this.state.editableImageText} style={{ zIndex: 1, width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center' }} onChange={this.onEditableImageTextChange.bind(this)} />
-           
+                
+                
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-around'
+                }}>
+                    <textarea ref={eref => { this.refs['textArea'] = findDOMNode(eref)}} placeholder='detecting text...' value={this.state.editableImageText} style={{ zIndex: 1, width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center', height: _textAreaScrollHeight }} onChange={this.onEditableImageTextChange.bind(this)}  />
+
+                </View>
            </View>
         )
     }
@@ -520,20 +537,34 @@ class PreviewImage extends React.Component {
 class QuestionNumberOverlay extends React.Component {
     constructor(props) {
         super(props);
+        this.didMount = false;
+        this.didRunLogic = false;
         this.state = {
+            animatedBorder: {},
             numberOfAddresses: '',
-            numberOfAddressesValue: ''
+            numberOfAddressesValue: '',
+            presentInvalidInputMessage: false            
         }
     }
     componentDidMount() {
+        this.didMount = true;
         this.props.setState({
             opacityOverride: 1
-        })
+        });
+        this.setState(this.state);
     }
     componentWillUnmount() {
         this.props.setState({
-            opacityOverride: styles.FoggyOverlay.opacity
+            opacityOverride: styles.FoggyOverlay.opacity                //set back to 'normal'
         })
+    }
+    componentDidUpdate() {
+        if(this.state.presentInvalidInputMessage === true && this.didRunLogic === false) {
+            this.didRunLogic = true;
+            this.setState({
+                animatedBorder: {...styles.addBorder}
+            })
+        }
     }
     onNumberOfAddressesChange(newNumber) {
         this.setState({
@@ -547,6 +578,11 @@ class QuestionNumberOverlay extends React.Component {
                 numberOfAddresses: this.state.numberOfAddresses
             })
         }
+        else {
+            this.setState({
+                presentInvalidInputMessage: true
+            })
+        }
     }
     textNumberClicked(e) {
         this.setState({
@@ -554,21 +590,45 @@ class QuestionNumberOverlay extends React.Component {
         })
     }
     validateAddressInputValue() {
-        //TODO: implement logic
-        return true;
+        let returnValue = false;
+        if(parseFloat(this.state.numberOfAddresses) > 0) {
+            returnValue = true;
+        }
+        
+        return returnValue;
     }
     render() {
+        let _animateBorder = {};
+        if(this.didMount === true) {
+            // _animateBorder = {...styles.addBorder};
+        }
         return (
             <View style={styles.QuestionNumberOverlay}>
-                <Text>How many addresses are on this image?</Text>
-                    <View style={{flexDirection: 'column'}}>
-                        <Input placeholder='enter manually' value={this.state.numberOfAddresses} style={{width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center'}} onChange={this.onNumberOfAddressesChange.bind(this)} />
-                        <View style={{justifyContent: 'space-evenly'}}>
-                            {[1,2,3,4,5,6,7,8,9,10].map((number, j) =>
-                                <Text className='hover' key={j} onClick={this.textNumberClicked.bind(this, number)}>{number}</Text>
-                            )}
-                        </View>
+                {this.state.presentInvalidInputMessage === false &&
+                    <Text>How many addresses are on this image?</Text>
+                }
+                {this.state.presentInvalidInputMessage === true &&
+                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{...styles.animatedBorder, ...this.state.animatedBorder}}>Invalid Input.. </Text><Text>{' '}How many addresses are on this image (enter a number)?</Text>
                     </View>
+                }
+
+
+
+                <View style={{flexDirection: 'column'}}>
+                    <Input type='number' placeholder='enter manually' value={this.state.numberOfAddresses} style={{width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center'}} onChange={this.onNumberOfAddressesChange.bind(this)} />
+                    <View style={{justifyContent: 'space-evenly'}}>
+                        {/* 
+                            TODO: see the following to format these numbers to be like a keypad (its help for positioning)
+                                https://stackoverflow.com/questions/29546550/flexbox-4-items-per-row
+                        */}
+                        {[1,2,3,4,5,6,7,8,9,10].map((number, j) =>
+                            <Text className='hover' key={j} onClick={this.textNumberClicked.bind(this, number)}>{number}</Text>
+                        )}
+                    </View>
+                </View>
+                
+                
                 <Button value='Next' onClick={this.nextButtonClicked.bind(this)} />
             </View>
         )
@@ -576,6 +636,15 @@ class QuestionNumberOverlay extends React.Component {
 }
 
 const styles = {
+    animatedBorder: {
+        boxSizing: 'border-box',
+        border: 'solid 1px black',
+        transition: 'all 1s'
+    },
+    addBorder: {
+        transition: 'all 1s',
+        border: 'solid 1px white'
+    },
     SmartTouchyImage: {
         display: 'flex',
         flexDirection: 'column',

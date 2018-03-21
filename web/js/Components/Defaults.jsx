@@ -2,52 +2,25 @@ import React from 'react';
 
 
 
-// export class View extends React.Component {
-//     render() {
-//         let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {};
-//         return (
-//             <div style={{ ...styles.View, ..._stylesProp }}>
-//                 {this.props.children}
-//             </div>
-//         )
-//     }
-// }
-export class View extends React.Component {
-    onMouseUp(e) {
-        if(typeof this.props.onMouseUp !== 'undefined') {
-            this.props.onMouseUp(e);
-        }        
-    }
-    onMouseDown(e) {
-        if(typeof this.props.onMouseDown !== 'undefined') {
-            this.props.onMouseDown(e);
-        }
-    }
-    onMouseMove(e) {
-        if(typeof this.props.onMouseMove !== 'undefined') {
-            this.props.onMouseMove(e);
-        }
-    }
-    referenceCallback(eref) {
-        if(typeof this.props._ref !== 'undefined') {
-            this.props._ref(eref);
-        }
-    }
+export class Button extends React.Component {
     render() {
-        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
-            _className = typeof this.props.className !== 'undefined' ? this.props.className : '';
-        
-        
-        // <View ref={eref => { this.refs['TopLevelComponent'] = findDOMNode(eref) }} style={styles.CreateBestRoute}>
+        let _stylesPropRoot = typeof this.props.styleRoot !== 'undefined' ? { ...this.props.styleRoot } : {},
+            _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
+            _value = typeof this.props.value !== 'undefined' ? this.props.value : '',
+            _placeholder = typeof this.props.placeholder !== 'undefined' ? this.props.placeholder : '',
+            _text = _value === '' ? _placeholder : _value,
+            minHeight = _text === '' ? '33px' : '';
 
-        //this.props.ref is a callback function with the react reference in it so I should return the react reference and not deal with having to use `findDOMNode`
         return (
-            <div onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} ref={this.referenceCallback.bind(this)} className={_className.toString()} style={{ ...styles.View, ..._stylesProp }}>
-                {this.props.children}
+            <div style={{ ...styles.Button, ..._stylesPropRoot }}>
+                <button onClick={this.props.onClick} placeholder={_placeholder} style={{ ...styles.ButtonChild, ..._stylesProp }}>
+                    {_text}
+                </button>
             </div>
         )
     }
 }
+
 export class ScrollView extends React.Component {
     render() {
         let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {};
@@ -58,6 +31,7 @@ export class ScrollView extends React.Component {
         )
     }
 }
+
 export class Image extends React.Component {
     referenceCallback(eref) {
         if (typeof this.props._ref !== 'undefined') {
@@ -82,22 +56,7 @@ export class Image extends React.Component {
         )
     }
 }
-export class Text extends React.Component {
-    onClick(e) {
-        if(typeof this.props.onClick !== 'undefined') {
-            this.props.onClick(e);
-        }
-    }
-    render() {
-        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
-            _className = typeof this.props.className !== 'undefined' ? this.props.className : '';
-        return (
-            <span className={_className} style={{..._stylesProp}} onClick={this.onClick.bind(this)}>
-                {this.props.children}
-            </span>
-        )
-    }
-}
+
 export class Input extends React.Component {
     constructor(props) {
         super(props);
@@ -118,27 +77,60 @@ export class Input extends React.Component {
     }
     render() {
         let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
-            _placeholder = typeof this.props.placeholder !== 'undefined' ? this.props.placeholder : '';
+            _placeholder = typeof this.props.placeholder !== 'undefined' ? this.props.placeholder : '',
+            _type = typeof this.props.type !== 'undefined' ? this.props.type : '';
         return (
-            <input placeholder={_placeholder} value={this.state.value} onChange={this.onInputChange.bind(this)} style={{..._stylesProp}} />
+            <input type={_type} placeholder={_placeholder} value={this.state.value} onChange={this.onInputChange.bind(this)} style={{..._stylesProp}} />
         )
     }
 }
 
-export class Button extends React.Component {
+export class Text extends React.Component {
+    onClick(e) {
+        if (typeof this.props.onClick !== 'undefined') {
+            this.props.onClick(e);
+        }
+    }
     render() {
-        let _stylesPropRoot = typeof this.props.styleRoot !== 'undefined' ? { ...this.props.styleRoot } : {},
-            _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
-            _value = typeof this.props.value !== 'undefined' ? this.props.value : '',
-            _placeholder = typeof this.props.placeholder !== 'undefined' ? this.props.placeholder : '',
-            _text = _value === '' ? _placeholder : _value,
-            minHeight = _text === '' ? '33px' : '';
-       
+        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
+            _className = typeof this.props.className !== 'undefined' ? this.props.className : '';
         return (
-            <div style={{ ...styles.Button, ..._stylesPropRoot }}>
-                <button onClick={this.props.onClick} placeholder={_placeholder} style={{...styles.ButtonChild, ..._stylesProp}}>
-                    {_text}
-                </button>
+            <span className={_className} style={{ ..._stylesProp }} onClick={this.onClick.bind(this)}>
+                {this.props.children}
+            </span>
+        )
+    }
+}
+
+export class View extends React.Component {
+    onMouseUp(e) {
+        if (typeof this.props.onMouseUp !== 'undefined') {
+            this.props.onMouseUp(e);
+        }
+    }
+    onMouseDown(e) {
+        if (typeof this.props.onMouseDown !== 'undefined') {
+            this.props.onMouseDown(e);
+        }
+    }
+    onMouseMove(e) {
+        if (typeof this.props.onMouseMove !== 'undefined') {
+            this.props.onMouseMove(e);
+        }
+    }
+    referenceCallback(eref) {
+        if (typeof this.props._ref !== 'undefined') {
+            this.props._ref(eref);
+        }
+    }
+    render() {
+        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
+            _className = typeof this.props.className !== 'undefined' ? this.props.className : '';
+
+        //this.props.ref is a callback function with the react reference in it so I should return the react reference and not deal with having to use `findDOMNode`
+        return (
+            <div onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} ref={this.referenceCallback.bind(this)} className={_className.toString()} style={{ ...styles.View, ..._stylesProp }}>
+                {this.props.children}
             </div>
         )
     }
