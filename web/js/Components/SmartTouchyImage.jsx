@@ -116,6 +116,8 @@ class FoggyOverlay extends React.Component {
             mousePositionArray: [],
             showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false,
             opacityOverride: styles.FoggyOverlay.opacity,
+            currentCrop: '',
+            numberOfAddresses: ''
             // leftMost: typeof this.props.leftMost !== 'undefined' ? this.props.leftMost : '',
             // rightMost: typeof this.props.rightMost !== 'undefined' ? this.props.rightMost : '',
             // bottomMost: typeof this.props.bottomMost !== 'undefined' ? this.props.bottomMost : '',
@@ -275,6 +277,18 @@ class FoggyOverlay extends React.Component {
     nextButtonClicked() {
         console.log('nextButton clicked');
         //TODO: add logic to go to the next particular address portion
+        if(this.state.currentCrop === '' || this.state.currentCrop < this.state.numberOfAddresses) {
+            console.log('go to the next image');
+            // this.setState({
+            //     currentCrop: this.state.currentCrop === '' ? 1 : this.state.currentCrop + 1
+            // })
+        }
+        else if(this.state.currentCrop === this.state.numberOfAddresses) {
+            console.log('go to the next picture (if there is on, otherwise convert all of the edited addresses into a page that can be saved in notes or something)')
+        }
+        else {
+            console.warn('come up with a default case in nextButtonClicked');
+        }
     }
     onImageLoadCallback(e) {
            
