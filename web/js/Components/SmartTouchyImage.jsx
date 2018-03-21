@@ -24,6 +24,8 @@ export default class SmartTouchyImage extends React.Component {
         this.state = {
             askedUserForNumber: false,
             base64: typeof this.props.src !== 'undefined' ? this.props.src : '',
+            currentImage: '',                                                                                                                   //TODO: add logic to populate this
+            numberOfImages: '',                                                                                                                 //TODO: add logic to populate this
             displayFoggyOverlay: typeof this.props.displayFoggyOverlay !== 'undefined' ? this.props.displayFoggyOverlay : false,
             onImageLoadEvent: '',
             showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false,
@@ -92,7 +94,7 @@ export default class SmartTouchyImage extends React.Component {
                 <Image onLoad={e => { this.onImageLoadEventCallback(e) }} style={{  position: 'absolute', top: '0px', left: '0px' }} _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}} src={this.props.src} />
                 <canvas style={styles.customCanvas} className='customCanvas' ref={(eref) => { this.refs['customCanvas'] = findDOMNode(eref); this.childRefsArray['customCanvas'] = this.refs['customCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
                 {this.state.displayFoggyOverlay === true &&
-                    <FoggyOverlay canvasRef={_canvasRef} imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
+                    <FoggyOverlay currentImage={this.state.currentImage} canvasRef={_canvasRef} imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
                 }
             </View>
         )
@@ -108,12 +110,15 @@ class FoggyOverlay extends React.Component {
             croppiePictureURL: '',
             croppedBase64String: '',
             customCropEvent: '',
+            currentImage: this.props.currentImage,          //the currentImage number that is being processed by the user
+            numberOfImages: this.props.numberOfImages,
             editButtonClicked: false,
             mousePosition: {
                 x: '',
                 y: ''
             },
             mousePositionArray: [],
+            previousCroppedRects: [],
             showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false,
             opacityOverride: styles.FoggyOverlay.opacity,
             currentCrop: '',
@@ -278,13 +283,29 @@ class FoggyOverlay extends React.Component {
         console.log('nextButton clicked');
         //TODO: add logic to go to the next particular address portion
         if(this.state.currentCrop === '' || this.state.currentCrop < this.state.numberOfAddresses) {
-            console.log('go to the next image');
-            // this.setState({
-            //     currentCrop: this.state.currentCrop === '' ? 1 : this.state.currentCrop + 1
-            // })
+            console.log('go to the next image', this.state.currentCrop, ",", this.state.numberOfAddresses);
+            let previousCoppedRects = this.state.previousCroppedRects.map(e => e);
+            previousCoppedRects.push({
+                leftMost: this.leftMost,
+                topMost: this.topMost,
+                rightMost: this.rightMost,
+                bottomMost: this.bottomMost,
+                base64: this.state.croppedBase64String
+            })
+            this.setState({
+                previousCroppedRects: previousCoppedRects,
+                croppedBase64String: '',            //to reset the state to start the next cropped section of the picture
+                editButtonClicked: false            //to reset the state to start the next cropped section of the picture
+            })
         }
         else if(this.state.currentCrop === this.state.numberOfAddresses) {
             console.log('go to the next picture (if there is on, otherwise convert all of the edited addresses into a page that can be saved in notes or something)')
+            if(this.state.currentImage === this.state.numberOfImages) {
+                //TODO: this is the last image, if here ask the user if they would like to add more addresses (or even add more manually)
+            }
+
+
+
         }
         else {
             console.warn('come up with a default case in nextButtonClicked');
@@ -307,7 +328,6 @@ class FoggyOverlay extends React.Component {
         this.topMost = '';
         this.bottomMost = '';
 
-
         this.props.canvasRef.getContext('2d').clearRect(0, 0, this.props.canvasRef.width, this.props.canvasRef.height); //clear the canvas for redrawing next time
 
         this.mousePositionArray = [];
@@ -319,7 +339,6 @@ class FoggyOverlay extends React.Component {
             editButtonClicked: false,
             croppedBase64String: ''
         });
-        
     }
     processCropOnImage(e) {
         if (typeof this.props.imageReference !== 'undefined' && this.props.imageReference !== null && this.state.askedUserForNumber === true) {            
@@ -329,22 +348,15 @@ class FoggyOverlay extends React.Component {
                 png = '',                               //will be the base64 representation of the image as a string
                 w = this.rightMost - this.leftMost,
                 h = this.bottomMost - this.topMost;
-
             if (typeof this.props.imageReference !== 'undefined') {
-
                 context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
-
                 png = canvas.toDataURL('image/png');
-
                 this.setState({
                     croppedBase64String: png
                 })
                 //end crop logic
-                
             }
-
         }
-
     }
     _setState(newState) {
         this.setState(newState);
@@ -382,6 +394,10 @@ class FoggyOverlay extends React.Component {
                                     
                                     
                                     <svg style={styles.svg}>
+                                        {/* {this.state.previousCroppedRects.map((data, i) => <rect key={'previous_' + i} x={data.leftMost} y={data.topMost} width={(data.rightMost - data.leftMost) + 'px'} height={(data.bottomMost - data.topMost) + 'px'} /> } */}
+                                            
+                                        
+
                                         <rect x={this.leftMost} y={this.topMost} width={(this.rightMost - this.leftMost) + 'px'} height={(this.bottomMost - this.topMost) + 'px'} />
                                     
                                     </svg>
