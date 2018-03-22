@@ -191,8 +191,11 @@ class FoggyOverlay extends React.Component {
     }
     checkIfMoreImagesToBeProcessed() {
         let moreAddressesToProcess = false;
+
+        console.log('this.props.getNumberOfImagesProcessed() = ', this.props.getNumberOfImagesProcessed(), 'this.props.imagesTaken = ', this.props.imagesTaken.length);
+
         //TODO: write logic for the `nextButtonSelected` method
-        if (this.props.getNumberOfImagesProcessed() < this.props.imagesTaken) {
+        if (this.props.getNumberOfImagesProcessed() < this.props.imagesTaken.length) {
             console.warn('TODO: test this logic before moving on')
             moreAddressesToProcess = true;
         }
@@ -335,7 +338,7 @@ class FoggyOverlay extends React.Component {
             
 
 
-
+            //TODO: get this particular part working after figuring out the outer if else logic
             //if there are more images to be processed
             if(this.checkIfMoreImagesToBeProcessed() === true) {
                 //start next logic to begin 1st crop on the next image
@@ -346,7 +349,7 @@ class FoggyOverlay extends React.Component {
                 //if here the user is done adding individual addresses
                 //go to the next component and render all of the addresses the user entered into a <ScrollView>...</ScrollView>
                 console.log('show all addresses edited and accepted now (maybe ask the user first if they want to take another picture or if they want to enter another address manually or if they want to replace an existing address from photo)');
-
+            
             }
 
 
