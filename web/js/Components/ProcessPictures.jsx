@@ -57,7 +57,7 @@ export default class ProcessPictures extends React.Component {
             <View style={styles.ProcessPictures}>
                 <ScrollView style={{width: '100%', height: '100%'}}>
                     {this.state.imagesTakenBase64.map((base64, i) => {
-                        if(i === this.state.activeImage - 1) {              //-1 to normalize the number from human readable to an array index
+                        if(i + 1 === this.state.activeImage) {              //+1 to normalize the number from array index to human
                             return (
                                 <SmartTouchyImage {...this.state} {...this.props} key={i} src={base64} />
                             )

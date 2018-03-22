@@ -189,6 +189,9 @@ class FoggyOverlay extends React.Component {
             })
         }       
     }
+    canStartRecordingPointsToDrawDuringRender() {
+        return this.mouseIsDown === true && this.state.editButtonClicked === false;
+    }
     checkIfMoreImagesToBeProcessed() {
         let moreAddressesToProcess = false;
 
@@ -281,7 +284,7 @@ class FoggyOverlay extends React.Component {
         normalizedX += scrollWidthAdjustment;
         normalizedY += scrollTopAdjustment;
 
-        if(this.mouseIsDown === true && this.state.editButtonClicked === false) {
+        if(this.canStartRecordingPointsToDrawDuringRender() === true) {
             let newMousePosition = {
                     // x: normalizedX - 5,
                     x: normalizedX,

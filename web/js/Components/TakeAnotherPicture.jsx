@@ -17,7 +17,7 @@ export default class TakeAnotherPicture extends React.Component {
     }
     componentWillReceiveProps(newProps) {
         this.setState({
-            imagesTakenBase64: typeof newProps.imagesTakenBase64 !== 'undefined' ? newProps.imagesTakenBase64.map(e => e) : []
+            imagesTakenBase64: (typeof newProps !== 'undefined' && typeof newProps.imagesTakenBase64 !== 'undefined') ? newProps.imagesTakenBase64.map(e => e) : []
         })
     }
     componentDidMount() {
@@ -54,8 +54,8 @@ export default class TakeAnotherPicture extends React.Component {
                 });
 
                 this.props.setState({
-                    imagesTakenBase64: bAClone.push(base64)
-                })
+                    imagesTakenBase64: bAClone
+                });
             })
         });
 
