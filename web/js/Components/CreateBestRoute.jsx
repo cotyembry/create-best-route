@@ -48,6 +48,9 @@ export default class CreateBestRoute extends React.Component {
     componentWillMount() {
         this.refs = [];
     }
+    _setState(newState) {
+        this.setState(newState);
+    }
     render() {
         return (
             <View _ref={eref => {this.refs['TopLevelComponent'] = findDOMNode(eref)}} style={styles.CreateBestRoute}>
@@ -61,7 +64,7 @@ export default class CreateBestRoute extends React.Component {
 
 
                 {this.state.route === 2 &&
-                    <TakeAnotherPicture {...this.state} />
+                    <TakeAnotherPicture setState={this._setState.bind(this)} {...this.state} />
                 }
 
 

@@ -220,10 +220,10 @@ class FoggyOverlay extends React.Component {
                     x += scrollWidthAdjustment;
                     y += scrollTopAdjustment;
                     if(leftMost === '' || leftMost > x) {
-                        leftMost = x + 2;
+                        leftMost = x - 1;
                     }
                     if(rightMost === '' || rightMost < x) {
-                        rightMost = x;
+                        rightMost = x + 2;
                     }
                     if(bottomMost === '' || bottomMost < y) {
                         bottomMost = y;
@@ -252,9 +252,6 @@ class FoggyOverlay extends React.Component {
                 //now to send event to Jcrop to give me the cropped base64 representation to the cropped image
                 this.processCropOnImage(e);
                 this.setState(this.state);
-            }
-            else {
-                console.log('in else...')
             }
     }
     onMouseDown(e) {
@@ -358,9 +355,9 @@ class FoggyOverlay extends React.Component {
         }
         else {
             //the user needs to circle more portions of the current image
-            console.log('the user needs to circle more portions of the current image');
+            console.log('circle more portions of the current image');
 
-            this.props.setCurrentCropNumber();
+            this.props.setCurrentCropNumber();                                          //this adds 1 to the current crop number in the parent component
         }
     }
     onImageLoadCallback(e) {

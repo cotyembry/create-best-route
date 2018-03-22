@@ -44,13 +44,17 @@ export default class TakeAnotherPicture extends React.Component {
         };
 
 
-        $(this.refs['cameraInput']).on('change', function (e) {
+        $(this.refs['cameraInput']).on('change', (e) => {
             var selectedFile = e.target.files[0];
-            selectedFile.convertToBase64(function (base64) {
+            selectedFile.convertToBase64((base64) => {
                 let bAClone = self.state.imagesTakenBase64.map(e => e);
                 bAClone.push(base64);
                 cotysEventHelper.setState({
                     imagesTakenBase64: bAClone
+                });
+
+                this.props.setState({
+                    imagesTakenBase64: bAClone.push(base64)
                 })
             })
         });
