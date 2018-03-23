@@ -14,6 +14,13 @@ var store = {
                 }
                 
                 break;
+            case 'getPreviousCroppedRects':
+                if(typeof action.data !== 'undefined' && typeof action.data.callback !== 'undefined') {
+                    cotysEventHelper.getPreviousCroppedRects = action.data.callback;
+                }
+                
+                
+                break;
             default:
                 console.warn('in store.js, add a case for action: ', actionType);
                 break;

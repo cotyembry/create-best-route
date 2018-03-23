@@ -87,7 +87,7 @@ export default class SmartTouchyImage extends React.Component {
         })
     }
     _getCurrentImageNumber() {
-        return this.state.currentImage;
+        return this.props.activeImage;
     }
     _getCurrentCropNumber() {                   //this will represent the current number for the little cropped rectangle(s) out of the big complete image src
         return this.state.currentImageCrop;
@@ -113,9 +113,26 @@ export default class SmartTouchyImage extends React.Component {
         return (
             <View style={styles.SmartTouchyImage}>
                 <Image onLoad={e => { this.onImageLoadEventCallback(e) }} style={{  position: 'absolute', top: '0px', left: '0px' }} _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}} src={this.props.src} />
+                
                 <canvas style={styles.customCanvas} className='customCanvas' ref={(eref) => { this.refs['customCanvas'] = findDOMNode(eref); this.childRefsArray['customCanvas'] = this.refs['customCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
+                
                 {this.state.displayFoggyOverlay === true &&
-                    <FoggyOverlay goToNextImage={this.props.goToNextImage} getNumberOfImagesProcessed={this._getNumberOfImagesProcessed.bind(this)} imagesTaken={this.props.imagesTakenBase64} setCurrentCropNumber={this._setCurrentCropNumber.bind(this)} getCurrentCropNumber={this._getCurrentCropNumber.bind(this)} getCurrentImageNumber={this._getCurrentImageNumber.bind(this)} nextButtonClicked={this._nextButtonSelected.bind(this)} canvasRef={_canvasRef} imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
+                    <FoggyOverlay 
+                        goToNextImage={this.props.goToNextImage} 
+                        getNumberOfImagesProcessed={this._getNumberOfImagesProcessed.bind(this)} 
+                        imagesTaken={this.props.imagesTakenBase64} 
+                        setCurrentCropNumber={this._setCurrentCropNumber.bind(this)} 
+                        getCurrentCropNumber={this._getCurrentCropNumber.bind(this)} 
+                        getCurrentImageNumber={this._getCurrentImageNumber.bind(this)} 
+                        nextButtonClicked={this._nextButtonSelected.bind(this)} 
+                        canvasRef={_canvasRef} imageReference={this.refs['image']} 
+                        imageLoadEvent={this.state.onLoadImageEvent} 
+                        setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} 
+                        FoggyOverlayCallback={this.FoggyOverlayCallback} 
+                        base64={this.props.src} 
+                        numberOfAddresses={this.state.numberOfAddresses} 
+                        showOutlinedAddressBox={this.state.showOutlinedAddressBox} 
+                    />
                 }
             </View>
         )
@@ -132,6 +149,7 @@ class FoggyOverlay extends React.Component {
             croppedBase64String: '',
             customCropEvent: '',
             currentImage: this.props.currentImage,          //the currentImage number that is being processed by the user
+            editableImageText: '',
             numberOfImages: this.props.numberOfImages,
             editButtonClicked: false,
             mousePosition: {
@@ -183,11 +201,15 @@ class FoggyOverlay extends React.Component {
         this.refs = [];
     }
     componentWillReceiveProps(newProps) {
+        let _newState = {};
         if(typeof newProps.showOutlinedAddressBox !== 'undefined') {
-            this.setState({
-                showOutlinedAddressBox: newProps.showOutlinedAddressBox
-            })
-        }       
+            _newState = {..._newState, showOutlinedAddressBox: newProps.showOutlinedAddressBox};
+        }
+        // if (typeof newProps.currentImage !== 'undefined') {
+        //     _newState = {..._newState, currentImage: newProps.currentImage};
+        // }
+        
+        this.setState(_newState);
     }
     canStartRecordingPointsToDrawDuringRender() {
         return this.mouseIsDown === true && this.state.editButtonClicked === false;
@@ -195,12 +217,7 @@ class FoggyOverlay extends React.Component {
     }
     checkIfMoreImagesToBeProcessed() {
         let moreAddressesToProcess = false;
-
-        //TODO: write logic for the `nextButtonSelected` method
-        console.log('in checkIfMOreImagesToBeProcessed', this.props.getNumberOfImagesProcessed(), '<', this.props.imagesTaken.length);
-
-        if (this.props.getNumberOfImagesProcessed() < this.props.imagesTaken.length) {
-            console.warn('TODO: test this logic before moving on')
+        if (this.props.getCurrentImageNumber() < this.props.imagesTaken.length) {
             moreAddressesToProcess = true;
         }
         return moreAddressesToProcess;
@@ -312,7 +329,8 @@ class FoggyOverlay extends React.Component {
             topMost: this.topMost,
             rightMost: this.rightMost,
             bottomMost: this.bottomMost,
-            base64: this.state.croppedBase64String
+            base64: this.state.croppedBase64String,
+            textFromCrop: this.state.editableImageText
         })
         
         this.leftMost = '';
@@ -322,8 +340,14 @@ class FoggyOverlay extends React.Component {
         this.props.canvasRef.getContext('2d').clearRect(0, 0, this.props.canvasRef.width, this.props.canvasRef.height); //clear the canvas for redrawing next time
         
         this.mousePositionArray = [];
+        let _previousCroppedRectsParentState = cotysEventHelper.getPreviousCroppedRects();
+
+        _previousCroppedRectsParentState.push(previousCoppedRects)
+        _previousCroppedRectsParentState = _previousCroppedRectsParentState.map(e => e);
+
         cotysEventHelper.setState({
-            showOutlinedAddressBox: false
+            showOutlinedAddressBox: false,
+            previousCoppedRects: _previousCroppedRectsParentState
         });
         this.setState({
             croppedBase64String: '',            //to reset the state to start the next cropped section of the picture
@@ -334,7 +358,7 @@ class FoggyOverlay extends React.Component {
 
 
         //show next address section
-        if (this.props.getCurrentCropNumber() >= this.state.numberOfAddresses) {                                                 //this.state.numberOfAddresses is set when the user says how many addresses there are
+        if (this.props.getCurrentCropNumber() >= this.state.numberOfAddresses) {    //this.state.numberOfAddresses is set when the user says how many addresses there are
             //i.e. if they have outlined the same number that they said were on the picture so its time to move on
             
 
@@ -350,7 +374,9 @@ class FoggyOverlay extends React.Component {
                 //if here the user is done adding individual addresses
                 //go to the next component and render all of the addresses the user entered into a <ScrollView>...</ScrollView>
                 console.log('show all addresses edited and accepted now (maybe ask the user first if they want to take another picture or if they want to enter another address manually or if they want to replace an existing address from photo)');
-            
+                cotysEventHelper.setState({
+                    route: 4
+                })
             }
 
 
@@ -479,6 +505,7 @@ class EditRecentCrop extends React.Component {
     constructor(props) {
         super(props);
 
+
         this.didMount = false;
         //here I will try to initialize this.ocrResultText with the resulting text of the this.props.src image data
         this.ocrResultText = '';
@@ -507,6 +534,9 @@ class EditRecentCrop extends React.Component {
                 this.ocrResultText = e;
 
                 if(this.didMount === true) {
+                    this.props.setParentState({
+                        editableImageText: e,
+                    })
                     this.setState({
                         editableImageText: e,
                         ocrResultText: e
@@ -544,6 +574,9 @@ class EditRecentCrop extends React.Component {
 
         //now I will try to set the state for the text off of the image (the result of the OCR logic)
         if(this.ocrResultText !== '') {
+            this.props.setParentState({
+                editableImageText: this.ocrResultText
+            })
             this.setState({
                 ocrResultText: this.ocrResultText,
                 editableImageText: this.ocrResultText
@@ -552,6 +585,9 @@ class EditRecentCrop extends React.Component {
     }
     onEditableImageTextChange(e) {
         console.log('onEditableImageTextChange e = ', e.nativeEvent, e.nativeEvent.target.value);
+        this.props.setParentState({
+            editableImageText: e.nativeEvent.target.value
+        })
         this.setState({
             editableImageText: e.nativeEvent.target.value,
             textAreaScrollHeight: typeof this.refs['textArea'] !== 'undefined' ? this.refs['textArea'].scrollHeight + 'px' : ''

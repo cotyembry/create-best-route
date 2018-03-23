@@ -4,6 +4,7 @@ import { Router, Route, hashHistory } from 'react-router';
 import {Button, View} from './Defaults.jsx';
 import ProcessPictures from './ProcessPictures.jsx';
 import TakeAnotherPicture from './TakeAnotherPicture.jsx';
+import AddressList from './AddressList.jsx';
 
 import $ from 'jquery';
 
@@ -26,15 +27,36 @@ export default class CreateBestRoute extends React.Component {
             leftMost: '',
             rightMost: '',
             bottomMost: '',
-            topMost: ''
+            topMost: '',
+            previousCoppedRects: []
         }
     }
     componentDidMount() {
         $(this.refs['TopLevelComponent']).on('setState', (e, newState) => this.setState(newState));     //register the top level component to allow its state to be set
+        $(this.refs['TopLevelComponent']).on('getState', (e, keyToUse, callback) => {
+            console.log('in getState with: ', e, keyToUse, callback);
+            
+            callback(this.state[keyToUse])
+        
+            
+                
+        
+        
+        
+        
+        
+        });
+
         store.register({
             type: 'setTopLevelComponent',
             data: {
                 TopLevelComponent: this.refs['TopLevelComponent']
+            }
+        })
+        store.register({
+            type: 'getPreviousCroppedRects',
+            data: {
+                callback: function() { return this.state.previousCoppedRects }
             }
         })
 
@@ -52,6 +74,7 @@ export default class CreateBestRoute extends React.Component {
         this.setState(newState);
     }
     render() {
+        console.log('in top level render: ', this.state);
         return (
             <View _ref={eref => {this.refs['TopLevelComponent'] = findDOMNode(eref)}} style={styles.CreateBestRoute}>
                 {this.state.route === 1 &&
@@ -70,6 +93,10 @@ export default class CreateBestRoute extends React.Component {
 
                 {this.state.route === 3 &&
                     <ProcessPictures {...this.state} />
+                }
+
+                {this.state.route === 4 &&
+                    <AddressList previousCoppedRects={this.state.previousCoppedRects} />
                 }
 
 
