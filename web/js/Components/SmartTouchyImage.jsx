@@ -115,7 +115,7 @@ export default class SmartTouchyImage extends React.Component {
                 <Image onLoad={e => { this.onImageLoadEventCallback(e) }} style={{  position: 'absolute', top: '0px', left: '0px' }} _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}} src={this.props.src} />
                 <canvas style={styles.customCanvas} className='customCanvas' ref={(eref) => { this.refs['customCanvas'] = findDOMNode(eref); this.childRefsArray['customCanvas'] = this.refs['customCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
                 {this.state.displayFoggyOverlay === true &&
-                    <FoggyOverlay getNumberOfImagesProcessed={this._getNumberOfImagesProcessed.bind(this)} imagesTaken={this.props.imagesTakenBase64} setCurrentCropNumber={this._setCurrentCropNumber.bind(this)} getCurrentCropNumber={this._getCurrentCropNumber.bind(this)} getCurrentImageNumber={this._getCurrentImageNumber.bind(this)} nextButtonClicked={this._nextButtonSelected.bind(this)} canvasRef={_canvasRef} imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
+                    <FoggyOverlay goToNextImage={this.props.goToNextImage} getNumberOfImagesProcessed={this._getNumberOfImagesProcessed.bind(this)} imagesTaken={this.props.imagesTakenBase64} setCurrentCropNumber={this._setCurrentCropNumber.bind(this)} getCurrentCropNumber={this._getCurrentCropNumber.bind(this)} getCurrentImageNumber={this._getCurrentImageNumber.bind(this)} nextButtonClicked={this._nextButtonSelected.bind(this)} canvasRef={_canvasRef} imageReference={this.refs['image']} imageLoadEvent={this.state.onLoadImageEvent} setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} FoggyOverlayCallback={this.FoggyOverlayCallback} base64={this.props.src} numberOfAddresses={this.state.numberOfAddresses} showOutlinedAddressBox={this.state.showOutlinedAddressBox} />
                 }
             </View>
         )
@@ -191,13 +191,14 @@ class FoggyOverlay extends React.Component {
     }
     canStartRecordingPointsToDrawDuringRender() {
         return this.mouseIsDown === true && this.state.editButtonClicked === false;
+        // return true;
     }
     checkIfMoreImagesToBeProcessed() {
         let moreAddressesToProcess = false;
 
-        console.log('this.props.getNumberOfImagesProcessed() = ', this.props.getNumberOfImagesProcessed(), 'this.props.imagesTaken = ', this.props.imagesTaken.length);
-
         //TODO: write logic for the `nextButtonSelected` method
+        console.log('in checkIfMOreImagesToBeProcessed', this.props.getNumberOfImagesProcessed(), '<', this.props.imagesTaken.length);
+
         if (this.props.getNumberOfImagesProcessed() < this.props.imagesTaken.length) {
             console.warn('TODO: test this logic before moving on')
             moreAddressesToProcess = true;
@@ -207,7 +208,7 @@ class FoggyOverlay extends React.Component {
     onMouseUp(e) {
         this.mouseIsUp = true;
         this.mouseIsDown = false;
-        if (this.state.editButtonClicked === false) {
+        // if (this.canStartRecordingPointsToDrawDuringRender() === true) {
             //now based on the top left most, top right most, bottom left most, and bottom right most elements, I will make a rectangle for that area and take away the circles
             let rightMost = '',
                 topMost = '',
@@ -255,7 +256,7 @@ class FoggyOverlay extends React.Component {
                 //now to send event to Jcrop to give me the cropped base64 representation to the cropped image
                 this.processCropOnImage(e);
                 this.setState(this.state);
-            }
+            // }
     }
     onMouseDown(e) {
         this.mouseIsUp = false;
@@ -343,7 +344,7 @@ class FoggyOverlay extends React.Component {
             if(this.checkIfMoreImagesToBeProcessed() === true) {
                 //start next logic to begin 1st crop on the next image
                 console.log('take the user to the next image');
-            
+                this.props.goToNextImage();
             }
             else {
                 //if here the user is done adding individual addresses
@@ -358,8 +359,6 @@ class FoggyOverlay extends React.Component {
         }
         else {
             //the user needs to circle more portions of the current image
-            console.log('circle more portions of the current image');
-
             this.props.setCurrentCropNumber();                                          //this adds 1 to the current crop number in the parent component
         }
     }
@@ -408,7 +407,6 @@ class FoggyOverlay extends React.Component {
         this.setState(newState);
     }
     render() {
-        // onMouseDown = { this.onMouseDown.bind(this) } onMouseUp = { this.onMouseUp.bind(this) } onMouseMove = { this.onMouseDown.bind(this) }
         return (
             <View className='SmartTouchyImage' _ref={eref => {this.refs['FoggyOverlay'] = findDOMNode(eref)}} style={{...styles.FoggyOverlay, opacity: this.state.opacityOverride}}>
                     {(() => {
@@ -440,12 +438,7 @@ class FoggyOverlay extends React.Component {
                                     
                                     
                                     <svg style={styles.svg}>
-                                        {/* {this.state.previousCroppedRects.map((data, i) => <rect key={'previous_' + i} x={data.leftMost} y={data.topMost} width={(data.rightMost - data.leftMost) + 'px'} height={(data.bottomMost - data.topMost) + 'px'} /> } */}
-                                            
-                                        
-
                                         <rect x={this.leftMost} y={this.topMost} width={(this.rightMost - this.leftMost) + 'px'} height={(this.bottomMost - this.topMost) + 'px'} />
-                                    
                                     </svg>
 
 

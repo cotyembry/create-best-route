@@ -52,6 +52,11 @@ export default class ProcessPictures extends React.Component {
         }
 
     }
+    _goToNextImage() {
+        this.setState({
+            activeImage: this.state.activeImage + 1
+        })
+    }
     render() {
         return (
             <View style={styles.ProcessPictures}>
@@ -59,7 +64,7 @@ export default class ProcessPictures extends React.Component {
                     {this.state.imagesTakenBase64.map((base64, i) => {
                         if(i + 1 === this.state.activeImage) {              //+1 to normalize the number from array index to human
                             return (
-                                <SmartTouchyImage {...this.state} {...this.props} key={i} src={base64} />
+                                <SmartTouchyImage goToNextImage={this._goToNextImage.bind(this)} {...this.state} {...this.props} key={i} src={base64} />
                             )
                         }
                     })}
