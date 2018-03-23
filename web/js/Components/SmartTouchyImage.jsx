@@ -8,6 +8,8 @@ import {Button, Image, Input, Text, View} from './Defaults.jsx';
 import $ from 'jquery';
 // import $ from '../jquery.Jcrop.js';									//because in this file I import jquery and extend it then re-export jquery
 
+import store from '../store.js';
+
 
 import cotysEventHelper from '../cotysEventHelper.js';
 
@@ -340,7 +342,7 @@ class FoggyOverlay extends React.Component {
         this.props.canvasRef.getContext('2d').clearRect(0, 0, this.props.canvasRef.width, this.props.canvasRef.height); //clear the canvas for redrawing next time
         
         this.mousePositionArray = [];
-        let _previousCroppedRectsParentState = cotysEventHelper.getPreviousCroppedRects();
+        let _previousCroppedRectsParentState = store.getPreviousCroppedRects();
 
         _previousCroppedRectsParentState.push(previousCoppedRects)
         _previousCroppedRectsParentState = _previousCroppedRectsParentState.map(e => e);

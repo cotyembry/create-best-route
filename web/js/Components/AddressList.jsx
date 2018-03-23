@@ -20,13 +20,12 @@ export default class ProcessPictures extends React.Component {
         console.log('newProps = ', newProps);
     }
     render() {
-        console.log('in AddressList with: ', this.props.previousCoppedRects);
         return (
             <View style={styles.ProcessPictures}>
-                <ScrollView style={{width: '100%', height: '100%'}}>
+                <ScrollView style={{width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between'}}>
                     {this.state.previousCoppedRects.map((addressText, i) =>
                         <View key={i}>
-                            <Text>{addressText}</Text>
+                            <Text>{addressText[0].textFromCrop}</Text>
                         </View>
                     )}
                 </ScrollView>

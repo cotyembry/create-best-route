@@ -4,6 +4,7 @@ import cotysEventHelper from './cotysEventHelper.js';
 
 var store = {
     TopLevelComponent: '',                          //TopLevelComponent will be used as the designated top level root React 
+    getPreviousCroppedRects: function () { console.log('getPreviousCroppedRects has NOT been set in CreateBestRoute\'s `componentDidMount` method'); },
 
     register: function(action, callback) {
         switch(action.type) {

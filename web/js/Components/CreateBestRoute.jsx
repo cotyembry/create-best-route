@@ -33,19 +33,10 @@ export default class CreateBestRoute extends React.Component {
     }
     componentDidMount() {
         $(this.refs['TopLevelComponent']).on('setState', (e, newState) => this.setState(newState));     //register the top level component to allow its state to be set
-        $(this.refs['TopLevelComponent']).on('getState', (e, keyToUse, callback) => {
-            console.log('in getState with: ', e, keyToUse, callback);
-            
-            callback(this.state[keyToUse])
-        
-            
-                
-        
-        
-        
-        
-        
-        });
+        // $(this.refs['TopLevelComponent']).on('getState', (e, keyToUse, callback) => {
+        //     console.log('in getState with: ', e, keyToUse, callback);
+        //     callback(this.state[keyToUse])
+        // });
 
         store.register({
             type: 'setTopLevelComponent',
@@ -53,12 +44,18 @@ export default class CreateBestRoute extends React.Component {
                 TopLevelComponent: this.refs['TopLevelComponent']
             }
         })
-        store.register({
-            type: 'getPreviousCroppedRects',
-            data: {
-                callback: function() { return this.state.previousCoppedRects }
-            }
-        })
+        // store.register({
+        //     type: 'getPreviousCroppedRects',
+        //     data: {
+        //         callback: function() { return this.state.previousCoppedRects }
+        //     }
+        // })
+        // if(typeof store.getPreviousCroppedRects !== 'undefined') {
+        //     store.getPreviousCroppedRects();
+        // }
+
+        store.getPreviousCroppedRects = this.getPreviousCroppedRects.bind(this);
+
 
         $('html, body').css({
             width: parseFloat(window.innerWidth) + 'px',
@@ -69,6 +66,10 @@ export default class CreateBestRoute extends React.Component {
     }
     componentWillMount() {
         this.refs = [];
+    }
+    getPreviousCroppedRects() {
+        console.log('in getPreviousCroppedRects in CreateBestRoute.jsx');
+        return this.state.previousCoppedRects.map(e => e);
     }
     _setState(newState) {
         this.setState(newState);
