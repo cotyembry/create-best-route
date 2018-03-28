@@ -28,8 +28,8 @@ export default class ProcessPictures extends React.Component {
                 <ScrollView style={{width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between'}}>
                     {this.state.previousCoppedRects.map((addressText, i) =>
                         <View key={i} style={styles.previousCoppedRects}>
-                            <a target='_blank' href={_href + addressText[0].textFromCrop}><Text>map link</Text></a>
-                            <Text>{addressText[0].textFromCrop}</Text>
+                            <a target='_blank' href={_href + addressText[i].textFromCrop}><Text>map link</Text></a>
+                            <Text>{addressText[i].textFromCrop}</Text>
                         </View>
                     )}
                 </ScrollView>
