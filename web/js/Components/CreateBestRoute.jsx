@@ -72,10 +72,11 @@ export default class CreateBestRoute extends React.Component {
         return this.state.previousCoppedRects.map(e => e);
     }
     _setState(newState) {
+        console.log('newState = ', newState);
+
         this.setState(newState);
     }
     render() {
-        console.log('in top level render: ', this.state);
         return (
             <View _ref={eref => {this.refs['TopLevelComponent'] = findDOMNode(eref)}} style={styles.CreateBestRoute}>
                 {this.state.route === 1 &&
