@@ -30,6 +30,14 @@ export default class ProcessPictures extends React.Component {
                         <View key={i} style={styles.previousCoppedRects}>
                             <a target='_blank' href={_href + addressText[i].textFromCrop}><Text>map link</Text></a>
                             <Text>{addressText[i].textFromCrop}</Text>
+
+
+                            {/* TODO:   
+                                        -add edit button here to correct the address
+                                        -maybe make this section its own component since it will most likely have a good amount of logic tied to it
+                            */}
+
+
                         </View>
                     )}
                 </ScrollView>
