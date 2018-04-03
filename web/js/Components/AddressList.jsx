@@ -5,6 +5,8 @@ import {Button, Image, Input, Text, ScrollView, View} from './Defaults.jsx';
 
 import $ from 'jquery';
 
+import store from '../store.js';
+
 export default class ProcessPictures extends React.Component {
     constructor(props) {
         super(props);
@@ -53,6 +55,9 @@ export default class ProcessPictures extends React.Component {
                 </ScrollView>
 
                 <Button value='Send as message' onClick={this.sendButtonClicked.bind(this)} />
+                {store.platform === 'iOS' &&
+                    <Button value='Save to Notes' onClick={this.sendButtonClicked.bind(this)} />
+                }
 
                 {this.state.showMapPreviewOverlay === true &&
                     <MapPreviewOverlay setState={this._setState.bind(this)} />

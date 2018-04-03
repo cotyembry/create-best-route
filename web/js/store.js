@@ -3,6 +3,7 @@ import $ from 'jquery';
 import cotysEventHelper from './cotysEventHelper.js';
 
 var store = {
+    platform: 'web',
     TopLevelComponent: '',                          //TopLevelComponent will be used as the designated top level root React 
     getPreviousCroppedRects: function () { console.log('getPreviousCroppedRects has NOT been set in CreateBestRoute\'s `componentDidMount` method'); },
 
