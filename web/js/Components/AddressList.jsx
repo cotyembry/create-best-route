@@ -20,6 +20,23 @@ export default class ProcessPictures extends React.Component {
     componentWillReceiveProps(newProps) {
         console.log('newProps = ', newProps);
     }
+    sendButtonClicked() {
+        //TODO: make call to google apps script and send data to be send in the message
+        let messageBody = '';
+
+        this.state.previousCoppedRects.map((addressText, i) => {
+            messageBody += addressText + '\n';
+            messsageBody += 'https://maps.google.com/?q=' + addressText + '\n\n';
+        });
+
+        
+        
+        
+        
+        
+        
+        console.log('TODO: send the following to a google apps script to be sent as a message', messageBody);
+    }
     _setState(newState) {
         this.setState(newState);
     }
@@ -34,6 +51,8 @@ export default class ProcessPictures extends React.Component {
                         <EditableMapLink setState={this._setState.bind(this)} key={i} textFromCrop={addressText[i].textFromCrop} _href={_href} i={i} />
                     )}
                 </ScrollView>
+
+                <Button value='Send as message' onClick={this.sendButtonClicked.bind(this)} />
 
                 {this.state.showMapPreviewOverlay === true &&
                     <MapPreviewOverlay setState={this._setState.bind(this)} />
