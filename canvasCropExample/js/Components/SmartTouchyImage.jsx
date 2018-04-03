@@ -444,45 +444,57 @@ class QuestionNumberOverlay extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            displayOverride: 'none',                    //jquery will animate this to fade in then immediately after I set the state to match the display mutation
             numberOfAddresses: '',
             numberOfAddressesValue: ''
         }
     }
+    componentWillMount() {
+        this.refs = [];
+    }
     componentDidMount() {
+        $(this.refs['fadeIn']).fadeIn();                //added fade in animation and logic around it to compliment the fade in
+
+
         this.props.setState({
             opacityOverride: 1
-        })
+        });
+        this.setState({
+            displayOverride: ''                         //to match the mutation that jquery just did on the DOM element
+        });
     }
     componentWillUnmount() {
         this.props.setState({
             opacityOverride: styles.FoggyOverlay.opacity
-        })
+        });
     }
     onNumberOfAddressesChange(newNumber) {
         this.setState({
             numberOfAddresses: newNumber
-        })
+        });
     }
     nextButtonClicked() {
         if(this.validateAddressInputValue() === true) {
             this.props.setState({
                 askedUserForNumber: true,
                 numberOfAddresses: this.state.numberOfAddresses
-            })
+            });
         }
     }
     textNumberClicked(e) {
         this.setState({
             numberOfAddresses: e
-        })
+        });
     }
     validateAddressInputValue() {
         //TODO: implement logic
         return true;
     }
     render() {
+        //TODO: add option to 'sneak peek' the image being asked about
+
         return (
-            <View style={styles.QuestionNumberOverlay}>
+            <View style={{...styles.QuestionNumberOverlay, display: this.state.displayOverride}} _ref={eref => {this.refs['fadeIn'] = findDOMNode(eref)}}>
                 <Text>How many addresses are on this image?</Text>
                     <View style={{flexDirection: 'column'}}>
                         <Input placeholder='enter manually' value={this.state.numberOfAddresses} style={{width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center'}} onChange={this.onNumberOfAddressesChange.bind(this)} />
