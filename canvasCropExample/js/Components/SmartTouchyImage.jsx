@@ -492,7 +492,7 @@ class QuestionNumberOverlay extends React.Component {
     }
     render() {
         //TODO: add option to 'sneak peek' the image being asked about
-
+        //TODO: format numbers to be in the form of a keypad
         return (
             <View style={{...styles.QuestionNumberOverlay, display: this.state.displayOverride}} _ref={eref => {this.refs['fadeIn'] = findDOMNode(eref)}}>
                 <Text>How many addresses are on this image?</Text>
