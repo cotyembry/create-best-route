@@ -20,6 +20,9 @@ export default class ProcessPictures extends React.Component {
     componentWillReceiveProps(newProps) {
         console.log('newProps = ', newProps);
     }
+    _setState(newState) {
+        this.setState(newState);
+    }
     render() { 
         // let _hrefTest = 'https://maps.google.com/?q=1200%20Pennsylvania%20Ave%20SE,%20Washington,%20District%20of%20Columbia,%2020003';
         let _href = 'https://maps.google.com/?q=';
@@ -28,12 +31,12 @@ export default class ProcessPictures extends React.Component {
             <View style={styles.AddressList}>
                 <ScrollView style={{width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between'}}>
                     {this.state.previousCoppedRects.map((addressText, i) =>
-                        <EditableMapLink key={i} textFromCrop={addressText[i].textFromCrop} _href={_href} i={i} />
+                        <EditableMapLink setState={this._setState.bind(this)} key={i} textFromCrop={addressText[i].textFromCrop} _href={_href} i={i} />
                     )}
                 </ScrollView>
 
                 {this.state.showMapPreviewOverlay === true &&
-                    <MapPreviewOverlay />
+                    <MapPreviewOverlay setState={this._setState.bind(this)} />
                 }
             </View>
         )
@@ -43,7 +46,7 @@ export default class ProcessPictures extends React.Component {
 class MapPreviewOverlay extends React.Component {
     render() {
         return (
-            <View>
+            <View style={styles.MapPreviewOverlay}>
                 Map Preview Overlay Component
             </View>
         )
@@ -58,9 +61,11 @@ class EditableMapLink extends React.Component {
             textFromCrop: typeof this.props.textFromCrop !== 'undefined' ? this.props.textFromCrop : ''
         }
     }
-    onButtonClick() {
+    onPreviewButtonClicked() {
         //if here then the preview button was clicked
-
+        this.props.setState({
+            showMapPreviewOverlay: true
+        })
     }
     onChange(e) {
         this.setState({
@@ -70,7 +75,7 @@ class EditableMapLink extends React.Component {
     render() {
         return (
             <View key={this.props.i} style={styles.previousCoppedRects}>
-                <Button value='Preview' onClick={this.onButtonClick.bind(this)} />
+                <Button value='Preview' onClick={this.onPreviewButtonClicked.bind(this)} />
 
                 <div>
                     <a target='_blank' href={this.props._href + this.props.textFromCrop}><Text>Map Link (new tab){' '}</Text></a>
@@ -78,11 +83,6 @@ class EditableMapLink extends React.Component {
                 
                 <Input value={this.state.textFromCrop} onChange={this.onChange.bind(this)} />
 
-
-                {/* TODO:   
-                            -add edit button here to correct the address
-                            -maybe make this section its own component since it will most likely have a good amount of logic tied to it
-                */}
 
 
             </View>
@@ -94,6 +94,18 @@ const styles = {
     AddressList: {
         width: '100%',
         height: '100%'
+    },
+    MapPreviewOverlay: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        display: 'fixed',
+        top: '0px',
+        left: '0px',
+        backgroundColor: 'black',
+        boxSizing: 'border-box',
+        margin: '2.5px 2.5px 2.5px 2.5px',
+        borderRadius: '4px'
     },
     previousCoppedRects: { 
         width: '100%', 
