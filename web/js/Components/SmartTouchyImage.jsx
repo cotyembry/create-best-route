@@ -214,7 +214,7 @@ class FoggyOverlay extends React.Component {
         this.setState(_newState);
     }
     canStartRecordingPointsToDrawDuringRender() {
-        return this.mouseIsDown === true && this.state.editButtonClicked === false;
+        return this.mouseIsDown === true && this.state.editButtonClicked === false && this.state.askedUserForNumber === true;
         // return true;
     }
     checkIfMoreImagesToBeProcessed() {
@@ -227,55 +227,54 @@ class FoggyOverlay extends React.Component {
     onMouseUp(e) {
         this.mouseIsUp = true;
         this.mouseIsDown = false;
-        // if (this.canStartRecordingPointsToDrawDuringRender() === true) {
+        if (this.state.editButtonClicked === false && this.state.askedUserForNumber === true) {
             //now based on the top left most, top right most, bottom left most, and bottom right most elements, I will make a rectangle for that area and take away the circles
             let rightMost = '',
                 topMost = '',
                 leftMost = '',
                 bottomMost = '',
                 scrollWidthAdjustment = '',
-                scrollTopAdjustment = '';
-                this.mousePositionArray.map((mousePosition, i) => {
-                    let x = mousePosition.x,
-                        y = mousePosition.y;
-                    scrollTopAdjustment = window.document.documentElement.scrollTop;            //to deal with if the page is scrolled down or to the left at all
-                    scrollWidthAdjustment = window.document.documentElement.scrollLeft;
-                    x += scrollWidthAdjustment;
-                    y += scrollTopAdjustment;
-                    if(leftMost === '' || leftMost > x) {
-                        leftMost = x - 1;
-                    }
-                    if(rightMost === '' || rightMost < x) {
-                        rightMost = x + 2;
-                    }
-                    if(bottomMost === '' || bottomMost < y) {
-                        bottomMost = y;
-                    }
-                    if(topMost === '' || topMost > y) {
-                        topMost = y;
-                    }
-                });
-
-                let _showOutlinedAddressBox = false;
-                if (this.state.askedUserForNumber === true) {
-                    _showOutlinedAddressBox = true;
+                scrollTopAdjustment = '',
+                _showOutlinedAddressBox = false;
+            this.mousePositionArray.map((mousePosition, i) => {
+                let x = mousePosition.x,
+                    y = mousePosition.y;
+                scrollTopAdjustment = window.document.documentElement.scrollTop;            //to deal with if the page is scrolled down or to the left at all
+                scrollWidthAdjustment = window.document.documentElement.scrollLeft;
+                x += scrollWidthAdjustment;
+                y += scrollTopAdjustment;
+                if(leftMost === '' || leftMost > x) {
+                    leftMost = x - 1;
                 }
-                cotysEventHelper.setState({         //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
-                    showOutlinedAddressBox: _showOutlinedAddressBox,
+                if(rightMost === '' || rightMost < x) {
+                    rightMost = x + 2;
+                }
+                if(bottomMost === '' || bottomMost < y) {
+                    bottomMost = y;
+                }
+                if(topMost === '' || topMost > y) {
+                    topMost = y;
+                }
+            });
 
-                    leftMost: leftMost,
-                    rightMost: rightMost,
-                    bottomMost: bottomMost,
-                    topMost: topMost
-                });
-                this.leftMost = leftMost;
-                this.rightMost = rightMost;
-                this.topMost = topMost;
-                this.bottomMost = bottomMost;
-                //now to send event to Jcrop to give me the cropped base64 representation to the cropped image
-                this.processCropOnImage(e);
-                this.setState(this.state);
-            // }
+            if (this.state.askedUserForNumber === true) {
+                _showOutlinedAddressBox = true;
+            }
+            cotysEventHelper.setState({         //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
+                showOutlinedAddressBox: _showOutlinedAddressBox,
+                leftMost: leftMost,
+                rightMost: rightMost,
+                bottomMost: bottomMost,
+                topMost: topMost
+            });
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+            this.topMost = topMost;
+            this.bottomMost = bottomMost;
+            //now to send event to Jcrop to give me the cropped base64 representation to the cropped image
+            this.processCropOnImage(e);
+            this.setState(this.state);
+        }
     }
     onMouseDown(e) {
         this.mouseIsUp = false;
@@ -304,7 +303,7 @@ class FoggyOverlay extends React.Component {
         normalizedX += scrollWidthAdjustment;
         normalizedY += scrollTopAdjustment;
 
-        if(this.canStartRecordingPointsToDrawDuringRender() === true) {
+        if (this.canStartRecordingPointsToDrawDuringRender() === true) {
             let newMousePosition = {
                     // x: normalizedX - 5,
                     x: normalizedX,

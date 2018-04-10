@@ -58,6 +58,9 @@ export default class ProcessPictures extends React.Component {
         })
     }
     render() {
+
+        console.log(this.props.route);
+
         return (
             <View style={styles.ProcessPictures}>
                 <ScrollView style={{width: '100%', height: '100%'}}>
