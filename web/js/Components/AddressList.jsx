@@ -55,6 +55,7 @@ export default class ProcessPictures extends React.Component {
                 </ScrollView>
 
                 <Button value='Send as message' onClick={this.sendButtonClicked.bind(this)} />
+                
                 {store.platform === 'iOS' &&
                     <Button value='Save to Notes' onClick={this.sendButtonClicked.bind(this)} />
                 }

@@ -38844,6 +38844,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var store = {
+	    platform: 'web',
 	    TopLevelComponent: '', //TopLevelComponent will be used as the designated top level root React 
 	    getPreviousCroppedRects: function getPreviousCroppedRects() {
 	        console.log('getPreviousCroppedRects has NOT been set in CreateBestRoute\'s `componentDidMount` method');
@@ -39163,6 +39164,10 @@
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
+	var _store = __webpack_require__(307);
+
+	var _store2 = _interopRequireDefault(_store);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var ProcessPictures = function (_React$Component) {
@@ -39176,7 +39181,8 @@
 	        _this.state = {
 	            previousCoppedRects: typeof _this.props.previousCoppedRects !== 'undefined' ? _this.props.previousCoppedRects.map(function (e) {
 	                return e;
-	            }) : []
+	            }) : [],
+	            showMapPreviewOverlay: false
 	        };
 	        return _this;
 	    }
@@ -39190,8 +39196,28 @@
 	            console.log('newProps = ', newProps);
 	        }
 	    }, {
+	        key: 'sendButtonClicked',
+	        value: function sendButtonClicked() {
+	            //TODO: make call to google apps script and send data to be send in the message
+	            var messageBody = '';
+
+	            this.state.previousCoppedRects.map(function (addressText, i) {
+	                messageBody += addressText + '\n';
+	                messsageBody += 'https://maps.google.com/?q=' + addressText + '\n\n';
+	            });
+
+	            console.log('TODO: send the following to a google apps script to be sent as a message', messageBody);
+	        }
+	    }, {
+	        key: '_setState',
+	        value: function _setState(newState) {
+	            this.setState(newState);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            // let _hrefTest = 'https://maps.google.com/?q=1200%20Pennsylvania%20Ave%20SE,%20Washington,%20District%20of%20Columbia,%2020003';
 	            var _href = 'https://maps.google.com/?q=';
 
@@ -39202,26 +39228,12 @@
 	                    _Defaults.ScrollView,
 	                    { style: { width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between' } },
 	                    this.state.previousCoppedRects.map(function (addressText, i) {
-	                        return _react2.default.createElement(
-	                            _Defaults.View,
-	                            { key: i, style: styles.previousCoppedRects },
-	                            _react2.default.createElement(
-	                                'a',
-	                                { target: '_blank', href: _href + addressText[i].textFromCrop },
-	                                _react2.default.createElement(
-	                                    _Defaults.Text,
-	                                    null,
-	                                    'map link'
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                _Defaults.Text,
-	                                null,
-	                                addressText[i].textFromCrop
-	                            )
-	                        );
+	                        return _react2.default.createElement(EditableMapLink, { setState: _this2._setState.bind(_this2), key: i, textFromCrop: addressText[i].textFromCrop, _href: _href, i: i });
 	                    })
-	                )
+	                ),
+	                _react2.default.createElement(_Defaults.Button, { value: 'Send as message', onClick: this.sendButtonClicked.bind(this) }),
+	                _store2.default.platform === 'iOS' && _react2.default.createElement(_Defaults.Button, { value: 'Save to Notes', onClick: this.sendButtonClicked.bind(this) }),
+	                this.state.showMapPreviewOverlay === true && _react2.default.createElement(MapPreviewOverlay, { setState: this._setState.bind(this) })
 	            );
 	        }
 	    }]);
@@ -39230,11 +39242,100 @@
 
 	exports.default = ProcessPictures;
 
+	var MapPreviewOverlay = function (_React$Component2) {
+	    (0, _inherits3.default)(MapPreviewOverlay, _React$Component2);
+
+	    function MapPreviewOverlay() {
+	        (0, _classCallCheck3.default)(this, MapPreviewOverlay);
+	        return (0, _possibleConstructorReturn3.default)(this, (MapPreviewOverlay.__proto__ || (0, _getPrototypeOf2.default)(MapPreviewOverlay)).apply(this, arguments));
+	    }
+
+	    (0, _createClass3.default)(MapPreviewOverlay, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                _Defaults.View,
+	                { style: styles.MapPreviewOverlay },
+	                'Map Preview Overlay Component'
+	            );
+	        }
+	    }]);
+	    return MapPreviewOverlay;
+	}(_react2.default.Component);
+
+	var EditableMapLink = function (_React$Component3) {
+	    (0, _inherits3.default)(EditableMapLink, _React$Component3);
+
+	    function EditableMapLink(props) {
+	        (0, _classCallCheck3.default)(this, EditableMapLink);
+
+	        var _this4 = (0, _possibleConstructorReturn3.default)(this, (EditableMapLink.__proto__ || (0, _getPrototypeOf2.default)(EditableMapLink)).call(this, props));
+
+	        _this4.state = {
+	            textFromCrop: typeof _this4.props.textFromCrop !== 'undefined' ? _this4.props.textFromCrop : ''
+	        };
+	        return _this4;
+	    }
+
+	    (0, _createClass3.default)(EditableMapLink, [{
+	        key: 'onPreviewButtonClicked',
+	        value: function onPreviewButtonClicked() {
+	            //if here then the preview button was clicked
+	            this.props.setState({
+	                showMapPreviewOverlay: true
+	            });
+	        }
+	    }, {
+	        key: 'onChange',
+	        value: function onChange(e) {
+	            this.setState({
+	                textFromCrop: e
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                _Defaults.View,
+	                { key: this.props.i, style: styles.previousCoppedRects },
+	                _react2.default.createElement(_Defaults.Button, { value: 'Preview', onClick: this.onPreviewButtonClicked.bind(this) }),
+	                _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'a',
+	                        { target: '_blank', href: this.props._href + this.props.textFromCrop },
+	                        _react2.default.createElement(
+	                            _Defaults.Text,
+	                            null,
+	                            'Map Link (new tab)',
+	                            ' '
+	                        )
+	                    )
+	                ),
+	                _react2.default.createElement(_Defaults.Input, { value: this.state.textFromCrop, onChange: this.onChange.bind(this) })
+	            );
+	        }
+	    }]);
+	    return EditableMapLink;
+	}(_react2.default.Component);
 
 	var styles = {
 	    AddressList: {
 	        width: '100%',
 	        height: '100%'
+	    },
+	    MapPreviewOverlay: {
+	        width: '100%',
+	        height: '100%',
+	        position: 'absolute',
+	        display: 'fixed',
+	        top: '0px',
+	        left: '0px',
+	        backgroundColor: 'black',
+	        boxSizing: 'border-box',
+	        margin: '2.5px 2.5px 2.5px 2.5px',
+	        borderRadius: '4px'
 	    },
 	    previousCoppedRects: {
 	        width: '100%',

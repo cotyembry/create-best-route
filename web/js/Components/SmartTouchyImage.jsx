@@ -652,18 +652,26 @@ class QuestionNumberOverlay extends React.Component {
         this.didMount = false;
         this.didRunLogic = false;
         this.state = {
+            display: 'none',
             animatedBorder: {},
             numberOfAddresses: '',
             numberOfAddressesValue: '',
             presentInvalidInputMessage: false            
         }
     }
+    componentWillMount() {
+        this.refs = [];
+    }
     componentDidMount() {
         this.didMount = true;
-        this.props.setState({
-            opacityOverride: 1
-        });
-        this.setState(this.state);
+        
+        $(this.refs['QuestionNumberOverlay']).fadeIn(2000);
+
+        // this.props.setState({
+        //     opacityOverride: 1
+        // });
+
+        this.setState({...this.state, display: 'flex'});
     }
     componentWillUnmount() {
         this.props.setState({
@@ -715,7 +723,7 @@ class QuestionNumberOverlay extends React.Component {
             // _animateBorder = {...styles.addBorder};
         }
         return (
-            <View style={styles.QuestionNumberOverlay}>
+            <View _ref={eref => { this.refs['QuestionNumberOverlay'] = findDOMNode(eref)}} className='QuestionNumberOverlay' style={{...styles.QuestionNumberOverlay, display: this.state.display}}>
                 {this.state.presentInvalidInputMessage === false &&
                     <Text>How many addresses are on this image?</Text>
                 }
