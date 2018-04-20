@@ -12,7 +12,7 @@ export default class ProcessPictures extends React.Component {
         super(props);
 
         this.state = {
-            previousCoppedRects: typeof this.props.previousCoppedRects !== 'undefined' ? this.props.previousCoppedRects.map(e => e) : [],
+            previousCroppedRects: typeof this.props.previousCroppedRects !== 'undefined' ? this.props.previousCroppedRects.map(e => e) : [],
             showMapPreviewOverlay: false
         }
     }
@@ -26,7 +26,7 @@ export default class ProcessPictures extends React.Component {
         //TODO: make call to google apps script and send data to be send in the message
         let messageBody = '';
 
-        this.state.previousCoppedRects.map((addressText, i) => {
+        this.state.previousCroppedRects.map((addressText, i) => {
             messageBody += addressText + '\n';
             messsageBody += 'https://maps.google.com/?q=' + addressText + '\n\n';
         });
@@ -49,8 +49,8 @@ export default class ProcessPictures extends React.Component {
         return (
             <View style={styles.AddressList}>
                 <ScrollView style={{width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between'}}>
-                    {this.state.previousCoppedRects.map((addressText, i) =>
-                        <EditableMapLink setState={this._setState.bind(this)} key={i} textFromCrop={addressText[i].textFromCrop} _href={_href} i={i} />
+                    {this.state.previousCroppedRects.map((addressText, i) =>
+                        <EditableMapLink previousCroppedRects={this.state.previousCroppedRects} setState={this._setState.bind(this)} key={i} textFromCrop={addressText[i].textFromCrop} _href={_href} i={i} />
                     )}
                 </ScrollView>
 
@@ -83,6 +83,7 @@ class EditableMapLink extends React.Component {
         super(props);
 
         this.state = {
+            previousCroppedRects: typeof this.props.previousCroppedRects !== 'undefined' ? this.props.previousCroppedRects : '',
             textFromCrop: typeof this.props.textFromCrop !== 'undefined' ? this.props.textFromCrop : ''
         }
     }
@@ -93,13 +94,37 @@ class EditableMapLink extends React.Component {
         })
     }
     onChange(e) {
+
+        console.log('in onchange: this.props.i = ', this.props.i);
+
+        let _previousCroppedRects = this.state.previousCroppedRects.map((text, i) => {
+            console.log('in .map i = ', i);
+            
+            if(i === this.props.i) {
+                return e
+            }
+            else {
+                return text;
+            }
+        })
+
         this.setState({
             textFromCrop: e
+        });
+
+        let overrideObject = {...this.state.previousCroppedRects, textFromCrop: _previousCroppedRects[0]};
+        
+        console.log([overrideObject], this.state.previousCroppedRects);
+
+
+
+        this.props.setState({
+            previousCroppedRects: [[overrideObject]]
         })
     }
     render() {
         return (
-            <View key={this.props.i} style={styles.previousCoppedRects}>
+            <View key={this.props.i} style={styles.previousCroppedRects}>
                 <Button value='Preview' onClick={this.onPreviewButtonClicked.bind(this)} />
 
                 <div>
@@ -132,7 +157,7 @@ const styles = {
         margin: '2.5px 2.5px 2.5px 2.5px',
         borderRadius: '4px'
     },
-    previousCoppedRects: { 
+    previousCroppedRects: { 
         width: '100%', 
         height: '100%',
         alignItems: 'center',

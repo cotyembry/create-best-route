@@ -324,8 +324,8 @@ class FoggyOverlay extends React.Component {
         })
     }
     nextButtonClicked() {
-        let previousCoppedRects = this.state.previousCroppedRects.map(e => e);
-        previousCoppedRects.push({
+        let previousCroppedRects = this.state.previousCroppedRects.map(e => e);
+        previousCroppedRects.push({
             leftMost: this.leftMost,
             topMost: this.topMost,
             rightMost: this.rightMost,
@@ -343,18 +343,18 @@ class FoggyOverlay extends React.Component {
         this.mousePositionArray = [];
         let _previousCroppedRectsParentState = store.getPreviousCroppedRects();
 
-        _previousCroppedRectsParentState.push(previousCoppedRects)
+        _previousCroppedRectsParentState.push(previousCroppedRects)
         _previousCroppedRectsParentState = _previousCroppedRectsParentState.map(e => e);
 
         cotysEventHelper.setState({
             showOutlinedAddressBox: false,
-            previousCoppedRects: _previousCroppedRectsParentState
+            previousCroppedRects: _previousCroppedRectsParentState
         });
         this.setState({
             croppedBase64String: '',            //to reset the state to start the next cropped section of the picture
             editButtonClicked: false,
             mousePositionArray: [],
-            previousCroppedRects: previousCoppedRects
+            previousCroppedRects: previousCroppedRects
         });
 
 

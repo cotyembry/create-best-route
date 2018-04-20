@@ -28,7 +28,7 @@ export default class CreateBestRoute extends React.Component {
             rightMost: '',
             bottomMost: '',
             topMost: '',
-            previousCoppedRects: []
+            previousCroppedRects: []
         }
     }
     componentDidMount() {
@@ -47,7 +47,7 @@ export default class CreateBestRoute extends React.Component {
         // store.register({
         //     type: 'getPreviousCroppedRects',
         //     data: {
-        //         callback: function() { return this.state.previousCoppedRects }
+        //         callback: function() { return this.state.previousCroppedRects }
         //     }
         // })
         // if(typeof store.getPreviousCroppedRects !== 'undefined') {
@@ -69,7 +69,7 @@ export default class CreateBestRoute extends React.Component {
     }
     getPreviousCroppedRects() {
         console.log('in getPreviousCroppedRects in CreateBestRoute.jsx');
-        return this.state.previousCoppedRects.map(e => e);
+        return this.state.previousCroppedRects.map(e => e);
     }
     _setState(newState) {
         console.log('newState = ', newState);
@@ -98,7 +98,7 @@ export default class CreateBestRoute extends React.Component {
                 }
 
                 {this.state.route === 4 &&
-                    <AddressList previousCoppedRects={this.state.previousCoppedRects} />
+                    <AddressList previousCroppedRects={this.state.previousCroppedRects} />
                 }
 
 
