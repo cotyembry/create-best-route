@@ -7,6 +7,8 @@ import $ from 'jquery';
 
 import store from '../store.js';
 
+var test;
+
 export default class ProcessPictures extends React.Component {
     constructor(props) {
         super(props);
@@ -119,7 +121,7 @@ class EditableMapLink extends React.Component {
 
 
         this.props.setState({
-            previousCroppedRects: [[overrideObject]]
+            previousCroppedRects: [[overrideObject]]        //I have to format this varable like this because its the format it is expecting...at least for 1 text cropping instance
         })
     }
     render() {

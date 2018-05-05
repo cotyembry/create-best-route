@@ -607,15 +607,28 @@ class EditRecentCrop extends React.Component {
         
         return (
             <View style={{...styles.EditRecentCrop}}>
-                <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} />
+                {/* <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} /> */}
+                <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{
+                    position: 'absolute', 
+                    top: '0px', 
+                    left: '0px'}} 
+                    src={this.props.src} />
                 
-                
-                <View style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around'
-                }}>
-                    <textarea ref={eref => { this.refs['textArea'] = findDOMNode(eref)}} placeholder='detecting text...' value={this.state.editableImageText} style={{ zIndex: 1, width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center', height: _textAreaScrollHeight, maxHeight: _maxHeight }} onChange={this.onEditableImageTextChange.bind(this)}  />
+                <View style={{flexDirection: 'column'}}>
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around'
+                    }}>
+                        <textarea ref={eref => { this.refs['textArea'] = findDOMNode(eref)}} placeholder='detecting text...' value={this.state.editableImageText} style={{ zIndex: 1, width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center', height: _textAreaScrollHeight, maxHeight: _maxHeight }} onChange={this.onEditableImageTextChange.bind(this)}  />
 
+                    </View>
+
+                    <label style={{
+                        boxSizing: 'border-box',
+                        paddingTop: '5px'
+                    }}>
+                        edit/make corrections
+                    </label>
                 </View>
            </View>
         )

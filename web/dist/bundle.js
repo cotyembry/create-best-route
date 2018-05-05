@@ -35522,7 +35522,7 @@
 	            rightMost: '',
 	            bottomMost: '',
 	            topMost: '',
-	            previousCoppedRects: []
+	            previousCroppedRects: []
 	        };
 	        return _this;
 	    }
@@ -35549,7 +35549,7 @@
 	            // store.register({
 	            //     type: 'getPreviousCroppedRects',
 	            //     data: {
-	            //         callback: function() { return this.state.previousCoppedRects }
+	            //         callback: function() { return this.state.previousCroppedRects }
 	            //     }
 	            // })
 	            // if(typeof store.getPreviousCroppedRects !== 'undefined') {
@@ -35574,7 +35574,7 @@
 	        key: 'getPreviousCroppedRects',
 	        value: function getPreviousCroppedRects() {
 	            console.log('in getPreviousCroppedRects in CreateBestRoute.jsx');
-	            return this.state.previousCoppedRects.map(function (e) {
+	            return this.state.previousCroppedRects.map(function (e) {
 	                return e;
 	            });
 	        }
@@ -35605,7 +35605,7 @@
 	                ),
 	                this.state.route === 2 && _react2.default.createElement(_TakeAnotherPicture2.default, (0, _extends3.default)({ setState: this._setState.bind(this) }, this.state)),
 	                this.state.route === 3 && _react2.default.createElement(_ProcessPictures2.default, this.state),
-	                this.state.route === 4 && _react2.default.createElement(_AddressList2.default, { previousCoppedRects: this.state.previousCoppedRects })
+	                this.state.route === 4 && _react2.default.createElement(_AddressList2.default, { previousCroppedRects: this.state.previousCroppedRects })
 	            );
 	        }
 	    }]);
@@ -37726,6 +37726,8 @@
 	        value: function render() {
 	            var _this2 = this;
 
+	            console.log(this.props.route);
+
 	            return _react2.default.createElement(
 	                _Defaults.View,
 	                { style: styles.ProcessPictures },
@@ -38151,7 +38153,7 @@
 	    }, {
 	        key: 'canStartRecordingPointsToDrawDuringRender',
 	        value: function canStartRecordingPointsToDrawDuringRender() {
-	            return this.mouseIsDown === true && this.state.editButtonClicked === false;
+	            return this.mouseIsDown === true && this.state.editButtonClicked === false && this.state.askedUserForNumber === true;
 	            // return true;
 	        }
 	    }, {
@@ -38168,55 +38170,54 @@
 	        value: function onMouseUp(e) {
 	            this.mouseIsUp = true;
 	            this.mouseIsDown = false;
-	            // if (this.canStartRecordingPointsToDrawDuringRender() === true) {
-	            //now based on the top left most, top right most, bottom left most, and bottom right most elements, I will make a rectangle for that area and take away the circles
-	            var rightMost = '',
-	                topMost = '',
-	                leftMost = '',
-	                bottomMost = '',
-	                scrollWidthAdjustment = '',
-	                scrollTopAdjustment = '';
-	            this.mousePositionArray.map(function (mousePosition, i) {
-	                var x = mousePosition.x,
-	                    y = mousePosition.y;
-	                scrollTopAdjustment = window.document.documentElement.scrollTop; //to deal with if the page is scrolled down or to the left at all
-	                scrollWidthAdjustment = window.document.documentElement.scrollLeft;
-	                x += scrollWidthAdjustment;
-	                y += scrollTopAdjustment;
-	                if (leftMost === '' || leftMost > x) {
-	                    leftMost = x - 1;
-	                }
-	                if (rightMost === '' || rightMost < x) {
-	                    rightMost = x + 2;
-	                }
-	                if (bottomMost === '' || bottomMost < y) {
-	                    bottomMost = y;
-	                }
-	                if (topMost === '' || topMost > y) {
-	                    topMost = y;
-	                }
-	            });
+	            if (this.state.editButtonClicked === false && this.state.askedUserForNumber === true) {
+	                //now based on the top left most, top right most, bottom left most, and bottom right most elements, I will make a rectangle for that area and take away the circles
+	                var rightMost = '',
+	                    topMost = '',
+	                    leftMost = '',
+	                    bottomMost = '',
+	                    scrollWidthAdjustment = '',
+	                    scrollTopAdjustment = '',
+	                    _showOutlinedAddressBox = false;
+	                this.mousePositionArray.map(function (mousePosition, i) {
+	                    var x = mousePosition.x,
+	                        y = mousePosition.y;
+	                    scrollTopAdjustment = window.document.documentElement.scrollTop; //to deal with if the page is scrolled down or to the left at all
+	                    scrollWidthAdjustment = window.document.documentElement.scrollLeft;
+	                    x += scrollWidthAdjustment;
+	                    y += scrollTopAdjustment;
+	                    if (leftMost === '' || leftMost > x) {
+	                        leftMost = x - 1;
+	                    }
+	                    if (rightMost === '' || rightMost < x) {
+	                        rightMost = x + 2;
+	                    }
+	                    if (bottomMost === '' || bottomMost < y) {
+	                        bottomMost = y;
+	                    }
+	                    if (topMost === '' || topMost > y) {
+	                        topMost = y;
+	                    }
+	                });
 
-	            var _showOutlinedAddressBox = false;
-	            if (this.state.askedUserForNumber === true) {
-	                _showOutlinedAddressBox = true;
+	                if (this.state.askedUserForNumber === true) {
+	                    _showOutlinedAddressBox = true;
+	                }
+	                _cotysEventHelper2.default.setState({ //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
+	                    showOutlinedAddressBox: _showOutlinedAddressBox,
+	                    leftMost: leftMost,
+	                    rightMost: rightMost,
+	                    bottomMost: bottomMost,
+	                    topMost: topMost
+	                });
+	                this.leftMost = leftMost;
+	                this.rightMost = rightMost;
+	                this.topMost = topMost;
+	                this.bottomMost = bottomMost;
+	                //now to send event to Jcrop to give me the cropped base64 representation to the cropped image
+	                this.processCropOnImage(e);
+	                this.setState(this.state);
 	            }
-	            _cotysEventHelper2.default.setState({ //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
-	                showOutlinedAddressBox: _showOutlinedAddressBox,
-
-	                leftMost: leftMost,
-	                rightMost: rightMost,
-	                bottomMost: bottomMost,
-	                topMost: topMost
-	            });
-	            this.leftMost = leftMost;
-	            this.rightMost = rightMost;
-	            this.topMost = topMost;
-	            this.bottomMost = bottomMost;
-	            //now to send event to Jcrop to give me the cropped base64 representation to the cropped image
-	            this.processCropOnImage(e);
-	            this.setState(this.state);
-	            // }
 	        }
 	    }, {
 	        key: 'onMouseDown',
@@ -38278,10 +38279,10 @@
 	    }, {
 	        key: 'nextButtonClicked',
 	        value: function nextButtonClicked() {
-	            var previousCoppedRects = this.state.previousCroppedRects.map(function (e) {
+	            var previousCroppedRects = this.state.previousCroppedRects.map(function (e) {
 	                return e;
 	            });
-	            previousCoppedRects.push({
+	            previousCroppedRects.push({
 	                leftMost: this.leftMost,
 	                topMost: this.topMost,
 	                rightMost: this.rightMost,
@@ -38299,20 +38300,20 @@
 	            this.mousePositionArray = [];
 	            var _previousCroppedRectsParentState = _store2.default.getPreviousCroppedRects();
 
-	            _previousCroppedRectsParentState.push(previousCoppedRects);
+	            _previousCroppedRectsParentState.push(previousCroppedRects);
 	            _previousCroppedRectsParentState = _previousCroppedRectsParentState.map(function (e) {
 	                return e;
 	            });
 
 	            _cotysEventHelper2.default.setState({
 	                showOutlinedAddressBox: false,
-	                previousCoppedRects: _previousCroppedRectsParentState
+	                previousCroppedRects: _previousCroppedRectsParentState
 	            });
 	            this.setState({
 	                croppedBase64String: '', //to reset the state to start the next cropped section of the picture
 	                editButtonClicked: false,
 	                mousePositionArray: [],
-	                previousCroppedRects: previousCoppedRects
+	                previousCroppedRects: previousCroppedRects
 	            });
 
 	            //show next address section
@@ -38633,6 +38634,7 @@
 	        _this9.didMount = false;
 	        _this9.didRunLogic = false;
 	        _this9.state = {
+	            display: 'none',
 	            animatedBorder: {},
 	            numberOfAddresses: '',
 	            numberOfAddressesValue: '',
@@ -38642,13 +38644,22 @@
 	    }
 
 	    (0, _createClass3.default)(QuestionNumberOverlay, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
+	            this.refs = [];
+	        }
+	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            this.didMount = true;
-	            this.props.setState({
-	                opacityOverride: 1
-	            });
-	            this.setState(this.state);
+
+	            (0, _jquery2.default)(this.refs['QuestionNumberOverlay']).fadeIn(2000);
+
+	            // this.props.setState({
+	            //     opacityOverride: 1
+	            // });
+
+	            this.setState((0, _extends3.default)({}, this.state, { display: 'flex' }));
 	        }
 	    }, {
 	        key: 'componentWillUnmount',
@@ -38716,7 +38727,9 @@
 	            }
 	            return _react2.default.createElement(
 	                _Defaults.View,
-	                { style: styles.QuestionNumberOverlay },
+	                { _ref: function _ref(eref) {
+	                        _this10.refs['QuestionNumberOverlay'] = (0, _reactDom.findDOMNode)(eref);
+	                    }, className: 'QuestionNumberOverlay', style: (0, _extends3.default)({}, styles.QuestionNumberOverlay, { display: this.state.display }) },
 	                this.state.presentInvalidInputMessage === false && _react2.default.createElement(
 	                    _Defaults.Text,
 	                    null,
@@ -39130,6 +39143,10 @@
 	    value: true
 	});
 
+	var _extends2 = __webpack_require__(213);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
 	var _getPrototypeOf = __webpack_require__(251);
 
 	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -39170,6 +39187,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var test;
+
 	var ProcessPictures = function (_React$Component) {
 	    (0, _inherits3.default)(ProcessPictures, _React$Component);
 
@@ -39179,7 +39198,7 @@
 	        var _this = (0, _possibleConstructorReturn3.default)(this, (ProcessPictures.__proto__ || (0, _getPrototypeOf2.default)(ProcessPictures)).call(this, props));
 
 	        _this.state = {
-	            previousCoppedRects: typeof _this.props.previousCoppedRects !== 'undefined' ? _this.props.previousCoppedRects.map(function (e) {
+	            previousCroppedRects: typeof _this.props.previousCroppedRects !== 'undefined' ? _this.props.previousCroppedRects.map(function (e) {
 	                return e;
 	            }) : [],
 	            showMapPreviewOverlay: false
@@ -39201,7 +39220,7 @@
 	            //TODO: make call to google apps script and send data to be send in the message
 	            var messageBody = '';
 
-	            this.state.previousCoppedRects.map(function (addressText, i) {
+	            this.state.previousCroppedRects.map(function (addressText, i) {
 	                messageBody += addressText + '\n';
 	                messsageBody += 'https://maps.google.com/?q=' + addressText + '\n\n';
 	            });
@@ -39227,8 +39246,8 @@
 	                _react2.default.createElement(
 	                    _Defaults.ScrollView,
 	                    { style: { width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between' } },
-	                    this.state.previousCoppedRects.map(function (addressText, i) {
-	                        return _react2.default.createElement(EditableMapLink, { setState: _this2._setState.bind(_this2), key: i, textFromCrop: addressText[i].textFromCrop, _href: _href, i: i });
+	                    this.state.previousCroppedRects.map(function (addressText, i) {
+	                        return _react2.default.createElement(EditableMapLink, { previousCroppedRects: _this2.state.previousCroppedRects, setState: _this2._setState.bind(_this2), key: i, textFromCrop: addressText[i].textFromCrop, _href: _href, i: i });
 	                    })
 	                ),
 	                _react2.default.createElement(_Defaults.Button, { value: 'Send as message', onClick: this.sendButtonClicked.bind(this) }),
@@ -39272,6 +39291,7 @@
 	        var _this4 = (0, _possibleConstructorReturn3.default)(this, (EditableMapLink.__proto__ || (0, _getPrototypeOf2.default)(EditableMapLink)).call(this, props));
 
 	        _this4.state = {
+	            previousCroppedRects: typeof _this4.props.previousCroppedRects !== 'undefined' ? _this4.props.previousCroppedRects : '',
 	            textFromCrop: typeof _this4.props.textFromCrop !== 'undefined' ? _this4.props.textFromCrop : ''
 	        };
 	        return _this4;
@@ -39288,8 +39308,30 @@
 	    }, {
 	        key: 'onChange',
 	        value: function onChange(e) {
+	            var _this5 = this;
+
+	            console.log('in onchange: this.props.i = ', this.props.i);
+
+	            var _previousCroppedRects = this.state.previousCroppedRects.map(function (text, i) {
+	                console.log('in .map i = ', i);
+
+	                if (i === _this5.props.i) {
+	                    return e;
+	                } else {
+	                    return text;
+	                }
+	            });
+
 	            this.setState({
 	                textFromCrop: e
+	            });
+
+	            var overrideObject = (0, _extends3.default)({}, this.state.previousCroppedRects, { textFromCrop: _previousCroppedRects[0] });
+
+	            console.log([overrideObject], this.state.previousCroppedRects);
+
+	            this.props.setState({
+	                previousCroppedRects: [[overrideObject]] //I have to format this varable like this because its the format it is expecting...at least for 1 text cropping instance
 	            });
 	        }
 	    }, {
@@ -39297,7 +39339,7 @@
 	        value: function render() {
 	            return _react2.default.createElement(
 	                _Defaults.View,
-	                { key: this.props.i, style: styles.previousCoppedRects },
+	                { key: this.props.i, style: styles.previousCroppedRects },
 	                _react2.default.createElement(_Defaults.Button, { value: 'Preview', onClick: this.onPreviewButtonClicked.bind(this) }),
 	                _react2.default.createElement(
 	                    'div',
@@ -39337,7 +39379,7 @@
 	        margin: '2.5px 2.5px 2.5px 2.5px',
 	        borderRadius: '4px'
 	    },
-	    previousCoppedRects: {
+	    previousCroppedRects: {
 	        width: '100%',
 	        height: '100%',
 	        alignItems: 'center',

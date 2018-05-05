@@ -497,7 +497,7 @@ class QuestionNumberOverlay extends React.Component {
             <View style={{...styles.QuestionNumberOverlay, display: this.state.displayOverride}} _ref={eref => {this.refs['fadeIn'] = findDOMNode(eref)}}>
                 <Text>How many addresses are on this image?</Text>
                     <View style={{flexDirection: 'column'}}>
-                        <Input placeholder='enter manually' value={this.state.numberOfAddresses} style={{width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center'}} onChange={this.onNumberOfAddressesChange.bind(this)} />
+                        <Input placeholder='enter number manually' value={this.state.numberOfAddresses} style={{width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center'}} onChange={this.onNumberOfAddressesChange.bind(this)} />
                         <View style={{justifyContent: 'space-evenly'}}>
                             {[1,2,3,4,5,6,7,8,9,10].map((number, j) =>
                                 <Text className='hover' key={j} onClick={this.textNumberClicked.bind(this, number)}>{number}</Text>
