@@ -490,11 +490,33 @@ class QuestionNumberOverlay extends React.Component {
         //TODO: implement logic
         return true;
     }
+    onMouseDown(e) {
+        this.props.setState({
+            opacityOverride: 0
+        })
+    }
+    onMouseUp(e) {
+        this.props.setState({
+            opacityOverride: styles.FoggyOverlay.opacity
+        })
+    }
+    onTouchStart(e) {
+        this.props.setState({
+            opacityOverride: 0
+        })
+    }
+    onTouchEnd(e) {
+        this.props.setState({
+            opacityOverride: styles.FoggyOverlay.opacity
+        })
+    }
     render() {
         //TODO: add option to 'sneak peek' the image being asked about
         //TODO: format numbers to be in the form of a keypad
         return (
             <View style={{...styles.QuestionNumberOverlay, display: this.state.displayOverride}} _ref={eref => {this.refs['fadeIn'] = findDOMNode(eref)}}>
+                <Button value='Peek' style={{color: 'white'}} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} />
+
                 <Text>How many addresses are on this image?</Text>
                     <View style={{flexDirection: 'column'}}>
                         <Input placeholder='enter number manually' value={this.state.numberOfAddresses} style={{width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center'}} onChange={this.onNumberOfAddressesChange.bind(this)} />

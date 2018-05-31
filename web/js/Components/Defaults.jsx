@@ -3,6 +3,37 @@ import React from 'react';
 
 
 export class Button extends React.Component {
+    onMouseUp(e) {
+        if (typeof this.props.onMouseUp !== 'undefined') {
+            this.props.onMouseUp(e);
+        }
+    }
+    onMouseDown(e) {
+        if (typeof this.props.onMouseDown !== 'undefined') {
+            this.props.onMouseDown(e);
+        }
+    }
+    onMouseMove(e) {
+        if (typeof this.props.onMouseMove !== 'undefined') {
+            this.props.onMouseMove(e);
+        }
+    }
+
+    onTouchEnd(e) {
+        if (typeof this.props.onTouchEnd !== 'undefined') {
+            this.props.onTouchEnd(e);
+        }
+    }
+    onTouchStart(e) {
+        if (typeof this.props.onTouchStart !== 'undefined') {
+            this.props.onTouchStart(e);
+        }
+    }
+    onClick(e) {
+        if (typeof this.props.onClick !== 'undefined') {
+            this.props.onClick(e);
+        }
+    }
     render() {
         let _stylesPropRoot = typeof this.props.styleRoot !== 'undefined' ? { ...this.props.styleRoot } : {},
             _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
@@ -13,7 +44,7 @@ export class Button extends React.Component {
 
         return (
             <div style={{ ...styles.Button, ..._stylesPropRoot }}>
-                <button onClick={this.props.onClick} placeholder={_placeholder} style={{ ...styles.ButtonChild, ..._stylesProp }}>
+                <button onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} onClick={this.onClick.bind(this)} placeholder={_placeholder} style={{ ...styles.ButtonChild, ..._stylesProp }}>
                     {_text}
                 </button>
             </div>
@@ -118,6 +149,16 @@ export class View extends React.Component {
             this.props.onMouseMove(e);
         }
     }
+    onTouchEnd(e) {
+        if(typeof this.props.onTouchEnd !== 'undefined') {
+            this.props.onTouchEnd(e);
+        }
+    }
+    onTouchStart(e) {
+        if(typeof this.props.onTouchStart !== 'undefined') {
+            this.props.onTouchStart(e);
+        }
+    }
     referenceCallback(eref) {
         if (typeof this.props._ref !== 'undefined') {
             this.props._ref(eref);
@@ -129,7 +170,7 @@ export class View extends React.Component {
 
         //this.props.ref is a callback function with the react reference in it so I should return the react reference and not deal with having to use `findDOMNode`
         return (
-            <div onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} ref={this.referenceCallback.bind(this)} className={_className.toString()} style={{ ...styles.View, ..._stylesProp }}>
+            <div onTouchStart={this.onTouchStart.bind(this)} onTouchEnd={this.onTouchEnd.bind(this)} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} ref={this.referenceCallback.bind(this)} className={_className.toString()} style={{ ...styles.View, ..._stylesProp }}>
                 {this.props.children}
             </div>
         )
