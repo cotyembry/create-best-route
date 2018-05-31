@@ -38573,16 +38573,32 @@
 	                { style: (0, _extends3.default)({}, styles.EditRecentCrop) },
 	                _react2.default.createElement(_Defaults.Image, { _ref: function _ref(eref) {
 	                        _this6.refs['image'] = (0, _reactDom.findDOMNode)(eref);
-	                    }, style: { position: 'absolute', top: this.props.topMost, left: this.props.leftMost }, src: this.props.src }),
+	                    }, style: {
+	                        position: 'absolute',
+	                        top: '0px',
+	                        left: '0px' },
+	                    src: this.props.src }),
 	                _react2.default.createElement(
 	                    _Defaults.View,
-	                    { style: {
-	                            flexDirection: 'row',
-	                            justifyContent: 'space-around'
-	                        } },
-	                    _react2.default.createElement('textarea', { ref: function ref(eref) {
-	                            _this6.refs['textArea'] = (0, _reactDom.findDOMNode)(eref);
-	                        }, placeholder: 'detecting text...', value: this.state.editableImageText, style: { zIndex: 1, width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center', height: _textAreaScrollHeight, maxHeight: _maxHeight }, onChange: this.onEditableImageTextChange.bind(this) })
+	                    { style: { flexDirection: 'column' } },
+	                    _react2.default.createElement(
+	                        _Defaults.View,
+	                        { style: {
+	                                flexDirection: 'row',
+	                                justifyContent: 'space-around'
+	                            } },
+	                        _react2.default.createElement('textarea', { ref: function ref(eref) {
+	                                _this6.refs['textArea'] = (0, _reactDom.findDOMNode)(eref);
+	                            }, placeholder: 'detecting text...', value: this.state.editableImageText, style: { zIndex: 1, width: 'calc(100% - 14px)', boxSizing: 'border-box', margin: '0px 7px 0px 7px', textAlign: 'center', height: _textAreaScrollHeight, maxHeight: _maxHeight }, onChange: this.onEditableImageTextChange.bind(this) })
+	                    ),
+	                    _react2.default.createElement(
+	                        'label',
+	                        { style: {
+	                                boxSizing: 'border-box',
+	                                paddingTop: '5px'
+	                            } },
+	                        'edit/make corrections'
+	                    )
 	                )
 	            );
 	        }

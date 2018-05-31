@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --inline --content-base .",
+    "start": "webpack-dev-server --inline --content-base --host=192.168.0.11 --port=8080 .",
     "live": "node compilejsPushLiveCommitAndPush.js",
     "webpack": "webpack",
     "webpack-watch": "webpack --watch",

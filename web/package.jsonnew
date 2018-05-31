@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --inline --content-base --host=192.168.0.8 --port=8080 .",
+    "start": "webpack-dev-server --inline --content-base .",
+    "live": "node compilejsPushLiveCommitAndPush.js",
     "webpack": "webpack",
     "webpack-watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,6 +15,7 @@
   "dependencies": {
     "babel-polyfill": "^6.13.0",
     "babel-runtime": "^6.11.6",
+    "croppie": "^2.6.2",
     "css-loader": "^0.26.4",
     "jquery": "^3.1.0",
     "js-tokens": "^3.0.2",
