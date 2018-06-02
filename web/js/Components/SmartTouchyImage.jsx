@@ -122,6 +122,14 @@ export default class SmartTouchyImage extends React.Component {
             isMobileSafariStyle = {};
 
 
+        console.warn('todo: reimpliment correctly detecting if user is using the Safari web browser on iPhone or iPad');
+        /*
+            //replace the following code with the following logic:
+            var ua = window.navigator.userAgent;
+            var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+            var webkit = !!ua.match(/WebKit/i);
+            var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+        */
 
         let result = userAgent.toString().search(/iPhone/gi) !== -1,
             result2 = userAgent.toString().search(/iPad/gi) !== -1;
