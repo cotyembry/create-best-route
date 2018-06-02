@@ -114,7 +114,12 @@ export default class SmartTouchyImage extends React.Component {
         let _canvasRef = typeof this.refs['customCanvas'] !== 'undefined' ? this.refs['customCanvas'] : '';
         return (
             <View style={styles.SmartTouchyImage}>
-                <Image onLoad={e => { this.onImageLoadEventCallback(e) }} style={{  position: 'absolute', top: '0px', left: '0px' }} _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}} src={this.props.src} />
+                <Image
+                    onLoad={e => { this.onImageLoadEventCallback(e) }}
+                    style={styles.wholeImageToDrawOver}
+                    _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}}
+                    src={this.props.src}
+                />
                 
                 <canvas style={styles.customCanvas} className='customCanvas' ref={(eref) => { this.refs['customCanvas'] = findDOMNode(eref); this.childRefsArray['customCanvas'] = this.refs['customCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
                 
@@ -827,5 +832,12 @@ const styles = {
         MozUserSelect: 'none',   // Firefox
         MsUserSelect: 'none',   // Internet Explorer/Edge
         userSelect: 'none'     // Non-prefixed version, currently supported by Chrome and Opera	  
+    },
+    wholeImageToDrawOver: {
+        position: 'absolute',
+        top: '0px',
+        left: '0px',
+        height: '100%',
+        width: 'auto'
     }
 }
