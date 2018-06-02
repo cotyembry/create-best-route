@@ -181,6 +181,7 @@ export default class SmartTouchyImage extends React.Component {
                         base64={this.props.src} 
                         numberOfAddresses={this.state.numberOfAddresses} 
                         showOutlinedAddressBox={this.state.showOutlinedAddressBox}
+                        imageIsFromPhoneCamera={this.imageIsFromPhoneCamera}
                         setState={this._setState.bind(this)}
                     />
                 }
@@ -479,17 +480,21 @@ class FoggyOverlay extends React.Component {
             //start crop logic
             let canvas = this.props.canvasRef,
                 context = canvas.getContext('2d'),
+                totalWidth = window.width,
                 totalHeight = window.height,
                 png = '',                               //will be the base64 representation of the image as a string
                 w = this.rightMost - this.leftMost,
                 h = this.bottomMost - this.topMost,
                 sourceImageWidth = window.width,
                 sourceImageHeight = totalHeight,
-                onePercentValueForHeightInPixels = 0.01 * this.props.imageReference.naturalHeight;
+                onePercentValueForWidthInPixels = 0.01 * this.props.imageReference.naturalWidth,
+                onePercentValueForHeightInPixels = 0.01 * this.props.imageReference.naturalHeight,
+                leftMostPercent = (this.leftMost / totalWidth) * 100;                                               //* 100 to convert from a decimal format to a percentage integer (which should be between 0 and 100)
             if (typeof this.props.imageReference !== 'undefined') {
                 
-                if(this.imageIsFromPhoneCamera === true) {
-                    context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
+                if(this.props.imageIsFromPhoneCamera === true) {
+                    context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);
+                    // context.drawImage(this.props.imageReference, (leftMostPercent * onePercentValueForWidthInPixels), (topMostPercent * onePercentValueForHeightInPixels), this.props.imageReference.naturalWidth / 2, this.props.imageReference.naturalHeight / 2, 0, 0, totalWidth, totalHeight);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
                 }
                 else {
                     context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
