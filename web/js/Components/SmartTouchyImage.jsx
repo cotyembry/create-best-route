@@ -13,6 +13,9 @@ import store from '../store.js';
 
 import cotysEventHelper from '../cotysEventHelper.js';
 
+var userAgent = window.navigator.userAgent;
+
+
 /**
  * 
  * TODO: add an overlay of foggyish see through layer that will wipe away when the user drags over the area
@@ -32,7 +35,8 @@ export default class SmartTouchyImage extends React.Component {
             onImageLoadEvent: '',
             showOutlinedAddressBox: typeof this.props.showOutlinedAddressBox !== 'undefined' ? this.props.showOutlinedAddressBox : false,
             numberOfAddresses: '',
-            numberOfImagesProcessed: 0
+            numberOfImagesProcessed: 0,
+            isDisplayingCroppedLogic: false
         }
     }
     componentDidMount() {
@@ -110,13 +114,35 @@ export default class SmartTouchyImage extends React.Component {
     _nextButtonSelected() {
 
     }
+    _setState(newState) {
+        this.setState(newState);
+    }
     render() {
-        let _canvasRef = typeof this.refs['customCanvas'] !== 'undefined' ? this.refs['customCanvas'] : '';
+        let _canvasRef = typeof this.refs['customCanvas'] !== 'undefined' ? this.refs['customCanvas'] : '',
+            isMobileSafariStyle = {};
+
+
+
+        let result = userAgent.toString().search(/iPhone/gi) !== -1,
+            result2 = userAgent.toString().search(/iPad/gi) !== -1;
+
+
+        if (result === true || result2 === true) {   // iPad or iPhone; if I do this for desktop in chrome anyways, it messes up the cropped image that the user outlines but in iOS Safari if I do NOT do this, the image to draw on for the user to outline doenst display correctly
+            isMobileSafariStyle = {
+                height: '100%',
+                width: 'auto'
+            };
+        }
+
+        // alert(JSON.stringify(isMobileSafariStyle))
+        
+        
+
         return (
             <View style={styles.SmartTouchyImage}>
                 <Image
                     onLoad={e => { this.onImageLoadEventCallback(e) }}
-                    style={styles.wholeImageToDrawOver}
+                    style={{...styles.wholeImageToDrawOver, ...isMobileSafariStyle}}
                     _ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}}
                     src={this.props.src}
                 />
@@ -138,7 +164,8 @@ export default class SmartTouchyImage extends React.Component {
                         FoggyOverlayCallback={this.FoggyOverlayCallback} 
                         base64={this.props.src} 
                         numberOfAddresses={this.state.numberOfAddresses} 
-                        showOutlinedAddressBox={this.state.showOutlinedAddressBox} 
+                        showOutlinedAddressBox={this.state.showOutlinedAddressBox}
+                        setState={this._setState.bind(this)}
                     />
                 }
             </View>
@@ -331,11 +358,18 @@ class FoggyOverlay extends React.Component {
         }
     }
     editButtonClicked() {
+        this.props.setState({
+            isDisplayingCroppedLogic: true
+        })
         this.setState({
             editButtonClicked: true
-        })
+        });
     }
     nextButtonClicked() {
+        this.props.setState({
+            isDisplayingCroppedLogic: false
+        });
+
         let previousCroppedRects = this.state.previousCroppedRects.map(e => e);
         previousCroppedRects.push({
             leftMost: this.leftMost,
@@ -856,8 +890,6 @@ const styles = {
     wholeImageToDrawOver: {
         position: 'absolute',
         top: '0px',
-        left: '0px',
-        height: '100%',
-        width: 'auto'
+        left: '0px'        
     }
 }
