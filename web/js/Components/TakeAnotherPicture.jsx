@@ -19,7 +19,7 @@ export default class TakeAnotherPicture extends React.Component {
         this.setState({
             imagesTakenBase64: (typeof newProps !== 'undefined' && typeof newProps.imagesTakenBase64 !== 'undefined') ? newProps.imagesTakenBase64.map(e => e) : []
         })
-    }
+    } 
     componentDidMount() {
         let self = this;
         
@@ -46,6 +46,12 @@ export default class TakeAnotherPicture extends React.Component {
 
         $(this.refs['cameraInput']).on('change', (e) => {
             var selectedFile = e.target.files[0];
+            
+
+            // this.checkImageSize(selectedFile, (a,b) => {
+            //     console.log(a,b);
+            // })
+            
             selectedFile.convertToBase64((base64) => {
                 let bAClone = self.state.imagesTakenBase64.map(e => e);
                 bAClone.push(base64);
@@ -63,6 +69,31 @@ export default class TakeAnotherPicture extends React.Component {
             this.setState(this.state);
         });
         this.setState(this.state);
+    }
+    checkImageSize(selectedFile, cb) {
+        //check whether browser fully supports all File API
+        console.log('forsure here');
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            console.log('here?');
+            var fr = new FileReader();
+            fr.onload = function () { // file is loaded
+                console.log('in fr onload', fr, fr.result);
+                var img = new Image();
+                img.onload = function () { // image is loaded; sizes are available
+                    // if (img.width < minW || img.height < minH || img.width > maxW || img.height > maxH) {
+                    //     cbKO();
+                    // } else {
+                    //     cbOK();
+                    // }
+                    alert('in img onload', img, fr);
+                    cb(img, fr);
+                };
+                img.src = fr.result; // is the data URL because called with readAsDataURL
+            };
+            fr.readAsDataURL(selectedFile);
+        } else {
+            alert("Please upgrade your browser, because your current browser lacks some new features we need!");
+        }
     }
     componentWillMount() {
         this.refs = [];

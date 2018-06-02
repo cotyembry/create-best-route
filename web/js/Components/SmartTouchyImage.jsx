@@ -26,6 +26,26 @@ export default class SmartTouchyImage extends React.Component {
         super(props);
         this.childRefsArray = [];
         this.FoggyOverlayCallback = '';
+        
+
+        this.imageIsFromPhoneCamera = false;
+        console.warn('todo: reimpliment correctly detecting if user is using the Safari web browser on iPhone or iPad');
+        /*
+            //replace the following code with the following logic:
+            var ua = window.navigator.userAgent;
+            var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+            var webkit = !!ua.match(/WebKit/i);
+            var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+        */
+
+        let result = userAgent.toString().search(/iPhone/gi) !== -1,
+            result2 = userAgent.toString().search(/iPad/gi) !== -1;
+        // if(result === true || result2 === true) {
+        if(result === true || result2 === true) {
+            this.imageIsFromPhoneCamera = true;
+        }
+
+
         this.state = {
             askedUserForNumber: false,
             base64: typeof this.props.src !== 'undefined' ? this.props.src : '',
@@ -122,20 +142,7 @@ export default class SmartTouchyImage extends React.Component {
             isMobileSafariStyle = {};
 
 
-        console.warn('todo: reimpliment correctly detecting if user is using the Safari web browser on iPhone or iPad');
-        /*
-            //replace the following code with the following logic:
-            var ua = window.navigator.userAgent;
-            var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
-            var webkit = !!ua.match(/WebKit/i);
-            var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
-        */
-
-        let result = userAgent.toString().search(/iPhone/gi) !== -1,
-            result2 = userAgent.toString().search(/iPad/gi) !== -1;
-
-
-        if (result === true || result2 === true) {   // iPad or iPhone; if I do this for desktop in chrome anyways, it messes up the cropped image that the user outlines but in iOS Safari if I do NOT do this, the image to draw on for the user to outline doenst display correctly
+        if (this.imageIsFromPhoneCamera === true) {   // iPad or iPhone; if I do this for desktop in chrome anyways, it messes up the cropped image that the user outlines but in iOS Safari if I do NOT do this, the image to draw on for the user to outline doenst display correctly
             isMobileSafariStyle = {
                 height: '100%',
                 width: 'auto'
@@ -166,7 +173,8 @@ export default class SmartTouchyImage extends React.Component {
                         getCurrentCropNumber={this._getCurrentCropNumber.bind(this)} 
                         getCurrentImageNumber={this._getCurrentImageNumber.bind(this)} 
                         nextButtonClicked={this._nextButtonSelected.bind(this)} 
-                        canvasRef={_canvasRef} imageReference={this.refs['image']} 
+                        canvasRef={_canvasRef}
+                        imageReference={this.refs['image']} 
                         imageLoadEvent={this.state.onLoadImageEvent} 
                         setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} 
                         FoggyOverlayCallback={this.FoggyOverlayCallback} 
@@ -471,13 +479,17 @@ class FoggyOverlay extends React.Component {
             //start crop logic
             let canvas = this.props.canvasRef,
                 context = canvas.getContext('2d'),
+                totalHeight = window.height,
                 png = '',                               //will be the base64 representation of the image as a string
                 w = this.rightMost - this.leftMost,
-                h = this.bottomMost - this.topMost;
+                h = this.bottomMost - this.topMost,
+                sourceImageWidth = window.width,
+                sourceImageHeight = totalHeight,
+                onePercentValueForHeightInPixels = 0.01 * this.props.imageReference.naturalHeight;
             if (typeof this.props.imageReference !== 'undefined') {
                 
-                if(typeof this.testingSafariCropLogic === 'undefined' || this.testingSafariCropLogic === false) {
-                    context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
+                if(this.imageIsFromPhoneCamera === true) {
+                    context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
                 }
                 else {
                     context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
