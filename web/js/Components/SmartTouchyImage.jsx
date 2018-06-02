@@ -150,6 +150,9 @@ export default class SmartTouchyImage extends React.Component {
 class FoggyOverlay extends React.Component {
     constructor(props) {
         super(props);
+        
+
+
         this.state = {
             askedUserForNumber: false,
             croppiePictureURL: '',
@@ -174,6 +177,9 @@ class FoggyOverlay extends React.Component {
             // bottomMost: typeof this.props.bottomMost !== 'undefined' ? this.props.bottomMost : '',
             // topMost: typeof this.props.topMost !== 'undefined' ? this.props.topMost : ''
         };
+
+        this.testingSafariCropLogic = true;
+
         this.onImageLoadCallback = this.props.FoggyOverlayCallback;
         this.mousePositionArray = [];
         this.mouseIsUp = true;
@@ -183,6 +189,7 @@ class FoggyOverlay extends React.Component {
         this.rightMost = '';
         this.topMost = '';
         this.bottomMost = '';
+
     }
     componentDidMount() {
         // $(this.refs['FoggyOverlay']).on('mouseup', this.onMouseUp.bind(this));
@@ -426,7 +433,15 @@ class FoggyOverlay extends React.Component {
                 w = this.rightMost - this.leftMost,
                 h = this.bottomMost - this.topMost;
             if (typeof this.props.imageReference !== 'undefined') {
-                context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
+                
+                if(typeof this.testingSafariCropLogic === 'undefined' || this.testingSafariCropLogic === false) {
+                    context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
+                }
+                else {
+                    context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
+                }
+                
+                
                 png = canvas.toDataURL('image/png');
                 this.setState({
                     croppedBase64String: png
@@ -613,11 +628,16 @@ class EditRecentCrop extends React.Component {
         return (
             <View style={{...styles.EditRecentCrop}}>
                 {/* <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} /> */}
-                <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{
-                    position: 'absolute', 
-                    top: '0px', 
-                    left: '0px'}} 
-                    src={this.props.src} />
+                <Image
+                    _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}}
+                    style={{
+                        position: 'absolute', 
+                        top: '0px', 
+                        left: '0px',
+                        zIndex: '1000000'
+                    }} 
+                    src={this.props.src}
+                />
                 
                 <View style={{flexDirection: 'column'}}>
                     <View style={{
