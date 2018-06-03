@@ -747,6 +747,7 @@ class QuestionNumberOverlay extends React.Component {
         super(props);
         this.didMount = false;
         this.didRunLogic = false;
+        this.numberOfAddresses = '';
         this.state = {
             display: 'none',
             animatedBorder: {},
@@ -791,8 +792,9 @@ class QuestionNumberOverlay extends React.Component {
         if(this.validateAddressInputValue() === true) {
             this.props.setState({
                 askedUserForNumber: true,
-                numberOfAddresses: this.state.numberOfAddresses
-            })
+                numberOfAddresses: this.numberOfAddresses === '' ? this.state.numberOfAddresses : this.numberOfAddresses
+            });
+            this.numberOfAddresses = '';    //reset for the next time (if ever) another `textNumberClicked` method is invoked to help properly evaluate the above ternary within the setState call
         }
         else {
             this.setState({
@@ -801,13 +803,16 @@ class QuestionNumberOverlay extends React.Component {
         }
     }
     textNumberClicked(e) {
+        this.numberOfAddresses = e;
         this.setState({
             numberOfAddresses: e
-        })
+        });
+
+        this.nextButtonClicked();
     }
     validateAddressInputValue() {
         let returnValue = false;
-        if(parseFloat(this.state.numberOfAddresses) > 0) {
+        if ((this.numberOfAddresses !== '' && parseFloat(this.numberOfAddresses) > 0) || parseFloat(this.state.numberOfAddresses) > 0) {    //added `(this.numberOfAddresses !== '' && parseFloat(this.numberOfAddresses) > 0)` to handle optimization for not having to worry about the `setState`'s asyncronous logic to finish so I can call `this.nextButtonClicked` directly rather than ONLY allowing the `render` method's event listener to call the `this.nextButtonClicked` method since I want to also navigate the user to the next logic flow if they tap a particular number component
             returnValue = true;
         }
         
