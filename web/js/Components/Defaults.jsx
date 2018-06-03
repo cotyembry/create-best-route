@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 
 
 export class Button extends React.Component {
@@ -86,6 +86,14 @@ export class Image extends React.Component {
             <img onLoad={this.onLoad.bind(this)} ref={this.referenceCallback.bind(this)} src={_src} style={_stylesProp} onClick={this.onClick.bind(this)} />
         )
     }
+}
+
+Image.propTypes = {
+    _ref: PropTypes.func,
+    onClick: PropTypes.func,
+    onLoad: PropTypes.func,
+    style: PropTypes.object,
+    src: PropTypes.string
 }
 
 export class Input extends React.Component {

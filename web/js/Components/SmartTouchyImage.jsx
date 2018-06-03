@@ -162,29 +162,38 @@ export default class SmartTouchyImage extends React.Component {
                     src={this.props.src}
                 />
                 
-                <canvas style={styles.customCanvas} className='customCanvas' ref={(eref) => { this.refs['customCanvas'] = findDOMNode(eref); this.childRefsArray['customCanvas'] = this.refs['customCanvas']; }}></canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
+                <canvas
+                    style={styles.customCanvas}
+                    className='customCanvas'
+                    ref={(eref) => {
+                        this.refs['customCanvas'] = findDOMNode(eref);
+                        this.childRefsArray['customCanvas'] = this.refs['customCanvas'];
+                    }}>
+                </canvas>{/* TODO: add min and max heights based on users screen size; this will be used to help the user preview what they are cropping */}
                 
-                {this.state.displayFoggyOverlay === true &&
-                    <FoggyOverlay 
-                        goToNextImage={this.props.goToNextImage} 
-                        getNumberOfImagesProcessed={this._getNumberOfImagesProcessed.bind(this)} 
-                        imagesTaken={this.props.imagesTakenBase64} 
-                        setCurrentCropNumber={this._setCurrentCropNumber.bind(this)} 
-                        getCurrentCropNumber={this._getCurrentCropNumber.bind(this)} 
-                        getCurrentImageNumber={this._getCurrentImageNumber.bind(this)} 
-                        nextButtonClicked={this._nextButtonSelected.bind(this)} 
-                        canvasRef={_canvasRef}
-                        imageReference={this.refs['image']} 
-                        imageLoadEvent={this.state.onLoadImageEvent} 
-                        setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} 
-                        FoggyOverlayCallback={this.FoggyOverlayCallback} 
-                        base64={this.props.src} 
-                        numberOfAddresses={this.state.numberOfAddresses} 
-                        showOutlinedAddressBox={this.state.showOutlinedAddressBox}
-                        imageIsFromPhoneCamera={this.imageIsFromPhoneCamera}
-                        setState={this._setState.bind(this)}
-                    />
-                }
+
+
+                <FoggyOverlay
+                    displayFoggyOverlay={this.state.displayFoggyOverlay}
+                    goToNextImage={this.props.goToNextImage} 
+                    getNumberOfImagesProcessed={this._getNumberOfImagesProcessed.bind(this)} 
+                    imagesTaken={this.props.imagesTakenBase64} 
+                    setCurrentCropNumber={this._setCurrentCropNumber.bind(this)} 
+                    getCurrentCropNumber={this._getCurrentCropNumber.bind(this)} 
+                    getCurrentImageNumber={this._getCurrentImageNumber.bind(this)} 
+                    nextButtonClicked={this._nextButtonSelected.bind(this)} 
+                    canvasRef={_canvasRef}
+                    imageReference={this.refs['image']} 
+                    imageLoadEvent={this.state.onLoadImageEvent} 
+                    setCurrentImageRef={(childRefsArray) => {this.childRefsArray = childRefsArray}} 
+                    FoggyOverlayCallback={this.FoggyOverlayCallback} 
+                    base64={this.props.src} 
+                    numberOfAddresses={this.state.numberOfAddresses} 
+                    showOutlinedAddressBox={this.state.showOutlinedAddressBox}
+                    imageIsFromPhoneCamera={this.imageIsFromPhoneCamera}
+                    setState={this._setState.bind(this)}
+                />
+                
             </View>
         )
     }
@@ -195,9 +204,12 @@ class FoggyOverlay extends React.Component {
     constructor(props) {
         super(props);
         
-
+        this._refs = [];
+        this._refs['FoggyOverlay']
 
         this.state = {
+            displayFoggyOverlay: this.props.displayFoggyOverlay,
+
             askedUserForNumber: false,
             croppiePictureURL: '',
             croppedBase64String: '',
@@ -235,37 +247,35 @@ class FoggyOverlay extends React.Component {
         this.bottomMost = '';
 
     }
+    
     componentDidMount() {
-        // $(this.refs['FoggyOverlay']).on('mouseup', this.onMouseUp.bind(this));
-        // $(this.refs['FoggyOverlay']).on('mousedown', this.onMouseDown.bind(this));
-        // $(this.refs['FoggyOverlay']).mousemove(this.onMouseMove.bind(this));
-
-        this.refs['FoggyOverlay'].onmouseup = this.onMouseUp.bind(this);
-        this.refs['FoggyOverlay'].onmousedown = this.onMouseDown.bind(this);
-        this.refs['FoggyOverlay'].onmousemove = this.onMouseMove.bind(this);
+        
+        this._refs['FoggyOverlay'].onmouseup = this.onMouseUp.bind(this);
+        this._refs['FoggyOverlay'].onmousedown = this.onMouseDown.bind(this);
+        this._refs['FoggyOverlay'].onmousemove = this.onMouseMove.bind(this);
         
         
-        this.refs['FoggyOverlay'].ontouchstart = this.onMouseDown.bind(this);
-        this.refs['FoggyOverlay'].ontouchend = this.onMouseUp.bind(this);
-        this.refs['FoggyOverlay'].ontouchmove = this.onMouseMove.bind(this);
+        this._refs['FoggyOverlay'].ontouchstart = this.onMouseDown.bind(this);
+        this._refs['FoggyOverlay'].ontouchend = this.onMouseUp.bind(this);
+        this._refs['FoggyOverlay'].ontouchmove = this.onMouseMove.bind(this);
 
 
-        this.props.setCurrentImageRef(this.refs);   //pass the local `this.refs` array so it can altered by the parent <SmartTouchyImage /> component
+        this.props.setCurrentImageRef(this._refs);   //pass the local `this._refs` array so it can altered by the parent <SmartTouchyImage /> component
     }
     componentWillUnmount() {
         
     }
-    componentWillMount() {
-        this.refs = [];
-    }
+    // componentWillMount() {
+    //     this._refs = [];
+    // }
     componentWillReceiveProps(newProps) {
         let _newState = {};
         if(typeof newProps.showOutlinedAddressBox !== 'undefined') {
             _newState = {..._newState, showOutlinedAddressBox: newProps.showOutlinedAddressBox};
         }
-        // if (typeof newProps.currentImage !== 'undefined') {
-        //     _newState = {..._newState, currentImage: newProps.currentImage};
-        // }
+        if(typeof newProps.displayFoggyOverlay !== 'undefined') {
+            _newState = {..._newState, displayFoggyOverlay: newProps.displayFoggyOverlay}
+        }
         
         this.setState(_newState);
     }
@@ -281,6 +291,10 @@ class FoggyOverlay extends React.Component {
         return moreAddressesToProcess;
     }
     onMouseUp(e) {
+        // e = e.nativeEvent;
+
+
+
         this.mouseIsUp = true;
         this.mouseIsDown = false;
         if (this.state.editButtonClicked === false && this.state.askedUserForNumber === true) {
@@ -337,9 +351,9 @@ class FoggyOverlay extends React.Component {
         this.mouseIsDown = true;
     }
     onMouseMove(e) {
-        // console.log(e.changedTouches.length, e, ' ' + 'onMouseMove')
-        // alert('onMouseMove');
-        // alert(JSON.stringify(e));
+        // e = e.nativeEvent;
+        
+        
         let normalizedX = '',                                   //so I can reuse these methods between touch devices and mouse events
             normalizedY = '',
             scrollWidthAdjustment = '',
@@ -513,8 +527,30 @@ class FoggyOverlay extends React.Component {
         this.setState(newState);
     }
     render() {
+        /*
+this._refs['FoggyOverlay'].onmouseup = this.onMouseUp.bind(this);
+        this._refs['FoggyOverlay'].onmousedown = this.onMouseDown.bind(this);
+        this._refs['FoggyOverlay'].onmousemove = this.onMouseMove.bind(this);
+
+
+        this._refs['FoggyOverlay'].ontouchstart = this.onMouseDown.bind(this);
+        this._refs['FoggyOverlay'].ontouchend = this.onMouseUp.bind(this);
+        this._refs['FoggyOverlay'].ontouchmove = this.onMouseMove.bind(this);
+
+        */
         return (
-            <View className='SmartTouchyImage' _ref={eref => {this.refs['FoggyOverlay'] = findDOMNode(eref)}} style={{...styles.FoggyOverlay, opacity: this.state.opacityOverride}}>
+            <View
+                className='SmartTouchyImage'
+                _ref={eref => {this._refs['FoggyOverlay'] = findDOMNode(eref)}}
+                style={{
+                    ...styles.FoggyOverlay,
+                    opacity: this.state.opacityOverride,
+                    visibility: this.state.displayFoggyOverlay === false ? 'hidden' : 'visible'
+                }}
+                
+
+
+            >
                     {(() => {
                         if(this.state.askedUserForNumber === false) {
                             return (
@@ -632,6 +668,9 @@ class EditRecentCrop extends React.Component {
 
 
         this.state = {
+            croppedImageWidth: '',
+            croppedImageHeight: '',
+
             editableImageText: '',
             mouseIsDown: false,
             ocrResultText: '',
@@ -694,7 +733,17 @@ class EditRecentCrop extends React.Component {
                         top: '0px', 
                         left: '0px',
                         zIndex: '1000000'
-                    }} 
+                    }}
+                    _ref={(eref) => {
+                        let img = findDOMNode(eref);
+
+                        console.log(eref, img);
+                        
+                        this.setState({
+                            croppedImageWidth: img.naturalWidth,
+                            croppedImageHeight: img.naturalHeight
+                        })
+                    }}
                     src={this.props.src}
                 />
                 
