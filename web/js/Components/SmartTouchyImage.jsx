@@ -725,6 +725,14 @@ class EditRecentCrop extends React.Component {
             _textAreaScrollHeight = _defaultHeight + 'px';
         }
         
+
+
+        /**
+         * TODO - set below <Image ... /> width and height to be :
+         * w = this.rightMost - this.leftMost,
+                h = this.bottomMost - this.topMost
+         */
+
         return (
             <View style={{...styles.EditRecentCrop}}>
                 {/* <Image _ref={(eref) => {this.refs['image'] = findDOMNode(eref)}} style={{position: 'absolute', top: this.props.topMost, left: this.props.leftMost}} src={this.props.src} /> */}
