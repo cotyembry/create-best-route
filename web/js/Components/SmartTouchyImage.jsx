@@ -193,7 +193,7 @@ export default class SmartTouchyImage extends React.Component {
                     imageIsFromPhoneCamera={this.imageIsFromPhoneCamera}
                     setState={this._setState.bind(this)}
                 />
-                
+
             </View>
         )
     }
@@ -587,7 +587,14 @@ this._refs['FoggyOverlay'].onmouseup = this.onMouseUp.bind(this);
                                     {this.state.croppedBase64String !== '' && this.state.editButtonClicked === true &&
                                         <View>
                                             {/* <PreviewImage leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} /> */}
-                                            <EditRecentCrop setParentState={this._setState.bind(this)} leftMost={this.leftMost} rightMost={this.topMost} topMost={this.topMost} bottomMost={this.bottomMost} src={this.state.croppedBase64String} />
+                                            <EditRecentCrop
+                                                setParentState={this._setState.bind(this)}
+                                                leftMost={this.leftMost}
+                                                rightMost={this.topMost}
+                                                topMost={this.topMost}
+                                                bottomMost={this.bottomMost}
+                                                src={this.state.croppedBase64String}
+                                            />
                                         </View>
                                     }
                                     
@@ -625,17 +632,10 @@ class EditRecentCrop extends React.Component {
         this.didMount = false;
         //here I will try to initialize this.ocrResultText with the resulting text of the this.props.src image data
         this.ocrResultText = '';
-        // $.ajax({
-        //     url: 'https://script.google.com/macros/s/AKfycbxi6q5NnhynvGe_-PSQ5tH5qe11tQbC6SlU443PmcqvJXYrm-k/exec?base64=' + this.props.src,
-        //     type: 'GET'
-        // }).done((e) => {
-        //     console.log('in .then of ajax request with e = ', e);
-        // })
+        this.receivedOCRResult = false;
 
 
       
-
-
 
         $.ajax({
             type: 'POST',
@@ -648,6 +648,7 @@ class EditRecentCrop extends React.Component {
             success: (e) => {
                 console.log('in success with e = ', e);
                 this.ocrResultText = e;
+                this.receivedOCRResult = true;
 
                 if(this.didMount === true) {
                     this.props.setParentState({
@@ -661,6 +662,7 @@ class EditRecentCrop extends React.Component {
             },
             error: (e) => {
                 console.log('in error with e = ', e);
+                this.receivedOCRResult = true;
             }
         });
 
@@ -685,14 +687,11 @@ class EditRecentCrop extends React.Component {
     }
     componentDidMount() {
         this.didMount = true;
-        // setTimeout((e) => {
-        //     $(this.refs['image']).fadeOut();
-        // }, 1500);
-        this.props.setParentState({ opacityOverride: 1 });          //to make the container not be shown for now
+
+        this.props.setParentState({ opacityOverride: 1 });                                          //to make the container not be shown for now
 
 
-        //now I will try to set the state for the text off of the image (the result of the OCR logic)
-        if(this.ocrResultText !== '') {
+        if(this.ocrResultText !== '') {                                                             //now I will try to set the state for the text off of the image (the result of the OCR logic)
             this.props.setParentState({
                 editableImageText: this.ocrResultText
             })
@@ -703,14 +702,17 @@ class EditRecentCrop extends React.Component {
         }
     }
     onEditableImageTextChange(e) {
-        console.log('onEditableImageTextChange e = ', e.nativeEvent, e.nativeEvent.target.value);
-        this.props.setParentState({
-            editableImageText: e.nativeEvent.target.value
-        })
-        this.setState({
-            editableImageText: e.nativeEvent.target.value,
-            textAreaScrollHeight: typeof this.refs['textArea'] !== 'undefined' ? this.refs['textArea'].scrollHeight + 'px' : ''
-        })
+        // console.log('onEditableImageTextChange e = ', e.nativeEvent, e.nativeEvent.target.value);
+        
+        if(this.receivedOCRResult === true) {                                                       //to not allow the user to edit the text field until the OCR logic is complete from the google apps script ajax/network request
+            this.props.setParentState({
+                editableImageText: e.nativeEvent.target.value
+            })
+            this.setState({
+                editableImageText: e.nativeEvent.target.value,
+                textAreaScrollHeight: typeof this.refs['textArea'] !== 'undefined' ? this.refs['textArea'].scrollHeight + 'px' : ''
+            })
+        }
     }
     render() {
         let _textAreaScrollHeight = '',
@@ -735,14 +737,14 @@ class EditRecentCrop extends React.Component {
                         zIndex: '1000000'
                     }}
                     _ref={(eref) => {
-                        let img = findDOMNode(eref);
+                        // let img = findDOMNode(eref);
 
-                        console.log(eref, img);
+                        // console.log(eref, img);
                         
-                        this.setState({
-                            croppedImageWidth: img.naturalWidth,
-                            croppedImageHeight: img.naturalHeight
-                        })
+                        // this.setState({
+                        //     croppedImageWidth: img.naturalWidth,
+                        //     croppedImageHeight: img.naturalHeight
+                        // })
                     }}
                     src={this.props.src}
                 />
