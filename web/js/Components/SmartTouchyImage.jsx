@@ -24,6 +24,13 @@ var userAgent = window.navigator.userAgent;
 export default class SmartTouchyImage extends React.Component {
     constructor(props) {
         super(props);
+
+
+        this.testImageCropOverride = true;
+
+
+
+
         this.childRefsArray = [];
         this.FoggyOverlayCallback = '';
         
@@ -42,6 +49,12 @@ export default class SmartTouchyImage extends React.Component {
             result2 = userAgent.toString().search(/iPad/gi) !== -1;
         // if(result === true || result2 === true) {
         if(result === true || result2 === true) {
+            this.imageIsFromPhoneCamera = true;
+        }
+
+
+
+        if(this.testImageCropOverride === true) {
             this.imageIsFromPhoneCamera = true;
         }
 
@@ -503,11 +516,22 @@ class FoggyOverlay extends React.Component {
                 sourceImageHeight = totalHeight,
                 onePercentValueForWidthInPixels = 0.01 * this.props.imageReference.naturalWidth,
                 onePercentValueForHeightInPixels = 0.01 * this.props.imageReference.naturalHeight,
-                leftMostPercent = (this.leftMost / totalWidth) * 100;                                               //* 100 to convert from a decimal format to a percentage integer (which should be between 0 and 100)
+                leftMostPercent = (this.leftMost / totalWidth) * 100,                                               //* 100 to convert from a decimal format to a percentage integer (which should be between 0 and 100)
+                convertedWidth = w,
+                convertedHeight = h;
+
+            
+
+
+
+
+
+
+
             if (typeof this.props.imageReference !== 'undefined') {
                 
                 if(this.props.imageIsFromPhoneCamera === true) {
-                    context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);
+                    context.drawImage(this.props.imageReference, 0, 0, convertedWidth, convertedHeight, 0, 0, w, h);
                     // context.drawImage(this.props.imageReference, (leftMostPercent * onePercentValueForWidthInPixels), (topMostPercent * onePercentValueForHeightInPixels), this.props.imageReference.naturalWidth / 2, this.props.imageReference.naturalHeight / 2, 0, 0, totalWidth, totalHeight);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
                 }
                 else {
