@@ -39261,6 +39261,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	//test
 	var TakeAnotherPicture = function (_React$Component) {
 	    (0, _inherits3.default)(TakeAnotherPicture, _React$Component);
 

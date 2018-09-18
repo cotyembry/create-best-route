@@ -7,7 +7,7 @@ import $ from 'jquery';
 
 import cotysEventHelper from '../cotysEventHelper.js';
 
-
+//test
 export default class TakeAnotherPicture extends React.Component {
     constructor(props) {
         super(props);
