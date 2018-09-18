@@ -185,6 +185,37 @@ export class View extends React.Component {
     }
 }
 
+
+export class CachedScrollView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            listItems: [
+                {
+                    text: 'one'
+                },
+                {
+                    text: 'two'
+                },
+                {
+                    text: 'three'
+                }
+            ]
+        }
+    }
+    render() {
+        return (
+            <div>
+                {this.state.listItems.map((item, i) => {
+                    <div>{item.text}</div>
+                })}
+            </div>
+        )
+    }
+}
+
+
+
 const styles = {
     Button: {
         display: 'flex',

@@ -111,22 +111,26 @@ export default class TakeAnotherPicture extends React.Component {
         return (
             <View style={styles.TakeAnotherPicture}>
                 <View style={styles.column}>
-                    <ScrollView style={{...styles.row, alignItems: 'flex-end', flex: 1}}>
-                        {this.state.imagesTakenBase64.map((base64, i) => {
-                            let _imageWidthToPreseverAspectRatio = 'auto';
-                            if(typeof this.refs['imageRef_' + i] !== 'undefined') {
-                                let heightInPixels = this.refs['imageRef_' + i].clientHeight,
-                                    naturalWidth = this.refs['imageRef_' + i].naturalWidth,
-                                    naturalHeight = this.refs['imageRef_' + i].naturalHeight;
-                                
-                                // _imageWidthToPreseverAspectRatio = ((naturalWidth * heightInPixels) / naturalHeight) + 'px';
-                            }
 
-                            return (
-                                <Image ref={eref => {this.imageRefCallback(eref, i)} } key={i} i={i} src={base64} style={{...styles.capturedImages, height: '100%', width: _imageWidthToPreseverAspectRatio}} />
-                            )
-                        })}
-                    </ScrollView>
+                    <div style={{display: 'block', width: '100%', height: 'calc(100% - 41px)', overflowX: 'auto'}}>
+                
+                        <ScrollView style={{...styles.row, alignItems: 'flex-end', flex: 1}}>
+                            {this.state.imagesTakenBase64.map((base64, i) => {
+                                let _imageWidthToPreseverAspectRatio = 'auto';
+                                if(typeof this.refs['imageRef_' + i] !== 'undefined') {
+                                    let heightInPixels = this.refs['imageRef_' + i].clientHeight,
+                                        naturalWidth = this.refs['imageRef_' + i].naturalWidth,
+                                        naturalHeight = this.refs['imageRef_' + i].naturalHeight;
+                                    
+                                    // _imageWidthToPreseverAspectRatio = ((naturalWidth * heightInPixels) / naturalHeight) + 'px';
+                                }
+
+                                return (
+                                    <Image ref={eref => {this.imageRefCallback(eref, i)} } key={i} i={i} src={base64} style={{...styles.capturedImages, height: '100%', width: _imageWidthToPreseverAspectRatio}} />
+                                )
+                            })}
+                        </ScrollView>
+                    </div>
 
                     <View style={{...styles.row, backgroundColor: 'black'}}>
                         <View style={{...styles.flexFill, alignItems: 'self-start', flexDirection: 'column', backgroundColor: 'white'}}>

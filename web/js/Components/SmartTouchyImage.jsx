@@ -2,8 +2,15 @@ import React from 'react';
 import {render, findDOMNode} from 'react-dom';
 import { Router, Route, hashHistory } from 'react-router';
 // import Croppie from 'react-croppie';
-import {Button, Image, Input, Text, View} from './Defaults.jsx';
 
+// if(ios === true) {
+    import {Button, Image, Input, Text, View} from './Defaults.jsx';
+// }
+// else {
+
+    // import {Button, Image, Input, Text, View} from './DefaultsIOS.jsx';
+
+// }
 
 import $ from 'jquery';
 // import $ from '../jquery.Jcrop.js';									//because in this file I import jquery and extend it then re-export jquery
