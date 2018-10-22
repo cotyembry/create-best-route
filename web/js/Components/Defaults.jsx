@@ -80,10 +80,11 @@ export class Image extends React.Component {
         }
     }
     render() {
-        let _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
+        let _className = this.props.className ? this.props.className : '',
+            _stylesProp = typeof this.props.style !== 'undefined' ? { ...this.props.style } : {},
             _src = typeof this.props.src !== 'undefined' ? this.props.src : '';
         return (
-            <img onLoad={this.onLoad.bind(this)} ref={this.referenceCallback.bind(this)} src={_src} style={_stylesProp} onClick={this.onClick.bind(this)} />
+            <img className={_className} onLoad={this.onLoad.bind(this)} ref={this.referenceCallback.bind(this)} src={_src} style={_stylesProp} onClick={this.onClick.bind(this)} />
         )
     }
 }
