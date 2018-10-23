@@ -1,0 +1,30 @@
+.crop-container {
+	/*display: flex;
+	flex-direction: row;*/
+}
+.JcropCanvas {
+	position: absolute;
+	top: 0px;						/* TakePicture.jsx's inline style will take over this top and left css style when interations start happening */
+	left: 0px;
+}
+.take-picture {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+.take-picture .button {
+	margin: 7px 0px 7px 0px;
+	cursor: pointer;
+}
+.tpic-child {
+	padding: 14px 0px 14px 0px;
+}
+.dynamicThumnail {
+	width: 100%;
+}
+#dynamicThumnailButton {
+	float: right;
+	margin-right: 14px;
+	box-sizing: border-box;
+}

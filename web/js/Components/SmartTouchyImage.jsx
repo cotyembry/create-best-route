@@ -510,7 +510,6 @@ class FoggyOverlay extends React.Component {
 	}
 	processCropOnImage(e) {
 		if (typeof this.props.imageReference !== 'undefined' && this.props.imageReference !== null && this.state.askedUserForNumber === true) {            
-			//start crop logic
 			let canvas = this.props.canvasRef,
 				context = canvas.getContext('2d'),
 				totalWidth = window.width,
@@ -535,61 +534,75 @@ class FoggyOverlay extends React.Component {
 
 
 			if (typeof this.props.imageReference !== 'undefined') {
-				
-				// this.convertFromUserPointsToImagePositions(context, convertedWidth, convertedHeight, w, h);
-				png = this.convertFromUserPointsToImagePositions();
+				// console.log('leftMost=', this.leftMost, 'naturalWidth conversion =', this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost));
+				// console.log('rightMost=', this.rightMost, 'naturalWidth conversion =', this.translateFromDevicePixelsToNaturalPixelsW(this.rightMost));
+				// console.log('topMost=', this.topMost, 'naturalHeight conversion =', this.translateFromDevicePixelsToNaturalPixelsH(this.topMost));
+				// console.log('bottomMost=', this.bottomMost, 'naturalHeight conversion =', this.translateFromDevicePixelsToNaturalPixelsH(this.bottomMost));
+				// console.log('width converted =', this.translateFromDevicePixelsToNaturalPixelsW(this.rightMost) - this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost))
+				// console.log('height converted =', this.translateFromDevicePixelsToNaturalPixelsH(this.bottomMost) - this.translateFromDevicePixelsToNaturalPixelsH(this.topMost))
+
+				// this.props.canvasRef.getContext('2d').drawImage(
+				// 	this.props.imageReference,
+				// 	this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost),
+				// 	this.translateFromDevicePixelsToNaturalPixelsH(this.topMost),
+
+				// 	this.translateFromDevicePixelsToNaturalPixelsW(this.rightMost) - this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost),	// gives width of area drawn converted to mean the natural image's dimensions
+				// 	this.translateFromDevicePixelsToNaturalPixelsH(this.bottomMost) - this.translateFromDevicePixelsToNaturalPixelsH(this.topMost),	// gives height of area drawn converted to mean the natural image's dimensions
+				// 	//now for the destination canvas part...
+				// 	0,
+				// 	0,
+				// 	this.translateFromDevicePixelsToNaturalPixelsW(this.rightMost) - this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost),	// gives width of area drawn converted to mean the natural image's dimensions
+				// 	this.translateFromDevicePixelsToNaturalPixelsH(this.bottomMost) - this.translateFromDevicePixelsToNaturalPixelsH(this.topMost) + 100	// gives height of area drawn converted to mean the natural image's dimensions
+				// );
+
+
+
+				// if(this.props.imageIsFromPhoneCamera === true) {
+				// context.drawImage(this.props.imageReference, 0, 0, convertedWidth, convertedHeight, 0, 0, w, h);    // works the closest on desktop
+				// context.drawImage(this.props.imageReference, (leftMostPercent * onePercentValueForWidthInPixels), (topMostPercent * onePercentValueForHeightInPixels), this.props.imageReference.naturalWidth / 2, this.props.imageReference.naturalHeight / 2, 0, 0, totalWidth, totalHeight);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
+				// }
+				// else {
+					// context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
+					// }
+					
+				context.drawImage(this.props.imageReference, 0, 0, 100, 100);    // works the closest on desktop
+
+
+				png = canvas.toDataURL('image/png');
 				
 				
 				
 				this.setState({
 					croppedBase64String: png
 				})
-				//end crop logic
 			}
 		}
 	}
-	convertFromUserPointsToImagePositions() {
-		// let canvas = this.props.canvasRef,
-		// 	context = canvas.getContext('2d'),
-		// 	totalWidth = window.width,
-		// 	totalHeight = window.height,
-		// 	png = '',                               //will be the base64 representation of the image as a string
-		// 	w = this.rightMost - this.leftMost,
-		// 	h = this.bottomMost - this.topMost,
-		// 	convertedWidth = w,
-		// 	convertedHeight = h;
-		// context.drawImage(this.props.imageReference, 0, 0, convertedWidth, convertedHeight, 0, 0, w, h);    // works the closest on desktop
-		
-		this.props.canvasRef.getContext('2d').drawImage(
-			this.props.imageReference,
-			this.translateFromDevicePixelsToNaturalPixels(this.leftMost),			
-			this.translateFromDevicePixelsToNaturalPixels(this.topMost),			
-			this.translateValueFromDevicePixelsToNaturalPixels()
-		);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		// if(this.props.imageIsFromPhoneCamera === true) {
-			// context.drawImage(this.props.imageReference, 0, 0, convertedWidth, convertedHeight, 0, 0, w, h);    // works the closest on desktop
-			// context.drawImage(this.props.imageReference, (leftMostPercent * onePercentValueForWidthInPixels), (topMostPercent * onePercentValueForHeightInPixels), this.props.imageReference.naturalWidth / 2, this.props.imageReference.naturalHeight / 2, 0, 0, totalWidth, totalHeight);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
-		// }
-		// else {
-			// context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
-		// }
-
-
-
-		png = canvas.toDataURL('image/png');
-
-		return png;
+	translateFromDevicePixelsToNaturalPixelsW(devicePixelPosition) {	//W for 'width'
+		//i.e. devicePixelPosition === this.leftMost
+		let deviceWidth = window.innerWidth,
+			imageWidth = this.props.imageReference.naturalWidth,
+			answer = '';
+		if (deviceWidth !== 0) {
+			answer = devicePixelPosition * imageWidth / deviceWidth;
+		}
+		else {
+			console.warn('deviceWidth === 0');
+		}
+		return answer;
+	}
+	translateFromDevicePixelsToNaturalPixelsH(devicePixelPosition) {	//H for 'height'
+		//i.e. devicePixelPosition === this.topMost
+		let deviceHeight = window.innerHeight,
+			imageHeight = this.props.imageReference.naturalHeight,
+			answer = '';
+		if (deviceHeight !== 0) {
+			answer = devicePixelPosition * imageHeight / deviceHeight;
+		}
+		else {
+			console.warn('deviceHeight === 0');
+		}
+		return answer;
 	}
 	_setState(newState) {
 		this.setState(newState);
