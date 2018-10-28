@@ -61,7 +61,7 @@ export default class SmartTouchyImage extends React.Component {
 
 
 		this.state = {
-			askedUserForNumber: false,
+			askedUserForNumber: this.props.askedUserForNumber && this.props.askedUserForNumber === true ? true : false,
 			base64: typeof this.props.src !== 'undefined' ? this.props.src : '',
 			currentImageCrop: 1,                                                                                                                 //TODO: add logic to populate this
 			numberOfImages: '',  
