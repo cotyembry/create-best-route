@@ -24,7 +24,7 @@ import '../css/index.css';
 
 
 
-import SmartTouchyImage from '../../web/js/Components/SmartTouchyImage.jsx';
+import SmartTouchyImage from './SmartTouchyImage.jsx';
 
 
 
@@ -121,6 +121,7 @@ class App extends React.Component {
 					key={1}
 					src={this.props.src}
 					askedUserForNumber={true}
+					displayFoggyOverlay={true}
 					// src={this.state.blob}
 				/>
 			</div>
@@ -138,26 +139,7 @@ const styles = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-let imageSrc = '../015.png';
+let imageSrc = './015.png';
 
 
 

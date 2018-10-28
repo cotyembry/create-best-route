@@ -15,10 +15,10 @@ import { Router, Route, hashHistory } from 'react-router';
 import $ from 'jquery';
 // import $ from '../jquery.Jcrop.js';									//because in this file I import jquery and extend it then re-export jquery
 
-import store from '../store.js';
+// import store from '../store.js';
 
 
-import cotysEventHelper from '../cotysEventHelper.js';
+// import cotysEventHelper from '../cotysEventHelper.js';
 
 var userAgent = window.navigator.userAgent;
 
@@ -110,9 +110,9 @@ export default class SmartTouchyImage extends React.Component {
 		});
 	}
 	setOverlayWithAbsolutePositioning(imageRef) {
-		cotysEventHelper.setState({
-			displayFoggyOverlay: true
-		})
+		// cotysEventHelper.setState({
+		// 	displayFoggyOverlay: true
+		// })
 	}
 	_getCurrentImageNumber() {
 		return this.props.activeImage;
@@ -341,13 +341,13 @@ class FoggyOverlay extends React.Component {
 			if (this.state.askedUserForNumber === true) {
 				_showOutlinedAddressBox = true;
 			}
-			cotysEventHelper.setState({         //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
-				showOutlinedAddressBox: _showOutlinedAddressBox,
-				leftMost: leftMost,
-				rightMost: rightMost,
-				bottomMost: bottomMost,
-				topMost: topMost
-			});
+			// cotysEventHelper.setState({         //get this working maybe to use leftMost in the state rather than breaking out and using this.leftMost (I couldnt get the leftMost state to set when using `cotysEventHelper` and spent too much time trying to get it to work so for now this is how it will be)
+			// 	showOutlinedAddressBox: _showOutlinedAddressBox,
+			// 	leftMost: leftMost,
+			// 	rightMost: rightMost,
+			// 	bottomMost: bottomMost,
+			// 	topMost: topMost
+			// });
 			this.leftMost = leftMost;
 			this.rightMost = rightMost;
 			this.topMost = topMost;
@@ -501,74 +501,16 @@ class FoggyOverlay extends React.Component {
 		});
 	}
 	processCropOnImage(e) {
-		if (typeof this.props.imageReference !== 'undefined' && this.props.imageReference !== null && this.state.askedUserForNumber === true) {            
-			let canvas = this.props.canvasRef,
-				context = canvas.getContext('2d'),
-				totalWidth = window.width,
-				totalHeight = window.height,
-				png = '',                               //will be the base64 representation of the image as a string
-				w = this.rightMost - this.leftMost,
-				h = this.bottomMost - this.topMost,
-				sourceImageWidth = window.width,
-				sourceImageHeight = totalHeight,
-				onePercentValueForWidthInPixels = 0.01 * this.props.imageReference.naturalWidth,
-				onePercentValueForHeightInPixels = 0.01 * this.props.imageReference.naturalHeight,
-				leftMostPercent = (this.leftMost / totalWidth) * 100,                                               //* 100 to convert from a decimal format to a percentage integer (which should be between 0 and 100)
-				convertedWidth = w,
-				convertedHeight = h;
+		
+        this.props.canvasRef.getContext('2d').drawImage(this.props.imageReference, 0, 0, 100, 100);    // works the closest on desktop
 
-			
+        console.log(this.props.canvasRef);
 
-
-
-
-
-
-
-			if (typeof this.props.imageReference !== 'undefined') {
-				// console.log('leftMost=', this.leftMost, 'naturalWidth conversion =', this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost));
-				// console.log('rightMost=', this.rightMost, 'naturalWidth conversion =', this.translateFromDevicePixelsToNaturalPixelsW(this.rightMost));
-				// console.log('topMost=', this.topMost, 'naturalHeight conversion =', this.translateFromDevicePixelsToNaturalPixelsH(this.topMost));
-				// console.log('bottomMost=', this.bottomMost, 'naturalHeight conversion =', this.translateFromDevicePixelsToNaturalPixelsH(this.bottomMost));
-				// console.log('width converted =', this.translateFromDevicePixelsToNaturalPixelsW(this.rightMost) - this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost))
-				// console.log('height converted =', this.translateFromDevicePixelsToNaturalPixelsH(this.bottomMost) - this.translateFromDevicePixelsToNaturalPixelsH(this.topMost))
-
-				// this.props.canvasRef.getContext('2d').drawImage(
-				// 	this.props.imageReference,
-				// 	this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost),
-				// 	this.translateFromDevicePixelsToNaturalPixelsH(this.topMost),
-
-				// 	this.translateFromDevicePixelsToNaturalPixelsW(this.rightMost) - this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost),	// gives width of area drawn converted to mean the natural image's dimensions
-				// 	this.translateFromDevicePixelsToNaturalPixelsH(this.bottomMost) - this.translateFromDevicePixelsToNaturalPixelsH(this.topMost),	// gives height of area drawn converted to mean the natural image's dimensions
-				// 	//now for the destination canvas part...
-				// 	0,
-				// 	0,
-				// 	this.translateFromDevicePixelsToNaturalPixelsW(this.rightMost) - this.translateFromDevicePixelsToNaturalPixelsW(this.leftMost),	// gives width of area drawn converted to mean the natural image's dimensions
-				// 	this.translateFromDevicePixelsToNaturalPixelsH(this.bottomMost) - this.translateFromDevicePixelsToNaturalPixelsH(this.topMost) + 100	// gives height of area drawn converted to mean the natural image's dimensions
-				// );
-
-
-
-				// if(this.props.imageIsFromPhoneCamera === true) {
-				// context.drawImage(this.props.imageReference, 0, 0, convertedWidth, convertedHeight, 0, 0, w, h);    // works the closest on desktop
-				// context.drawImage(this.props.imageReference, (leftMostPercent * onePercentValueForWidthInPixels), (topMostPercent * onePercentValueForHeightInPixels), this.props.imageReference.naturalWidth / 2, this.props.imageReference.naturalHeight / 2, 0, 0, totalWidth, totalHeight);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
-				// }
-				// else {
-					// context.drawImage(this.props.imageReference, this.leftMost, this.topMost, w, h, 0, 0, w, h);	//subtracting from the width on the sx makes the canvas get filled with a more zoomed out image
-					// }
-					
-				context.drawImage(this.props.imageReference, 0, 0, 100, 100);    // works the closest on desktop
-
-
-				png = canvas.toDataURL('image/png');
-				
-				
-				
-				this.setState({
-					croppedBase64String: png
-				})
-			}
-		}
+        let png = this.props.canvasRef.toDataURL('image/png');
+        
+        this.setState({
+            croppedBase64String: png
+        })
 	}
 	translateFromDevicePixelsToNaturalPixelsW(devicePixelPosition) {	//W for 'width'
 		//i.e. devicePixelPosition === this.leftMost
@@ -600,17 +542,6 @@ class FoggyOverlay extends React.Component {
 		this.setState(newState);
 	}
 	render() {
-		/*
-this._refs['FoggyOverlay'].onmouseup = this.onMouseUp.bind(this);
-		this._refs['FoggyOverlay'].onmousedown = this.onMouseDown.bind(this);
-		this._refs['FoggyOverlay'].onmousemove = this.onMouseMove.bind(this);
-
-
-		this._refs['FoggyOverlay'].ontouchstart = this.onMouseDown.bind(this);
-		this._refs['FoggyOverlay'].ontouchend = this.onMouseUp.bind(this);
-		this._refs['FoggyOverlay'].ontouchmove = this.onMouseMove.bind(this);
-
-		*/
 		return (
 			<View
 				className='SmartTouchyImage'
