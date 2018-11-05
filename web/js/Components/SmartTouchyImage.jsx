@@ -176,6 +176,7 @@ export default class SmartTouchyImage extends React.Component {
 
 
 				<FoggyOverlay
+					{...this.props}
 					displayFoggyOverlay={this.state.displayFoggyOverlay}
 					goToNextImage={this.props.goToNextImage} 
 					getNumberOfImagesProcessed={this._getNumberOfImagesProcessed.bind(this)} 
@@ -303,7 +304,13 @@ class FoggyOverlay extends React.Component {
 	}
 	onMouseUp(e) {
 		// e = e.nativeEvent;
-
+		if (this.props.onMouseUp) {
+			console.log('true?')
+			this.props.onMouseUp(this);
+		}
+		else {
+			console.log('false');
+		}
 
 
 		this.mouseIsUp = true;
