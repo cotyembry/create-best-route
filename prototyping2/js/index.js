@@ -35,6 +35,7 @@ class App extends React.Component {
 		 * 
 		 * @param deviceDimension - pass the device width in pixels if `imageDimension` is passed in as the `img.naturalWidth` to use as the scale - if `imageDimension` is passed in as `img.naturalHeight` pass the device height in pixels 
 		 * @param imageDimension - `img.naturalWidth` or `img.naturalHeight` - depending on the value passed in for `deviceDimension`
+		 * @returns result {number}
 		 */
 		let result = 0;
 		if (deviceDimension !== 0) {
@@ -42,11 +43,12 @@ class App extends React.Component {
 		}
 		return result;
 	}
-	onMouseUpTest(thisFromSmart) {
-		console.log('in onMouseUpTest with', thisFromSmart);
+	onMouseUpTest(dataObject) {
+		console.log('in onMouseUpTest with', dataObject);
 
+		console.log(Object.keys(dataObject), '>', dataObject.leftMost);
 
-
+		let leftMostConverted = this.convertAsRatio(document.body.clientWidth, dataObject.props.imageReference.naturalWidth, dataObject.leftMost);
 
 	}
 	/*

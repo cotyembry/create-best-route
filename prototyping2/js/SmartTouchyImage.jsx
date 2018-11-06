@@ -305,7 +305,6 @@ class FoggyOverlay extends React.Component {
 	onMouseUp(e) {
 		// e = e.nativeEvent;
 		if (this.props.onMouseUp) {
-			console.log('true?')
 			this.props.onMouseUp(this);
 		}
 		else {
