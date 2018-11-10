@@ -69,6 +69,8 @@ class App extends React.Component {
 			height = dataObject.bottomMost - dataObject.topMost,
 			widthConverted = rightMostConverted - leftMostConverted,
 			heightConverted = bottomMostConverted - topMostConverted;
+		
+		// let imgWidthConverted = this.convertAsRatio(document.body.clientWidth, dataObject.props.imageReference.naturalWidth, document.body.clientWidth);
 
 		this.canvasWidth = dataObject.props.canvasRef.width;
 		this.canvasHeight = dataObject.props.canvasRef.height;
@@ -96,13 +98,13 @@ class App extends React.Component {
 		// dataObject.props.canvasRef.getContext('2d').drawImage(dataObject.props.imageReference, leftMostConverted, topMostConverted, widthConverted, heightConverted, 0, 0, width, height);    // works the closest on desktop
 		// dataObject.props.canvasRef.getContext('2d').drawImage(img, leftMostConverted, topMostConverted, widthConverted, heightConverted, 0, 0, width, height);    // works the closest on desktop
 		// dataObject.props.canvasRef.getContext('2d').drawImage(img, 0, 0, this.state.testWidth, dataObject.props.canvasRef.height)
-		dataObject.props.canvasRef.getContext('2d').drawImage(img, 0, 0, this.state.testWidth, this.state.testHeight)
+		dataObject.props.canvasRef.getContext('2d').drawImage(img, 0, 0, (img.naturalWidth / 2) - 5, img.naturalHeight);
 
 		let png = dataObject.props.canvasRef.toDataURL('image/png');
 
 		// console.log(png);
 		window.png = png;
-		console.log(this.state.testWidth);
+		console.log(this.state.testWidth, 'widthConverted =', );
 
 		document.getElementById('testImage').src = png;
 
