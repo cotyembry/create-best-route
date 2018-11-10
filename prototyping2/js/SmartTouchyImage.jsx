@@ -212,7 +212,7 @@ class FoggyOverlay extends React.Component {
 		this.state = {
 			displayFoggyOverlay: this.props.displayFoggyOverlay,
 
-			askedUserForNumber: false,
+			askedUserForNumber: this.props.askedUserForNumber ? this.props.askedUserForNumber : false,
 			croppiePictureURL: '',
 			croppedBase64String: '',
 			customCropEvent: '',
@@ -500,7 +500,6 @@ class FoggyOverlay extends React.Component {
 		
         this.props.canvasRef.getContext('2d').drawImage(this.props.imageReference, 0, 0, 100, 100);    // works the closest on desktop
 
-        console.log(this.props.canvasRef);
 
         let png = this.props.canvasRef.toDataURL('image/png');
         
