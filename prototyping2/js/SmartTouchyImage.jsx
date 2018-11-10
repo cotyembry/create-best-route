@@ -1,6 +1,5 @@
 import React from 'react';
 import {render, findDOMNode} from 'react-dom';
-import { Router, Route, hashHistory } from 'react-router';
 // import Croppie from 'react-croppie';
 
 // if(ios === true) {
@@ -13,20 +12,9 @@ import { Router, Route, hashHistory } from 'react-router';
 // }
 
 import $ from 'jquery';
-// import $ from '../jquery.Jcrop.js';									//because in this file I import jquery and extend it then re-export jquery
-
-// import store from '../store.js';
-
-
-// import cotysEventHelper from '../cotysEventHelper.js';
 
 var userAgent = window.navigator.userAgent;
 
-
-/**
- * 
- * TODO: add an overlay of foggyish see through layer that will wipe away when the user drags over the area
- */
 
 export default class SmartTouchyImage extends React.Component {
 	constructor(props) {
@@ -163,6 +151,8 @@ export default class SmartTouchyImage extends React.Component {
 					_ref={eref => { this.refs['image'] = findDOMNode(eref); this.childRefsArray['currentImageRef'] = findDOMNode(eref);}}
 					src={this.props.src}
 				/>
+
+				<img id='testImage' style={{...styles.wholeImageToDrawOver, ...isMobileSafariStyle, top: this.props.top + 'px'}} />
 				
 				<canvas
 					style={styles.customCanvas}

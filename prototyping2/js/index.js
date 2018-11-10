@@ -25,7 +25,8 @@ class App extends React.Component {
 		// });
 
 		this.state = {
-			blob: ''
+			blob: '',
+			top: 93
 		}
 	}
 	convertAsRatio(deviceDimension, imageDimension, value) {
@@ -35,21 +36,53 @@ class App extends React.Component {
 		 * 
 		 * @param deviceDimension - pass the device width in pixels if `imageDimension` is passed in as the `img.naturalWidth` to use as the scale - if `imageDimension` is passed in as `img.naturalHeight` pass the device height in pixels 
 		 * @param imageDimension - `img.naturalWidth` or `img.naturalHeight` - depending on the value passed in for `deviceDimension`
-		 * @returns result {number}
+		 * @returns {number} result 
 		 */
 		let result = 0;
-		if (deviceDimension !== 0) {
+		if (deviceDimension !== 0 && value && value !== '') {
 			result = value * imageDimension / deviceDimension;
 		}
 		return result;
 	}
 	onMouseUpTest(dataObject) {
-		console.log('in onMouseUpTest with', dataObject);
+		let leftMostConverted = this.convertAsRatio(document.body.clientWidth, dataObject.props.imageReference.naturalWidth, dataObject.leftMost),
+			rightMostConverted = this.convertAsRatio(document.body.clientWidth, dataObject.props.imageReference.naturalWidth, dataObject.rightMost),
+			topMostConverted = this.convertAsRatio(document.body.clientHeight, dataObject.props.imageReference.naturalHeight, dataObject.topMost),
+			bottomMostConverted = this.convertAsRatio(document.body.clientHeight, dataObject.props.imageReference.naturalHeight, dataObject.bottomMost),
+			widthConverted = rightMostConverted - leftMostConverted,
+			heightConverted = bottomMostConverted - topMostConverted;
+		
+		// console.log(dataObject.leftMost, dataObject.rightMost, dataObject.topMost, dataObject.bottomMost);
+		console.log({
+			leftMostConverted: leftMostConverted,
+			rightMostConverted: rightMostConverted,
+			topMostConverted: topMostConverted,
+			bottomMostConverted: bottomMostConverted,
+			widthConverted: widthConverted,
+			heightConverted: heightConverted
+		});
 
-		console.log(Object.keys(dataObject), '>', dataObject.leftMost);
+		// dataObject.props.canvasRef.getContext('2d').drawImage(dataObject.props.imageReference, 0, 0, widthConverted, heightConverted);    // works the closest on desktop
+		
+		let naturalWidth = 607 / 2;
 
-		let leftMostConverted = this.convertAsRatio(document.body.clientWidth, dataObject.props.imageReference.naturalWidth, dataObject.leftMost);
+		dataObject.props.canvasRef.getContext('2d').drawImage(dataObject.props.imageReference, 0, 0, naturalWidth, 93);    // works the closest on desktop
 
+
+		let png = dataObject.props.canvasRef.toDataURL('image/png');
+
+		// console.log(png);
+		window.png = png;
+
+		document.getElementById('testImage').src = png;
+
+		this.setState({
+			top: dataObject.props.imageReference.clientHeight
+		})
+
+		// this.setState({
+		// 	croppedBase64String: png
+		// })
 	}
 	/*
 		File.prototype.convertToBase64 = function (callback) {
@@ -93,6 +126,7 @@ class App extends React.Component {
 					askedUserForNumber={true}
 					displayFoggyOverlay={true}
 					onMouseUp={this.onMouseUpTest.bind(this)}
+					top={this.state.top}
 				/>
 			</div>
 		)
@@ -109,7 +143,8 @@ const styles = {
 
 
 
-let imageSrc = './015.png';
+// let imageSrc = './1.png';
+let imageSrc = './2.png';
 
 
 
