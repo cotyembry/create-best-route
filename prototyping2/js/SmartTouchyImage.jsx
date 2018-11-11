@@ -140,6 +140,8 @@ export default class SmartTouchyImage extends React.Component {
 		}
 
 		// alert(JSON.stringify(isMobileSafariStyle))
+
+		let maxHeight = 'calc(100% - ' + this.props.top + 'px)';
 		
 		
 
@@ -152,7 +154,7 @@ export default class SmartTouchyImage extends React.Component {
 					src={this.props.src}
 				/>
 
-				<img id='testImage' style={{...styles.wholeImageToDrawOver, ...isMobileSafariStyle, top: this.props.top + 'px'}} />
+				<img id='testImage' style={{...styles.wholeImageToDrawOver, ...isMobileSafariStyle, top: this.props.top + 'px', maxHeight: maxHeight}} />
 				
 				<canvas
 					style={styles.customCanvas}

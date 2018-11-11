@@ -75,30 +75,46 @@ class App extends React.Component {
 		this.canvasWidth = dataObject.props.canvasRef.width;
 		this.canvasHeight = dataObject.props.canvasRef.height;
 		
-		// console.log({
-		// 	leftMostConverted: leftMostConverted,
-		// 	rightMostConverted: rightMostConverted,
-		// 	topMostConverted: topMostConverted,
-		// 	bottomMostConverted: bottomMostConverted,
-		// 	widthConverted: widthConverted,
-		// 	heightConverted: heightConverted,
-		// 	width: width,
-		// 	height: height
-		// });
+		console.log({
+			leftMostConverted: leftMostConverted,
+			rightMostConverted: rightMostConverted,
+			topMostConverted: topMostConverted,
+			bottomMostConverted: bottomMostConverted,
+			widthConverted: widthConverted,
+			heightConverted: heightConverted,
+			width: width,
+			height: height,
+			leftMost: dataObject.leftMost,
+			rightMost: dataObject.rightMost,
+			topMost: dataObject.topMost,
+			bottomMost: dataObject.bottomMost
+		});
 
-		// dataObject.props.canvasRef.getContext('2d').drawImage(dataObject.props.imageReference, 0, 0, widthConverted, heightConverted);    // works the closest on desktop
-		
+
 		dataObject.props.canvasRef.getContext('2d').clearRect(0, 0, dataObject.props.canvasRef.width, dataObject.props.canvasRef.height)
 		//void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-		//void ctx.drawImage(dataObject.props.imageReference, dataObject.leftMost, dataObject.topMost, widthConverted, heightConverted, 0, 0, width, height);
-		// let naturalWidth = 607 / 2;
-		// let testWidth = 20;
 
-		// dataObject.props.canvasRef.getContext('2d').drawImage(dataObject.props.imageReference, 0, 0, testWidth, 93);    // works the closest on desktop
-		// dataObject.props.canvasRef.getContext('2d').drawImage(dataObject.props.imageReference, leftMostConverted, topMostConverted, widthConverted, heightConverted, 0, 0, width, height);    // works the closest on desktop
-		// dataObject.props.canvasRef.getContext('2d').drawImage(img, leftMostConverted, topMostConverted, widthConverted, heightConverted, 0, 0, width, height);    // works the closest on desktop
-		// dataObject.props.canvasRef.getContext('2d').drawImage(img, 0, 0, this.state.testWidth, dataObject.props.canvasRef.height)
-		dataObject.props.canvasRef.getContext('2d').drawImage(img, 0, 0, (img.naturalWidth / 2) - 5, img.naturalHeight);
+		// dataObject.props.canvasRef.getContext('2d').drawImage(img, 0, 0, (img.naturalWidth / 2), img.naturalHeight);	//draws the whole image to the canvas
+		// dataObject.props.canvasRef.getContext('2d').drawImage(img, 0, 0, (img.naturalWidth / 2) - 5, img.naturalHeight, 0, 0, (img.naturalWidth/2), img.naturalHeight);	//draws the whole image to the canvas
+		
+		dataObject.props.canvasRef.getContext('2d').drawImage(
+			img,
+			leftMostConverted,
+			topMostConverted,
+			widthConverted,
+			heightConverted,
+
+			// 0,
+			// 0,
+			// dataObject.props.canvasRef.width,
+			// dataObject.props.canvasRef.height
+		);	//draws the whole image to the canvas
+
+		
+
+
+
+
 
 		let png = dataObject.props.canvasRef.toDataURL('image/png');
 
@@ -117,6 +133,7 @@ class App extends React.Component {
 				<div
 					ref={eref => this.appRef = eref}
 					id='appRoot'
+					style={styles.App}
 				>
 
 				{/* <img style={styles.mainImage} src={this.props.src}/> */}
@@ -138,6 +155,10 @@ class App extends React.Component {
 }
 
 const styles = {
+	App: {
+		width: '100%',
+		height: '100%'
+	},
 	mainImage: {
 		width: '100%'
 	}
