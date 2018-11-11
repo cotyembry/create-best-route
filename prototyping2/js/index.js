@@ -63,7 +63,16 @@ class App extends React.Component {
 
 		let leftMostConverted = this.convertAsRatio(document.body.clientWidth, dataObject.props.imageReference.naturalWidth, dataObject.leftMost),
 			rightMostConverted = this.convertAsRatio(document.body.clientWidth, dataObject.props.imageReference.naturalWidth, dataObject.rightMost),
+			
+			
+			
+			/**
+			 * @todo - `topMostConverted` and `bottomMostConverted` wrong and need more logic to get the canvas cropping logic working
+			 */
 			topMostConverted = this.convertAsRatio(document.body.clientHeight, dataObject.props.imageReference.naturalHeight, dataObject.topMost),
+			
+			
+			
 			bottomMostConverted = this.convertAsRatio(document.body.clientHeight, dataObject.props.imageReference.naturalHeight, dataObject.bottomMost),
 			width = dataObject.rightMost - dataObject.leftMost,
 			height = dataObject.bottomMost - dataObject.topMost,
